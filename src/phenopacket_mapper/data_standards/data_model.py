@@ -38,7 +38,7 @@ class DataField(DataNode):
     - The `id` field must be a valid Python identifier
     - The `id` field must start with a letter or the underscore character
     - The `id` field must cannot start with a number
-    - The `id` field can only contain lowercase alpha-numeric characters and underscores (a-z, 0-9, and _ )
+    - The `id` field can only contain lowercase alphanumeric characters and underscores (a-z, 0-9, and _ )
     - The `id` field cannot be any of the Python keywords (e.g. `in`, `is`, `not`, `class`, etc.).
     - The `id` field must be unique within a `DataModel`
 

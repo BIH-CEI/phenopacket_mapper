@@ -56,8 +56,6 @@ class DataNode(metaclass=ABCMeta):
         pass
 
 
-
-
 class DataInstance:
     pass
 
