@@ -29,7 +29,7 @@ class DataModel(metaclass=abc.ABCMeta):
     pass
 
 
-@dataclass
+@dataclass(frozen=True)
 class DataNode(metaclass=abc.ABCMeta):
     """
     This is very much like Jackson (Java) `TreeNode`,
