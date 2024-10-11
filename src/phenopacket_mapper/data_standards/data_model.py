@@ -177,7 +177,7 @@ class DataModel:
     :ivar resources: List of `CodeSystem` objects
     """
     data_model_name: str = field()
-    fields: Tuple[DataField, ...] = field()
+    fields: Tuple[Union[DataField, DataSection], ...] = field()
     resources: List[CodeSystem] = field(default_factory=list)
 
     def __post_init__(self):
