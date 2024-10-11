@@ -22,11 +22,9 @@ def read_data_model(
         file_type: Literal['csv', 'excel', 'unknown'] = 'unknown',
         column_names: Dict[str, str] = MappingProxyType({
             DataField.name.__name__: 'data_field_name',
-            DataField.section.__name__: 'data_model_section',
             DataField.description.__name__: 'description',
             DataField.specification.__name__: 'value_set',
             DataField.required.__name__: 'required',
-            DataField.ordinal.__name__: 'ordinal'
         }),
         parse_value_sets: bool = False,
         remove_line_breaks: bool = False,
