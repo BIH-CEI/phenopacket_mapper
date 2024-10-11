@@ -52,18 +52,14 @@ class DataField(DataNode):
     :ivar specification: Value set of the field, if the value set is only one type, can also pass that type directly
     :ivar id: The identifier of the field, adhering to the naming rules stated above
     :ivar description: Description of the field
-    :ivar section: Section of the field (Only applicable if the data model is divided into sections)
     :ivar required: Required flag of the field
-    :ivar ordinal: Ordinal of the field (E.g. 1.1, 1.2, 2.1, etc.)
     """
     # TODO: change section into path to data
     name: str = field()
     specification: Union[ValueSet, type, List[type]] = field()
     id: str = field(default=None)
     description: str = field(default='')
-    section: str = field(default='')
     required: bool = field(default=True)
-    ordinal: str = field(default='')
 
     def __post_init__(self):
         if not self.id:
@@ -79,8 +75,7 @@ class DataField(DataNode):
     def __str__(self):
         ret = "DataField(\n"
         ret += f"\t\tid: {self.id},\n"
-        ret += f"\t\tsection: {self.section},\n"
-        ret += f"\t\tordinal, name: ({self.ordinal},  {self.name}),\n"
+        ret += f"\t\tname: {self.name},\n"
         ret += f"\t\tvalue_set: {self.specification}, required: {self.required},\n"
         ret += f"\t\tspecification: {self.specification}\n"
         ret += "\t)"
@@ -253,12 +248,9 @@ class DataModel:
             file_type: Literal['csv', 'excel', 'unknown'] = 'unknown',
             column_names: Dict[str, str] = MappingProxyType({
                 DataField.name.__name__: 'data_field_name',
-                DataField.section.__name__: 'data_model_section',
                 DataField.description.__name__: 'description',
                 DataField.specification.__name__: 'value_set',
                 DataField.required.__name__: 'required',
-                DataField.specification.__name__: 'specification',
-                DataField.ordinal.__name__: 'ordinal'
             }),
             parse_value_sets: bool = False,
             remove_line_breaks: bool = False,
