@@ -40,16 +40,29 @@ class DataNode(metaclass=ABCMeta):
 
     We want to be able to (de)serialize this.
     """
-    name: str
-    id: str
-    required: bool
+    @property
+    @abstractmethod
+    def id(self) -> str:
+        pass
+
+    @property
+    @abstractmethod
+    def name(self) -> str:
+        pass
+
+    @property
+    @abstractmethod
+    def required(self) -> bool:
+        pass
+
+
 
 
 class DataInstance:
     pass
 
 
-class Transformation(metaclass=abc.ABCMeta):
+class Transformation(metaclass=ABCMeta):
     """
 
     """
