@@ -44,7 +44,7 @@ class PhenopacketBuildingBlock:
         return self.phenopacket_element(**kwargs)
 
 
-def map_single(key, e, instance, kwargs):
+def map_single(key, e, instance: DataModelInstance, kwargs):
     if isinstance(e, DataField):
         data_field = e
         try:

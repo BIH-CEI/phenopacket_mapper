@@ -55,6 +55,7 @@ class DataField:
     :ivar required: Required flag of the field
     :ivar ordinal: Ordinal of the field (E.g. 1.1, 1.2, 2.1, etc.)
     """
+    # TODO: change section into path to data
     name: str = field()
     specification: Union[ValueSet, type, List[type]] = field()
     id: str = field(default=None)
