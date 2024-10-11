@@ -54,7 +54,6 @@ class DataField(DataNode):
     :ivar description: Description of the field
     :ivar required: Required flag of the field
     """
-    # TODO: change section into path to data
     name: str = field()
     specification: Union[ValueSet, type, List[type]] = field()
     id: str = field(default=None)
