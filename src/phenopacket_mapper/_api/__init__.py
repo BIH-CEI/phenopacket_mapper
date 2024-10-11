@@ -3,12 +3,13 @@ This package is intended to expose the PhenopacketMapper API to the user.
 """
 
 import abc
-import typing
+from typing import Tuple, Iterable, Iterator
+from dataclasses import dataclass
 
 
 class DataModelDefiner(metaclass=abc.ABCMeta):
     """
-    Take some data model definition and try to load it into data model.
+    Take some data model definition and try to load it into :class:`DataModel`.
 
     E.g. protobuf model "definer".
     """
@@ -28,6 +29,7 @@ class DataModel(metaclass=abc.ABCMeta):
     pass
 
 
+@dataclass
 class DataNode(metaclass=abc.ABCMeta):
     """
     This is very much like Jackson (Java) `TreeNode`,
@@ -39,7 +41,9 @@ class DataNode(metaclass=abc.ABCMeta):
 
     We want to be able to (de)serialize this.
     """
-    pass
+    label: str
+    id: str
+    required: bool
 
 
 class DataInstance:
@@ -50,7 +54,7 @@ class Transformation(metaclass=abc.ABCMeta):
     """
 
     """
-    pass
+    steps: Tuple
 
 
 class Mapper:
@@ -63,10 +67,10 @@ class Mapper:
 
     def transform_dataset(
         self,
-        data_set: typing.Iterable[DataInstance],
-    ) -> typing.Iterator[DataInstance]:
+        data_set: Iterable[DataInstance],
+    ) -> Iterator[DataInstance]:
         return map(lambda item: self.transform(item), data_set)
 
     def transform(self, item: DataInstance) -> DataInstance:
-        # TODO: implement
+        # TODO: implement based on self.transformation
         pass
