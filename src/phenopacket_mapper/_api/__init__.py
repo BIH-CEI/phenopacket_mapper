@@ -3,8 +3,10 @@ This package is intended to expose the PhenopacketMapper API to the user.
 """
 
 from abc import ABCMeta, abstractmethod, abstractproperty
-from typing import Tuple, Iterable, Iterator
+from typing import Tuple, Iterable, Iterator, Union, Literal
 from dataclasses import dataclass
+
+from phenopacket_mapper.data_standards import Cardinality
 
 
 class DataModelDefiner(metaclass=ABCMeta):
@@ -59,6 +61,11 @@ class DataNode(metaclass=ABCMeta):
     @property
     @abstractmethod
     def description(self) -> str:
+        pass
+
+    @property
+    @abstractmethod
+    def cardinality(self) -> Cardinality:
         pass
 
 
