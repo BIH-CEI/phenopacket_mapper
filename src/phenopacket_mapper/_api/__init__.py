@@ -41,7 +41,7 @@ class DataNode(metaclass=abc.ABCMeta):
 
     We want to be able to (de)serialize this.
     """
-    label: str
+    name: str
     id: str
     required: bool
 
