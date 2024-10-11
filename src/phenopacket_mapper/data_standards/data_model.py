@@ -88,7 +88,27 @@ class DataField(DataNode):
                 and self.required == other.required)
 
 
-@dataclass(slots=True)
+@dataclass(slots=True, frozen=True)
+class DataSection:
+    """This class defines a section in a `DataModel`
+
+    A section is a collection of `DataField` or `DataSection` objects. It is used to group related fields in a
+    `DataModel`.
+
+    :ivar name: Name of the section
+    :ivar fields: List of `DataField` objects
+    """
+    name: str = field()
+    id: str = field(default=None)
+    fields: Tuple[Union[DataField, 'DataSection']] = field(default_factory=tuple)
+    required: bool = field(default=False)
+
+    def __post_init__(self):
+        if not self.id:
+            from phenopacket_mapper.utils import str_to_valid_id
+            object.__setattr__(self, 'id', str_to_valid_id(self.name))
+
+@dataclass(slots=True, frozen=True)
 class DataFieldValue:
     """This class defines the value of a `DataField` in a `DataModelInstance`
 
