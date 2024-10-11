@@ -16,6 +16,7 @@ import warnings
 
 import pandas as pd
 
+from phenopacket_mapper._api import DataNode
 from phenopacket_mapper.data_standards import CodeSystem
 from phenopacket_mapper.data_standards.date import Date
 from phenopacket_mapper.data_standards.value_set import ValueSet
@@ -23,7 +24,7 @@ from phenopacket_mapper.preprocessing import preprocess, preprocess_method
 
 
 @dataclass(slots=True, frozen=True)
-class DataField:
+class DataField(DataNode):
     """This class defines fields used in the definition of a `DataModel`
 
     A dataa field is the equivalent of a column in a table. It has a name, a value set, a description, a section, a
