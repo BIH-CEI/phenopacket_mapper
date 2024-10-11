@@ -57,8 +57,8 @@ class DataField(DataNode):
     name: str = field()
     specification: Union[ValueSet, type, List[type]] = field()
     id: str = field(default=None)
+    required: bool = field(default=False)
     description: str = field(default='')
-    required: bool = field(default=True)
 
     def __post_init__(self):
         if not self.id:
