@@ -42,17 +42,23 @@ class DataNode(metaclass=ABCMeta):
     """
     @property
     @abstractmethod
-    def id(self) -> str:
-        pass
-
-    @property
-    @abstractmethod
     def name(self) -> str:
         pass
 
     @property
     @abstractmethod
+    def id(self) -> str:
+        pass
+
+    @property
+    @abstractmethod
     def required(self) -> bool:
+        pass
+
+
+    @property
+    @abstractmethod
+    def description(self) -> str:
         pass
 
 
