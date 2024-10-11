@@ -101,7 +101,7 @@ class DataSection:
     """
     name: str = field()
     id: str = field(default=None)
-    fields: Tuple[Union[DataField, 'DataSection']] = field(default_factory=tuple)
+    fields: Tuple[Union[DataField, 'DataSection'], ...] = field(default_factory=tuple)
     required: bool = field(default=False)
     cardinality: Cardinality = field(default_factory=Cardinality)
 
