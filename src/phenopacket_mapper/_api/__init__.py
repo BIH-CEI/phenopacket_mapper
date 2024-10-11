@@ -2,12 +2,12 @@
 This package is intended to expose the PhenopacketMapper API to the user.
 """
 
-import abc
+from abc import ABCMeta, abstractmethod, abstractproperty
 from typing import Tuple, Iterable, Iterator
 from dataclasses import dataclass
 
 
-class DataModelDefiner(metaclass=abc.ABCMeta):
+class DataModelDefiner(metaclass=ABCMeta):
     """
     Take some data model definition and try to load it into :class:`DataModel`.
 
@@ -16,7 +16,7 @@ class DataModelDefiner(metaclass=abc.ABCMeta):
     pass
 
 
-class DataModel(metaclass=abc.ABCMeta):
+class DataModel(metaclass=ABCMeta):
     """
     Value class.
     The fields:
@@ -29,8 +29,7 @@ class DataModel(metaclass=abc.ABCMeta):
     pass
 
 
-@dataclass(frozen=True)
-class DataNode(metaclass=abc.ABCMeta):
+class DataNode(metaclass=ABCMeta):
     """
     This is very much like Jackson (Java) `TreeNode`,
     because it can be many things.
