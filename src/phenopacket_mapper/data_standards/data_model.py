@@ -17,7 +17,7 @@ import warnings
 import pandas as pd
 
 from phenopacket_mapper._api import DataNode
-from phenopacket_mapper.data_standards import CodeSystem, Cardinality, OrGroup
+from phenopacket_mapper.data_standards import CodeSystem, Cardinality
 from phenopacket_mapper.data_standards.date import Date
 from phenopacket_mapper.data_standards.value_set import ValueSet
 from phenopacket_mapper.preprocessing import preprocess, preprocess_method
@@ -101,7 +101,7 @@ class DataSection:
     """
     name: str = field()
     id: str = field(default=None)
-    fields: Tuple[Union[DataField, 'DataSection', OrGroup], ...] = field(default_factory=tuple)
+    fields: Tuple[Union[DataField, 'DataSection', 'OrGroup'], ...] = field(default_factory=tuple)
     required: bool = field(default=False)
     cardinality: Cardinality = field(default_factory=Cardinality)
 
@@ -177,7 +177,7 @@ class DataModel:
     :ivar resources: List of `CodeSystem` objects
     """
     data_model_name: str = field()
-    fields: Tuple[Union[DataField, DataSection, OrGroup], ...] = field()
+    fields: Tuple[Union[DataField, DataSection, 'OrGroup'], ...] = field()
     resources: List[CodeSystem] = field(default_factory=list)
 
     def __post_init__(self):
@@ -497,6 +497,21 @@ class DataSet:
             return self.data_frame.head(n)
         else:
             warnings.warn("No data frame object available for this dataset")
+
+
+@dataclass(slots=True, frozen=True)
+class OrGroup(DataNode):
+    fields: Tuple[Union[DataField, DataSection, 'OrGroup'], ...]
+    name: str = field(default='Or Group')
+    id: str = field(default=None)
+    description: str = field(default='')
+    required: bool = field(default=False)
+    cardinality: Cardinality = field(default_factory=Cardinality)
+
+    def __post_init__(self):
+        if not self.id:
+            from phenopacket_mapper.utils import str_to_valid_id
+            object.__setattr__(self, 'id', str_to_valid_id(self.name))
 
 
 if __name__ == "__main__":
