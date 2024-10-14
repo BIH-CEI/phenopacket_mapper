@@ -44,10 +44,6 @@ class DataField(DataNode):
 
     If the `value_set` is a single type, it can be passed directly as the `value_set` parameter.
 
-    e.g.:
-    >>> DataField(name="Field 1", specification=int)
-    DataField(name='Field 1', specification=ValueSet(elements=[<class 'int'>], name='', description=''), id='field_1', description='', section='', required=True, ordinal='')
-
     :ivar name: Name of the field
     :ivar specification: Value set of the field, if the value set is only one type, can also pass that type directly
     :ivar id: The identifier of the field, adhering to the naming rules stated above
@@ -185,10 +181,6 @@ class DataModel:
     E.g.: `DataField(name='Date of Birth', ...)` will have an `id` of `'date_of_birth'`. The `DataField` objects can
     be accessed using the `id` as an attribute of the `DataModel` object. E.g.: `data_model.date_of_birth`. This is
     useful in the data reading and mapping processes.
-
-    >>> data_model = DataModel("Test data model", (DataField(name="Field 1", specification=ValueSet()),))
-    >>> data_model.field_1
-    DataField(name='Field 1', specification=ValueSet(elements=[], name='', description=''), id='field_1', description='', section='', required=True, ordinal='')
 
     :ivar data_model_name: Name of the data model
     :ivar fields: List of `DataField` objects
