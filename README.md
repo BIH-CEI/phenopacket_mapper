@@ -7,6 +7,8 @@
 
 A Python library to map from any bespoke tabular data format to the GA4GH Phenopacket schema.
 
+![Mapping Flow](res/imgs/docs/phenopacket_mapper_flow_simplified.png)
+
 ## Table of Contents
 
 - [Motivation](#motivation)

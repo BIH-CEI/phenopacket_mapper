@@ -2,7 +2,7 @@ import math
 import os
 from pathlib import Path
 from types import MappingProxyType
-from typing import Literal, List, Union, Dict
+from typing import Literal, List, Union, Dict, Tuple
 
 import pandas as pd
 from phenopackets.schema.v2 import Phenopacket
@@ -22,12 +22,9 @@ def read_data_model(
         file_type: Literal['csv', 'excel', 'unknown'] = 'unknown',
         column_names: Dict[str, str] = MappingProxyType({
             DataField.name.__name__: 'data_field_name',
-            DataField.section.__name__: 'data_model_section',
             DataField.description.__name__: 'description',
-            DataField.value_set.__name__: 'value_set',
+            DataField.specification.__name__: 'value_set',
             DataField.required.__name__: 'required',
-            DataField.specification.__name__: 'specification',
-            DataField.ordinal.__name__: 'ordinal'
         }),
         parse_value_sets: bool = False,
         remove_line_breaks: bool = False,
@@ -94,27 +91,25 @@ def read_data_model(
             return value.replace('\n', ' ')
         return value
 
-    data_fields = []
+    data_fields: Tuple[DataField, ...] = tuple()
     for i in range(len(df)):
         data_field_name = loc_default(df, row_index=i, column_name=column_names.get(DataField.name.__name__, ''))
         section = loc_default(df, row_index=i, column_name=column_names.get(DataField.section.__name__, ''))
-        value_set = loc_default(df, row_index=i, column_name=column_names.get(DataField.value_set.__name__, ''))
+        value_set = loc_default(df, row_index=i, column_name=column_names.get(DataField.specification.__name__, ''))
         description = loc_default(df, row_index=i, column_name=column_names.get(DataField.description.__name__, ''))
         required = bool(loc_default(df, row_index=i, column_name=column_names.get(DataField.required.__name__, '')))
-        specification = loc_default(df, row_index=i, column_name=column_names.get(DataField.specification.__name__, ''))
         ordinal = loc_default(df, row_index=i, column_name=column_names.get(DataField.ordinal.__name__, ''))
 
         if remove_line_breaks:
             data_field_name = remove_line_breaks_if_not_none(data_field_name)
             section = remove_line_breaks_if_not_none(section)
             description = remove_line_breaks_if_not_none(description)
-            specification = remove_line_breaks_if_not_none(specification)
 
         if parse_ordinals:
             ordinal, data_field_name = parse_ordinal(data_field_name)
 
         if parse_value_sets:
-            if not column_names.get(DataField.value_set.__name__, ''):
+            if not column_names.get(DataField.specification.__name__, ''):
                 raise ValueError("Value set column name must be provided to parse value sets.")
 
             value_set = parsing.parse_value_set(
@@ -123,16 +118,15 @@ def read_data_model(
                 resources=resources
             )
 
-        data_fields.append(
+        data_fields = data_fields + (
             DataField(
                 name=data_field_name,
                 section=section,
-                value_set=value_set,
+                specification=value_set,
                 description=description,
                 required=required,
-                specification=specification,
                 ordinal=ordinal
-            )
+            ),
         )
 
     return DataModel(data_model_name=data_model_name, fields=data_fields, resources=resources)
@@ -142,7 +136,7 @@ def load_data_using_data_model(
         path: Union[str, Path],
         data_model: DataModel,
         column_names: Dict[str, str],
-        compliance: Literal['soft', 'hard'] = 'soft',
+        compliance: Literal['lenient', 'strict'] = 'lenient',
 ) -> DataSet:
     """Loads data from a file using a DataModel definition
 
@@ -160,10 +154,17 @@ def load_data_using_data_model(
     :param data_model: DataModel to use for reading the file
     :param column_names: A dictionary mapping from the id of each field of the `DataField` to the name of a
                         column in the file
-    :param compliance: Compliance level to enforce when reading the file. If 'soft', the file can have extra fields
-                        that are not in the DataModel. If 'hard', the file must have all fields in the DataModel.
+    :param compliance: Compliance level to enforce when reading the file. If 'lenient', the file can have extra fields
+                        that are not in the DataModel. If 'strict', the file must have all fields in the DataModel.
     :return: List of DataModelInstances
     """
+    if isinstance(path, Path):
+        pass
+    elif isinstance(path, str):
+        path = Path(path)
+    else:
+        raise ValueError(f'Path must be a string or Path object, not {type(path)}')
+    
     file_extension = path.suffix[1:]
     if file_extension == 'csv':
         df = pd.read_csv(path)
@@ -184,7 +185,7 @@ def load_data_using_data_model(
 
     data_model_instances = []
 
-    for i in range(len(df)):
+    for i in range(len(df)):  # todo: change to iter also non tabular data
         values = []
         for f in data_model.fields:
             column_name = column_names[f.id]

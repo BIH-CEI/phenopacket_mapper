@@ -16,7 +16,7 @@ PRIMITIVE_DATATYPE_SYNONYMS = {
 def parse_data_type(
         type_str: str,
         resources: List[CodeSystem],
-        compliance: Literal['soft', 'hard'] = 'soft'
+        compliance: Literal['lenient', 'strict'] = 'lenient'
 ) -> List[Union[Any, CodeSystem, type, str]]:
     """Parses a string representing of one or multiple data types or code systems to a list of `type` in Python
 
@@ -26,8 +26,8 @@ def parse_data_type(
     inclusion in the list passed as the `resources` parameter) to indicate that codes or terms from that resource are
     permittable.
 
-    When `compliance` is set to `'soft'` (default), this method only issues warnings if a data type is unrecognized and
-    adds a literal to the list of allowed data types. When `compliance` is set to `'hard'`, it throws a `ValueError` in
+    When `compliance` is set to `'lenient'` (default), this method only issues warnings if a data type is unrecognized and
+    adds a literal to the list of allowed data types. When `compliance` is set to `'strict'`, it throws a `ValueError` in
     the case described above.
 
     E.g.
@@ -56,7 +56,7 @@ def parse_data_type(
 def parse_single_data_type(
         type_str: str,
         resources: List[CodeSystem],
-        compliance: Literal['soft', 'hard'] = 'soft'
+        compliance: Literal['lenient', 'strict'] = 'lenient'
 ) -> Union[Any, CodeSystem, type, str]:
     """Parses a string representing a data type to the `type` in Python
 
@@ -82,7 +82,7 @@ def parse_single_data_type(
                 return type_
 
     # if nothing has matched
-    if compliance == 'soft':
+    if compliance == 'lenient':
         print(f"Warning: The type {type_str} could not be parsed to a type or resource. If it refers to a resource,"
               f" please add it to the list of resources. Otherwise, check your file.")
         return type_str

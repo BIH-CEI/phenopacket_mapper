@@ -13,7 +13,7 @@
     {
       "diagnosis": {
         "disease": {
-          "id": "ORPHA:206638"
+          "id": "ORPHA:206638 ()"
         }
       }
     }
@@ -21,7 +21,7 @@
   "diseases": [
     {
       "term": {
-        "id": "ORPHA:206638"
+        "id": "ORPHA:206638 ()"
       }
     }
   ]

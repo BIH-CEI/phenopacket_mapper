@@ -1,4 +1,4 @@
-from typing import Literal, Union
+from typing import Union
 
 
 def parse_primitive_data_value(

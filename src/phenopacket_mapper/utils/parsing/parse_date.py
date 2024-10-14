@@ -1,5 +1,6 @@
+import warnings
 from datetime import datetime
-from typing import Literal, Dict, Tuple
+from typing import Literal, Dict, Tuple, Optional
 
 from phenopacket_mapper.data_standards import Date
 from phenopacket_mapper.utils.parsing import parse_int
@@ -8,8 +9,8 @@ from phenopacket_mapper.utils.parsing import parse_int
 def parse_date(
         date_str: str,
         default_first: Literal["day", "month"] = "day",
-        compliance: Literal['soft', 'hard'] = 'soft',
-) -> Date:
+        compliance: Literal['lenient', 'strict'] = 'lenient',
+) -> Optional[Date]:
     """Parse a date string into a Date object
 
     There is a lot of variation in how dates are formatted, and this function attempts to handle as many of them as
@@ -89,10 +90,11 @@ def parse_date(
                 return Date(year=parse_int(units[2]), month=month, day=day)
 
     else:
-        if compliance == 'hard':
+        if compliance == 'strict':
             raise ValueError(f"Invalid date string '{date_str}': no separators found")
         else:
-            return date_str
+            warnings.warn(f"Invalid date string '{date_str}': could not be parsed, returning None")
+            return None
 
 
 def _wrapper__most_likely_date_and_month(
@@ -100,10 +102,10 @@ def _wrapper__most_likely_date_and_month(
         str1: str,
         full_date_str: str,
         default_first: Literal["day", "month"] = "day",
-        compliance: Literal['soft', 'hard'] = 'soft'
+        compliance: Literal['lenient', 'strict'] = 'lenient'
 ) -> Tuple[int, int]:
     """
-    Wrapper for _return_most_likely_date_and_month that raises an error if the compliance is set to 'hard'
+    Wrapper for _return_most_likely_date_and_month that raises an error if the compliance is set to 'strict'
 
     returns the day and month from the most likely date and month from two strings
 
@@ -115,7 +117,7 @@ def _wrapper__most_likely_date_and_month(
     :return: the day and month from the most likely date and month from two strings
     """
     result = _return_most_likely_date_and_month(str0, str1, full_date_str, default_first)
-    if result['inference'] and compliance == 'hard':
+    if result['inference'] and compliance == 'strict':
         raise ValueError(f"Invalid date string '{full_date_str}': unclear which unit of time is first")
     day = result['day']
     month = result['month']

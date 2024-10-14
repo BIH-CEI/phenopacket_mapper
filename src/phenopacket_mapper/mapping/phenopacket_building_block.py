@@ -6,7 +6,7 @@ from google.protobuf.timestamp_pb2 import Timestamp
 from phenopacket_mapper.data_standards import DataModelInstance, DataField, DataFieldValue, Coding
 
 
-class PhenopacketElement:
+class PhenopacketBuildingBlock:
 
     def __init__(self, phenopacket_element, **kwargs):
         """Mapping equivalent to the constructor of a Phenopacket element (e.g., Individual) for the mapping
@@ -17,7 +17,7 @@ class PhenopacketElement:
         :param kwargs: The elements to map the data to Phenopackets
         """
         self.phenopacket_element = phenopacket_element
-        self.elements: Dict[str, Union[PhenopacketElement, DataField]] = {}
+        self.elements: Dict[str, Union[PhenopacketBuildingBlock, DataField]] = {}
         for k, v in kwargs.items():
             setattr(self, k, v)
             self.elements[k] = v
@@ -30,7 +30,7 @@ class PhenopacketElement:
         >>> data_field = DataField("pseudonym", str)
         >>> data_model = DataModel("Example data model", [data_field], [])
         >>> inst = DataModelInstance(0, data_model, [DataFieldValue(0, data_field, "example_pseudonym")])
-        >>> individual = PhenopacketElement(phenopackets.Individual, id=data_field).map(inst)
+        >>> individual = PhenopacketBuildingBlock(phenopackets.Individual, id=data_field).map(inst)
         >>> individual.id
         'example_pseudonym'
 
@@ -44,7 +44,7 @@ class PhenopacketElement:
         return self.phenopacket_element(**kwargs)
 
 
-def map_single(key, e, instance, kwargs):
+def map_single(key, e, instance: DataModelInstance, kwargs):
     if isinstance(e, DataField):
         data_field = e
         try:
@@ -64,6 +64,6 @@ def map_single(key, e, instance, kwargs):
             pass
     elif isinstance(e, list):
         kwargs[key] = [v.map(instance) for v in e]
-    elif isinstance(e, PhenopacketElement):
+    elif isinstance(e, PhenopacketBuildingBlock):
         phenopacket_element = e
         kwargs[key] = phenopacket_element.map(instance)

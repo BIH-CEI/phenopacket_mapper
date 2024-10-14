@@ -15,7 +15,7 @@
     {
       "diagnosis": {
         "disease": {
-          "id": "ICD9:781"
+          "id": "ICD9:781 ()"
         }
       }
     }
@@ -23,7 +23,7 @@
   "diseases": [
     {
       "term": {
-        "id": "ICD9:781"
+        "id": "ICD9:781 ()"
       }
     }
   ]

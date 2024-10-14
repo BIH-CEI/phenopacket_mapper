@@ -212,7 +212,7 @@ class Date:
     def parse_date(
             date_str: str,
             default_first: Literal["day", "month"] = "day",
-            compliance: Literal['soft', 'hard'] = 'soft',
+            compliance: Literal['lenient', 'strict'] = 'lenient',
     ) -> 'Date':
         """Parse a date string into a Date object
 

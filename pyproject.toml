@@ -27,7 +27,7 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Machine Learning"
 ]
 dependencies = [
-    "loguru", "phenopackets", "pandas", "openpyxl", "jupyter"
+    "loguru", "phenopackets", "pandas", "openpyxl", "jupyter", "requests", "bs4",
 ]
 dynamic = ["version"]
 

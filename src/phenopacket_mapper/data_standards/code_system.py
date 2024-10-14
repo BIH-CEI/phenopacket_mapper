@@ -58,13 +58,13 @@ NCBITaxon = CodeSystem(
 GENO = CodeSystem(
     name='GENO: The Genotype Ontology', 
     namespace_prefix='GENO', 
-    url='http://www.genoontology.org/'
+    url='https://www.genoontology.org/'
 )
 
 SO = CodeSystem(
     name='Sequence types and features ontology', 
     namespace_prefix='SO',
-    url='http://www.sequenceontology.org/'
+    url='https://www.sequenceontology.org/'
 )
 
 ICD9 = CodeSystem(
@@ -128,12 +128,12 @@ ICF = CodeSystem(
 MONDO = CodeSystem(
     name="Monarch Disease Ontology",
     namespace_prefix="MONDO",
-    url="http://purl.obolibrary.org/obo/mondo.owl"
+    url="https://purl.obolibrary.org/obo/mondo.owl"
 )
 ORDO = CodeSystem(
     name="Orphanet Rare Disease Ontology",
     namespace_prefix="ORPHA",
-    url="http://www.orpha.net/",
+    url="https://www.orpha.net/",
     synonyms=['ORDO']
 )
 OMIM = CodeSystem(
@@ -149,7 +149,7 @@ LOINC = CodeSystem(
 HGVS = CodeSystem(
     name="Human Genome Variation Society",
     namespace_prefix="HGVS",
-    url="http://varnomen.hgvs.org/"
+    url="https://varnomen.hgvs.org/"
 )
 HGNC = CodeSystem(
     name="HUGO Gene Nomenclature Committee",
@@ -159,14 +159,14 @@ HGNC = CodeSystem(
 HPO = CodeSystem(
     name="Human Phenotype Ontology",
     namespace_prefix="HP",
-    url="http://www.human-phenotype-ontology.org",
-    iri_prefix="http://purl.obolibrary.org/obo/HP_",
+    url="https://www.human-phenotype-ontology.org",
+    iri_prefix="https://purl.obolibrary.org/obo/HP_",
     synonyms=["HPO"]
 )
 UO = CodeSystem(
     name="Units of Measurement Ontology",
     namespace_prefix="UO",
-    url="http://www.ontobee.org/ontology/UO"
+    url="https://www.ontobee.org/ontology/UO"
 )
 NCIT = CodeSystem(
     name = "NCI Thesaurus OBO Edition",

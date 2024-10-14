@@ -5,8 +5,6 @@ from pathlib import Path
 class NotebookBuilder:
     """
     A class to build a Jupyter notebook programmatically.
-
-    :param notebook_content: A dictionary representing the notebook structure.
     """
 
     def __init__(self):
@@ -87,4 +85,4 @@ if __name__ == "__main__":
     builder.add_code_cell("x = np.linspace(0, 10, 100)\nprint(x)")
     builder.add_markdown_cell("## Analysis")
     builder.add_code_cell("y = np.sin(x)\nprint(y)")
-    builder.write_to_file('my_notebook.ipynb')
+    builder.write_to_file(Path('my_notebook.ipynb'))

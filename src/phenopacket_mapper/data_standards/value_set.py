@@ -66,7 +66,7 @@ class ValueSet:
             value_set_name: str = "",
             value_set_description: str = "",
             resources: List[CodeSystem] = None,
-            compliance: Literal['hard', 'soft'] = 'soft',
+            compliance: Literal['strict', 'lenient'] = 'lenient',
     ) -> 'ValueSet':
         """Parses a value set from a string representation
 

@@ -9,7 +9,7 @@ from phenopacket_mapper.data_standards import code_system as code_system_module
 def parse_coding(
         coding_str: str,
         resources: List[CodeSystem],
-        compliance: Literal['soft', 'hard'] = 'soft'
+        compliance: Literal['lenient', 'strict'] = 'lenient'
 ) -> Coding:
     """Parsed a string representing a coding to a Coding object
 
@@ -56,7 +56,7 @@ def parse_coding(
         if code_system:
             return Coding(system=code_system, code=code)
         else:
-            if compliance == 'hard':
+            if compliance == 'strict':
                 raise ValueError(f"Code system with namespace prefix '{namespace_prefix}' not found in resources.")
             else:
                 print(f"Warning: Code system with namespace prefix '{namespace_prefix}' not found in resources.")
