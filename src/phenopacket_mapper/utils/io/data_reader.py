@@ -10,7 +10,7 @@ from phenopacket_mapper.utils.io import read_json, read_xml
 class DataReader:
     def __init__(
             self,
-            file: Union[str, Path, IOBase],
+            file: Union[str, Path, IOBase, List[str], List[Path], List[IOBase]],
             encoding: str = 'utf-8',
             file_extension: Literal['csv', 'xlsx', 'json', 'xml'] = None
     ):
@@ -22,6 +22,8 @@ class DataReader:
         :param file_extension: The file extension of the file to read. If `None`, the file extension is inferred from the
         file path. Default is `None`.
         """
+        # TODO: fix read xml
+        # TODO: add option to pass a list of files to read
         self.is_dir = False
         self.file_extension = None
 
