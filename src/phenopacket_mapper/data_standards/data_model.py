@@ -66,6 +66,9 @@ class DataField(DataNode):
             from phenopacket_mapper.utils import str_to_valid_id
             object.__setattr__(self, 'id', str_to_valid_id(self.name))
 
+        if self.required:
+            object.__setattr__(self, 'cardinality', Cardinality(min=1, max=self.cardinality.max))
+
         if isinstance(self.specification, type):
             object.__setattr__(self, 'specification', ValueSet(elements=[self.specification]))
         if isinstance(self.specification, list):
@@ -111,6 +114,8 @@ class DataSection:
             from phenopacket_mapper.utils import str_to_valid_id
             object.__setattr__(self, 'id', str_to_valid_id(self.name))
 
+        if self.required:
+            object.__setattr__(self, 'cardinality', Cardinality(min=1, max=self.cardinality.max))
 
     def __str__(self):
         ret = "DataSection(\n"
@@ -527,6 +532,8 @@ class OrGroup(DataNode):
             from phenopacket_mapper.utils import str_to_valid_id
             object.__setattr__(self, 'id', str_to_valid_id(self.name))
 
+        if self.required:
+            object.__setattr__(self, 'cardinality', Cardinality(min=1, max=self.cardinality.max))
 
 
     def __str__(self):
