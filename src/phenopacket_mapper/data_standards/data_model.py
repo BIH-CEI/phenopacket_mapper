@@ -16,17 +16,18 @@ import warnings
 
 import pandas as pd
 
-from phenopacket_mapper.data_standards import CodeSystem
+from phenopacket_mapper._api import DataNode
+from phenopacket_mapper.data_standards import CodeSystem, Cardinality
 from phenopacket_mapper.data_standards.date import Date
 from phenopacket_mapper.data_standards.value_set import ValueSet
 from phenopacket_mapper.preprocessing import preprocess, preprocess_method
 
 
 @dataclass(slots=True, frozen=True)
-class DataField:
+class DataField(DataNode):
     """This class defines fields used in the definition of a `DataModel`
 
-    A dataa field is the equivalent of a column in a table. It has a name, a value set, a description, a section, a
+    A data field is the equivalent of a column in a table. It has a name, a value set, a description, a section, a
     required flag, a specification, and an ordinal.
 
     The string for the `id` field is generated from the `name` field using the `str_to_valid_id` function from the
@@ -37,37 +38,32 @@ class DataField:
     - The `id` field must be a valid Python identifier
     - The `id` field must start with a letter or the underscore character
     - The `id` field must cannot start with a number
-    - The `id` field can only contain lowercase alpha-numeric characters and underscores (a-z, 0-9, and _ )
+    - The `id` field can only contain lowercase alphanumeric characters and underscores (a-z, 0-9, and _ )
     - The `id` field cannot be any of the Python keywords (e.g. `in`, `is`, `not`, `class`, etc.).
     - The `id` field must be unique within a `DataModel`
 
     If the `value_set` is a single type, it can be passed directly as the `value_set` parameter.
 
-    e.g.:
-    >>> DataField(name="Field 1", specification=int)
-    DataField(name='Field 1', specification=ValueSet(elements=[<class 'int'>], name='', description=''), id='field_1', description='', section='', required=True, ordinal='')
-
     :ivar name: Name of the field
     :ivar specification: Value set of the field, if the value set is only one type, can also pass that type directly
     :ivar id: The identifier of the field, adhering to the naming rules stated above
     :ivar description: Description of the field
-    :ivar section: Section of the field (Only applicable if the data model is divided into sections)
     :ivar required: Required flag of the field
-    :ivar ordinal: Ordinal of the field (E.g. 1.1, 1.2, 2.1, etc.)
     """
-    # TODO: change section into path to data
     name: str = field()
     specification: Union[ValueSet, type, List[type]] = field()
     id: str = field(default=None)
+    required: bool = field(default=False)
     description: str = field(default='')
-    section: str = field(default='')
-    required: bool = field(default=True)
-    ordinal: str = field(default='')
+    cardinality: Cardinality = field(default_factory=Cardinality)
 
     def __post_init__(self):
         if not self.id:
             from phenopacket_mapper.utils import str_to_valid_id
             object.__setattr__(self, 'id', str_to_valid_id(self.name))
+
+        if self.required:
+            object.__setattr__(self, 'cardinality', Cardinality(min=1, max=self.cardinality.max))
 
         if isinstance(self.specification, type):
             object.__setattr__(self, 'specification', ValueSet(elements=[self.specification]))
@@ -78,10 +74,10 @@ class DataField:
     def __str__(self):
         ret = "DataField(\n"
         ret += f"\t\tid: {self.id},\n"
-        ret += f"\t\tsection: {self.section},\n"
-        ret += f"\t\tordinal, name: ({self.ordinal},  {self.name}),\n"
-        ret += f"\t\tvalue_set: {self.specification}, required: {self.required},\n"
+        ret += f"\t\tname: {self.name},\n"
+        ret += f"\t\trequired: {self.required}\n"
         ret += f"\t\tspecification: {self.specification}\n"
+        ret += f"\t\tcardinality: {str(self.cardinality)}\n"
         ret += "\t)"
         return ret
 
@@ -92,6 +88,41 @@ class DataField:
         return (self.id == other.id and self.specification == other.specification
                 and self.required == other.required)
 
+
+@dataclass(slots=True, frozen=True)
+class DataSection:
+    """This class defines a section in a `DataModel`
+
+    A section is a collection of `DataField` or `DataSection` objects. It is used to group related fields in a
+    `DataModel`.
+
+    :ivar name: Name of the section
+    :ivar fields: List of `DataField` objects
+    """
+    name: str = field()
+    id: str = field(default=None)
+    fields: Tuple[Union[DataField, 'DataSection', 'OrGroup'], ...] = field(default_factory=tuple)
+    required: bool = field(default=False)
+    cardinality: Cardinality = field(default_factory=Cardinality)
+
+    def __post_init__(self):
+        if not self.id:
+            from phenopacket_mapper.utils import str_to_valid_id
+            object.__setattr__(self, 'id', str_to_valid_id(self.name))
+
+        if self.required:
+            object.__setattr__(self, 'cardinality', Cardinality(min=1, max=self.cardinality.max))
+
+    def __str__(self):
+        ret = "DataSection(\n"
+        ret += f"\t\tid: {self.id},\n"
+        ret += f"\t\tname: {self.name},\n"
+        ret += f"\t\trequired: {self.required}\n"
+        ret += f"\t\tcardinality: {str(self.cardinality)}\n"
+        for _field in self.fields:
+            ret += f"\t{str(_field)}\n"
+        ret += "\t)"
+        return ret
 
 @dataclass(slots=True)
 class DataFieldValue:
@@ -151,16 +182,12 @@ class DataModel:
     be accessed using the `id` as an attribute of the `DataModel` object. E.g.: `data_model.date_of_birth`. This is
     useful in the data reading and mapping processes.
 
-    >>> data_model = DataModel("Test data model", (DataField(name="Field 1", specification=ValueSet()),))
-    >>> data_model.field_1
-    DataField(name='Field 1', specification=ValueSet(elements=[], name='', description=''), id='field_1', description='', section='', required=True, ordinal='')
-
     :ivar data_model_name: Name of the data model
     :ivar fields: List of `DataField` objects
     :ivar resources: List of `CodeSystem` objects
     """
     data_model_name: str = field()
-    fields: Tuple[DataField, ...] = field()
+    fields: Tuple[Union[DataField, DataSection, 'OrGroup'], ...] = field()
     resources: List[CodeSystem] = field(default_factory=list)
 
     def __post_init__(self):
@@ -174,7 +201,8 @@ class DataModel:
         raise AttributeError(f"'DataModel' object has no attribute '{var_name}'")
 
     def __str__(self):
-        ret = f"DataModel(name={self.data_model_name}\n"
+        ret = f"DataModel(\n"
+        ret += f"\tname: {self.data_model_name}\n"
         for _field in self.fields:
             ret += f"\t{str(_field)}\n"
         ret += "---\n"
@@ -252,12 +280,9 @@ class DataModel:
             file_type: Literal['csv', 'excel', 'unknown'] = 'unknown',
             column_names: Dict[str, str] = MappingProxyType({
                 DataField.name.__name__: 'data_field_name',
-                DataField.section.__name__: 'data_model_section',
                 DataField.description.__name__: 'description',
                 DataField.specification.__name__: 'value_set',
                 DataField.required.__name__: 'required',
-                DataField.specification.__name__: 'specification',
-                DataField.ordinal.__name__: 'ordinal'
             }),
             parse_value_sets: bool = False,
             remove_line_breaks: bool = False,
@@ -483,6 +508,36 @@ class DataSet:
             return self.data_frame.head(n)
         else:
             warnings.warn("No data frame object available for this dataset")
+
+
+@dataclass(slots=True, frozen=True)
+class OrGroup(DataNode):
+    fields: Tuple[Union[DataField, DataSection, 'OrGroup'], ...]
+    name: str = field(default='Or Group')
+    id: str = field(default=None)
+    description: str = field(default='')
+    required: bool = field(default=False)
+    cardinality: Cardinality = field(default_factory=Cardinality)
+
+    def __post_init__(self):
+        if not self.id:
+            from phenopacket_mapper.utils import str_to_valid_id
+            object.__setattr__(self, 'id', str_to_valid_id(self.name))
+
+        if self.required:
+            object.__setattr__(self, 'cardinality', Cardinality(min=1, max=self.cardinality.max))
+
+
+    def __str__(self):
+        ret = "OrGroup(\n"
+        ret += f"\t\tid: {self.id},\n"
+        ret += f"\t\tname: {self.name},\n"
+        ret += f"\t\trequired: {self.required}\n"
+        ret += f"\t\tcardinality: {self.cardinality}\n"
+        for _field in self.fields:
+            ret += f"\t{str(_field)}\n"
+        ret += "\t)"
+        return ret
 
 
 if __name__ == "__main__":
