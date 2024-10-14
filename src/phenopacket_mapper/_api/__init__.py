@@ -2,9 +2,8 @@
 This package is intended to expose the PhenopacketMapper API to the user.
 """
 
-from abc import ABCMeta, abstractmethod, abstractproperty
-from typing import Tuple, Iterable, Iterator, Union, Literal
-from dataclasses import dataclass
+from abc import ABCMeta, abstractmethod
+from typing import Tuple, Iterable, Iterator
 
 from phenopacket_mapper.data_standards import Cardinality
 
