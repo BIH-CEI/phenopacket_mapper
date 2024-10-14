@@ -27,7 +27,7 @@ from phenopacket_mapper.preprocessing import preprocess, preprocess_method
 class DataField(DataNode):
     """This class defines fields used in the definition of a `DataModel`
 
-    A dataa field is the equivalent of a column in a table. It has a name, a value set, a description, a section, a
+    A data field is the equivalent of a column in a table. It has a name, a value set, a description, a section, a
     required flag, a specification, and an ordinal.
 
     The string for the `id` field is generated from the `name` field using the `str_to_valid_id` function from the
