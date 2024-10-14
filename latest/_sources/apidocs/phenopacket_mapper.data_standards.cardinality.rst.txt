@@ -1,0 +1,7 @@
+phenopacket\_mapper.data\_standards.cardinality module
+======================================================
+
+.. automodule:: phenopacket_mapper.data_standards.cardinality
+   :members:
+   :undoc-members:
+   :show-inheritance:

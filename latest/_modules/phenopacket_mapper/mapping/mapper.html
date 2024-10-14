@@ -110,9 +110,15 @@
         <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">check_data_fields_in_model</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
 
-<div class="viewcode-block" id="PhenopacketMapper.check_data_fields_in_model">
-<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.pipeline.html#phenopacket_mapper.PhenopacketMapper.check_data_fields_in_model">[docs]</a>
-    <span class="k">def</span> <span class="nf">check_data_fields_in_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">PhenopacketBuildingBlock</span><span class="p">,</span> <span class="n">DataField</span><span class="p">]):</span>
+            
+<div class="viewcode-block" id="PhenopacketMapper.check_fields_adheres_to_phenopacket_allowed_values">
+<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.pipeline.html#phenopacket_mapper.PhenopacketMapper.check_fields_adheres_to_phenopacket_allowed_values">[docs]</a>
+    <span class="k">def</span> <span class="nf">check_fields_adheres_to_phenopacket_allowed_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the fields in the mapping adhere to the values in the Phenopacket schema</span>
+
+<span class="sd">        Check the Phenopacket schema to see if the fields in the mapping adhere to the values allowed by the schema.</span>
+<span class="sd">        Otherwise give precise error messages.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">DataField</span><span class="p">):</span>
             <span class="n">field</span> <span class="o">=</span> <span class="n">element</span>
             <span class="k">if</span> <span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_model</span><span class="p">:</span>

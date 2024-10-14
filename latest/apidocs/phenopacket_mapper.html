@@ -54,7 +54,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">API reference</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">phenopacket_mapper package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#phenopacket_mapper.PhenopacketMapper"><code class="docutils literal notranslate"><span class="pre">PhenopacketMapper</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#phenopacket_mapper.PhenopacketMapper.check_data_fields_in_model"><code class="docutils literal notranslate"><span class="pre">PhenopacketMapper.check_data_fields_in_model()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#phenopacket_mapper.PhenopacketMapper.check_fields_adheres_to_phenopacket_allowed_values"><code class="docutils literal notranslate"><span class="pre">PhenopacketMapper.check_fields_adheres_to_phenopacket_allowed_values()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#phenopacket_mapper.PhenopacketMapper.map"><code class="docutils literal notranslate"><span class="pre">PhenopacketMapper.map()</span></code></a></li>
 </ul>
 </li>
@@ -104,9 +104,12 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">phenopacket_mapper.</span></span><span class="sig-name descname"><span class="pre">PhenopacketMapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.data_standards.data_model.DataModel" title="phenopacket_mapper.data_standards.data_model.DataModel"><span class="pre">DataModel</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phenopacket_mapper/mapping/mapper.html#PhenopacketMapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#phenopacket_mapper.PhenopacketMapper" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <dl class="py method">
-<dt class="sig sig-object py" id="phenopacket_mapper.PhenopacketMapper.check_data_fields_in_model">
-<span class="sig-name descname"><span class="pre">check_data_fields_in_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="phenopacket_mapper.mapping.phenopacket_building_block.html#phenopacket_mapper.mapping.phenopacket_building_block.PhenopacketBuildingBlock" title="phenopacket_mapper.mapping.phenopacket_building_block.PhenopacketBuildingBlock"><span class="pre">PhenopacketBuildingBlock</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.data_standards.data_model.DataField" title="phenopacket_mapper.data_standards.data_model.DataField"><span class="pre">DataField</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phenopacket_mapper/mapping/mapper.html#PhenopacketMapper.check_data_fields_in_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#phenopacket_mapper.PhenopacketMapper.check_data_fields_in_model" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="phenopacket_mapper.PhenopacketMapper.check_fields_adheres_to_phenopacket_allowed_values">
+<span class="sig-name descname"><span class="pre">check_fields_adheres_to_phenopacket_allowed_values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phenopacket_mapper/mapping/mapper.html#PhenopacketMapper.check_fields_adheres_to_phenopacket_allowed_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#phenopacket_mapper.PhenopacketMapper.check_fields_adheres_to_phenopacket_allowed_values" title="Link to this definition"></a></dt>
+<dd><p>Check if the fields in the mapping adhere to the values in the Phenopacket schema</p>
+<p>Check the Phenopacket schema to see if the fields in the mapping adhere to the values allowed by the schema.
+Otherwise give precise error messages.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="phenopacket_mapper.PhenopacketMapper.map">
@@ -135,6 +138,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="phenopacket_mapper.data_standards.html">phenopacket_mapper.data_standards package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="phenopacket_mapper.data_standards.html#phenopacket_mapper.data_standards.Cardinality"><code class="docutils literal notranslate"><span class="pre">Cardinality</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="phenopacket_mapper.data_standards.html#phenopacket_mapper.data_standards.Coding"><code class="docutils literal notranslate"><span class="pre">Coding</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="phenopacket_mapper.data_standards.html#phenopacket_mapper.data_standards.CodeableConcept"><code class="docutils literal notranslate"><span class="pre">CodeableConcept</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="phenopacket_mapper.data_standards.html#phenopacket_mapper.data_standards.DataModel"><code class="docutils literal notranslate"><span class="pre">DataModel</span></code></a></li>
@@ -142,6 +146,8 @@
 <li class="toctree-l2"><a class="reference internal" href="phenopacket_mapper.data_standards.html#phenopacket_mapper.data_standards.DataModelInstance"><code class="docutils literal notranslate"><span class="pre">DataModelInstance</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="phenopacket_mapper.data_standards.html#phenopacket_mapper.data_standards.DataFieldValue"><code class="docutils literal notranslate"><span class="pre">DataFieldValue</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="phenopacket_mapper.data_standards.html#phenopacket_mapper.data_standards.DataSet"><code class="docutils literal notranslate"><span class="pre">DataSet</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="phenopacket_mapper.data_standards.html#phenopacket_mapper.data_standards.DataSection"><code class="docutils literal notranslate"><span class="pre">DataSection</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="phenopacket_mapper.data_standards.html#phenopacket_mapper.data_standards.OrGroup"><code class="docutils literal notranslate"><span class="pre">OrGroup</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="phenopacket_mapper.data_standards.html#phenopacket_mapper.data_standards.CodeSystem"><code class="docutils literal notranslate"><span class="pre">CodeSystem</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="phenopacket_mapper.data_standards.html#phenopacket_mapper.data_standards.Date"><code class="docutils literal notranslate"><span class="pre">Date</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="phenopacket_mapper.data_standards.html#phenopacket_mapper.data_standards.ValueSet"><code class="docutils literal notranslate"><span class="pre">ValueSet</span></code></a></li>

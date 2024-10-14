@@ -94,7 +94,8 @@
 
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
-<span class="kn">from</span> <span class="nn">phenopacket_mapper.data_standards</span> <span class="kn">import</span> <span class="n">CodeSystem</span>
+<span class="kn">from</span> <span class="nn">phenopacket_mapper._api</span> <span class="kn">import</span> <span class="n">DataNode</span>
+<span class="kn">from</span> <span class="nn">phenopacket_mapper.data_standards</span> <span class="kn">import</span> <span class="n">CodeSystem</span><span class="p">,</span> <span class="n">Cardinality</span>
 <span class="kn">from</span> <span class="nn">phenopacket_mapper.data_standards.date</span> <span class="kn">import</span> <span class="n">Date</span>
 <span class="kn">from</span> <span class="nn">phenopacket_mapper.data_standards.value_set</span> <span class="kn">import</span> <span class="n">ValueSet</span>
 <span class="kn">from</span> <span class="nn">phenopacket_mapper.preprocessing</span> <span class="kn">import</span> <span class="n">preprocess</span><span class="p">,</span> <span class="n">preprocess_method</span>
@@ -103,10 +104,10 @@
 <div class="viewcode-block" id="DataField">
 <a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.data_standards.DataField">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">slots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">DataField</span><span class="p">:</span>
+<span class="k">class</span> <span class="nc">DataField</span><span class="p">(</span><span class="n">DataNode</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This class defines fields used in the definition of a `DataModel`</span>
 
-<span class="sd">    A dataa field is the equivalent of a column in a table. It has a name, a value set, a description, a section, a</span>
+<span class="sd">    A data field is the equivalent of a column in a table. It has a name, a value set, a description, a section, a</span>
 <span class="sd">    required flag, a specification, and an ordinal.</span>
 
 <span class="sd">    The string for the `id` field is generated from the `name` field using the `str_to_valid_id` function from the</span>
@@ -117,37 +118,32 @@
 <span class="sd">    - The `id` field must be a valid Python identifier</span>
 <span class="sd">    - The `id` field must start with a letter or the underscore character</span>
 <span class="sd">    - The `id` field must cannot start with a number</span>
-<span class="sd">    - The `id` field can only contain lowercase alpha-numeric characters and underscores (a-z, 0-9, and _ )</span>
+<span class="sd">    - The `id` field can only contain lowercase alphanumeric characters and underscores (a-z, 0-9, and _ )</span>
 <span class="sd">    - The `id` field cannot be any of the Python keywords (e.g. `in`, `is`, `not`, `class`, etc.).</span>
 <span class="sd">    - The `id` field must be unique within a `DataModel`</span>
 
 <span class="sd">    If the `value_set` is a single type, it can be passed directly as the `value_set` parameter.</span>
 
-<span class="sd">    e.g.:</span>
-<span class="sd">    &gt;&gt;&gt; DataField(name=&quot;Field 1&quot;, specification=int)</span>
-<span class="sd">    DataField(name=&#39;Field 1&#39;, specification=ValueSet(elements=[&lt;class &#39;int&#39;&gt;], name=&#39;&#39;, description=&#39;&#39;), id=&#39;field_1&#39;, description=&#39;&#39;, section=&#39;&#39;, required=True, ordinal=&#39;&#39;)</span>
-
 <span class="sd">    :ivar name: Name of the field</span>
 <span class="sd">    :ivar specification: Value set of the field, if the value set is only one type, can also pass that type directly</span>
 <span class="sd">    :ivar id: The identifier of the field, adhering to the naming rules stated above</span>
 <span class="sd">    :ivar description: Description of the field</span>
-<span class="sd">    :ivar section: Section of the field (Only applicable if the data model is divided into sections)</span>
 <span class="sd">    :ivar required: Required flag of the field</span>
-<span class="sd">    :ivar ordinal: Ordinal of the field (E.g. 1.1, 1.2, 2.1, etc.)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># TODO: change section into path to data</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">()</span>
     <span class="n">specification</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ValueSet</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">type</span><span class="p">]]</span> <span class="o">=</span> <span class="n">field</span><span class="p">()</span>
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">required</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-    <span class="n">section</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-    <span class="n">required</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">ordinal</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">cardinality</span><span class="p">:</span> <span class="n">Cardinality</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">Cardinality</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">phenopacket_mapper.utils</span> <span class="kn">import</span> <span class="n">str_to_valid_id</span>
             <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">str_to_valid_id</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">required</span><span class="p">:</span>
+            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;cardinality&#39;</span><span class="p">,</span> <span class="n">Cardinality</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cardinality</span><span class="o">.</span><span class="n">max</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">specification</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
             <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;specification&#39;</span><span class="p">,</span> <span class="n">ValueSet</span><span class="p">(</span><span class="n">elements</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">specification</span><span class="p">]))</span>
@@ -158,10 +154,10 @@
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="s2">&quot;DataField(</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="n">ret</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2">id: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">,</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="n">ret</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2">section: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">section</span><span class="si">}</span><span class="s2">,</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="n">ret</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2">ordinal, name: (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ordinal</span><span class="si">}</span><span class="s2">,  </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">),</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="n">ret</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2">value_set: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">specification</span><span class="si">}</span><span class="s2">, required: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">required</span><span class="si">}</span><span class="s2">,</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">ret</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2">name: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">,</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">ret</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2">required: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">required</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="n">ret</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2">specification: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">specification</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">ret</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2">cardinality: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cardinality</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="n">ret</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">)&quot;</span>
         <span class="k">return</span> <span class="n">ret</span>
 
@@ -172,6 +168,44 @@
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">id</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">specification</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">specification</span>
                 <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">required</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">required</span><span class="p">)</span></div>
 
+
+
+<div class="viewcode-block" id="DataSection">
+<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.data_standards.DataSection">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">slots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">DataSection</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This class defines a section in a `DataModel`</span>
+
+<span class="sd">    A section is a collection of `DataField` or `DataSection` objects. It is used to group related fields in a</span>
+<span class="sd">    `DataModel`.</span>
+
+<span class="sd">    :ivar name: Name of the section</span>
+<span class="sd">    :ivar fields: List of `DataField` objects</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">()</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">fields</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">DataField</span><span class="p">,</span> <span class="s1">&#39;DataSection&#39;</span><span class="p">,</span> <span class="s1">&#39;OrGroup&#39;</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">tuple</span><span class="p">)</span>
+    <span class="n">required</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">cardinality</span><span class="p">:</span> <span class="n">Cardinality</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">Cardinality</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">phenopacket_mapper.utils</span> <span class="kn">import</span> <span class="n">str_to_valid_id</span>
+            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">str_to_valid_id</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">required</span><span class="p">:</span>
+            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;cardinality&#39;</span><span class="p">,</span> <span class="n">Cardinality</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cardinality</span><span class="o">.</span><span class="n">max</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="s2">&quot;DataSection(</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">ret</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2">id: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">,</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">ret</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2">name: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">,</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">ret</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2">required: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">required</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">ret</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2">cardinality: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cardinality</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="k">for</span> <span class="n">_field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+            <span class="n">ret</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">_field</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">ret</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">)&quot;</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
 
 
 <div class="viewcode-block" id="DataFieldValue">
@@ -240,16 +274,12 @@
 <span class="sd">    be accessed using the `id` as an attribute of the `DataModel` object. E.g.: `data_model.date_of_birth`. This is</span>
 <span class="sd">    useful in the data reading and mapping processes.</span>
 
-<span class="sd">    &gt;&gt;&gt; data_model = DataModel(&quot;Test data model&quot;, (DataField(name=&quot;Field 1&quot;, specification=ValueSet()),))</span>
-<span class="sd">    &gt;&gt;&gt; data_model.field_1</span>
-<span class="sd">    DataField(name=&#39;Field 1&#39;, specification=ValueSet(elements=[], name=&#39;&#39;, description=&#39;&#39;), id=&#39;field_1&#39;, description=&#39;&#39;, section=&#39;&#39;, required=True, ordinal=&#39;&#39;)</span>
-
 <span class="sd">    :ivar data_model_name: Name of the data model</span>
 <span class="sd">    :ivar fields: List of `DataField` objects</span>
 <span class="sd">    :ivar resources: List of `CodeSystem` objects</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">data_model_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">()</span>
-    <span class="n">fields</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">DataField</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">()</span>
+    <span class="n">fields</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">DataField</span><span class="p">,</span> <span class="n">DataSection</span><span class="p">,</span> <span class="s1">&#39;OrGroup&#39;</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">()</span>
     <span class="n">resources</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">CodeSystem</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -263,7 +293,8 @@
         <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;DataModel&#39; object has no attribute &#39;</span><span class="si">{</span><span class="n">var_name</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">ret</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;DataModel(name=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">data_model_name</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;DataModel(</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">ret</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">name: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">data_model_name</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="k">for</span> <span class="n">_field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
             <span class="n">ret</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">_field</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="n">ret</span> <span class="o">+=</span> <span class="s2">&quot;---</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -352,12 +383,9 @@
             <span class="n">file_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;csv&#39;</span><span class="p">,</span> <span class="s1">&#39;excel&#39;</span><span class="p">,</span> <span class="s1">&#39;unknown&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;unknown&#39;</span><span class="p">,</span>
             <span class="n">column_names</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">MappingProxyType</span><span class="p">({</span>
                 <span class="n">DataField</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span> <span class="s1">&#39;data_field_name&#39;</span><span class="p">,</span>
-                <span class="n">DataField</span><span class="o">.</span><span class="n">section</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span> <span class="s1">&#39;data_model_section&#39;</span><span class="p">,</span>
                 <span class="n">DataField</span><span class="o">.</span><span class="n">description</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span> <span class="s1">&#39;description&#39;</span><span class="p">,</span>
                 <span class="n">DataField</span><span class="o">.</span><span class="n">specification</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span> <span class="s1">&#39;value_set&#39;</span><span class="p">,</span>
                 <span class="n">DataField</span><span class="o">.</span><span class="n">required</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span> <span class="s1">&#39;required&#39;</span><span class="p">,</span>
-                <span class="n">DataField</span><span class="o">.</span><span class="n">specification</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span> <span class="s1">&#39;specification&#39;</span><span class="p">,</span>
-                <span class="n">DataField</span><span class="o">.</span><span class="n">ordinal</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span> <span class="s1">&#39;ordinal&#39;</span>
             <span class="p">}),</span>
             <span class="n">parse_value_sets</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
             <span class="n">remove_line_breaks</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -602,6 +630,39 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;No data frame object available for this dataset&quot;</span><span class="p">)</span></div>
 </div>
+
+
+
+<div class="viewcode-block" id="OrGroup">
+<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.data_standards.OrGroup">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">slots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">OrGroup</span><span class="p">(</span><span class="n">DataNode</span><span class="p">):</span>
+    <span class="n">fields</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">DataField</span><span class="p">,</span> <span class="n">DataSection</span><span class="p">,</span> <span class="s1">&#39;OrGroup&#39;</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;Or Group&#39;</span><span class="p">)</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">required</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">cardinality</span><span class="p">:</span> <span class="n">Cardinality</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">Cardinality</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">phenopacket_mapper.utils</span> <span class="kn">import</span> <span class="n">str_to_valid_id</span>
+            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">str_to_valid_id</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">required</span><span class="p">:</span>
+            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;cardinality&#39;</span><span class="p">,</span> <span class="n">Cardinality</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cardinality</span><span class="o">.</span><span class="n">max</span><span class="p">))</span>
+
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="s2">&quot;OrGroup(</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">ret</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2">id: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">,</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">ret</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2">name: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">,</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">ret</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2">required: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">required</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">ret</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2">cardinality: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cardinality</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="k">for</span> <span class="n">_field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+            <span class="n">ret</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">_field</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">ret</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">)&quot;</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
 
 
 
