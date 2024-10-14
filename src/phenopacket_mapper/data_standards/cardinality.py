@@ -17,3 +17,6 @@ class Cardinality:
                              f"(Not: {self.min} ({type(self.min)}))")
         elif self.max != 'n' and self.max < 1:  # has to be an integer
             raise ValueError(f"Parameter max must be a positive integer. (Not: {self.min})")
+
+    def __str__(self):
+        return f"{self.min}..{self.max}"
