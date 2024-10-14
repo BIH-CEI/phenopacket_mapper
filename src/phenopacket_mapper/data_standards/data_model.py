@@ -17,7 +17,7 @@ import warnings
 import pandas as pd
 
 from phenopacket_mapper._api import DataNode
-from phenopacket_mapper.data_standards import CodeSystem, Cardinality, data_node_classes
+from phenopacket_mapper.data_standards import CodeSystem, Cardinality, OrGroup
 from phenopacket_mapper.data_standards.date import Date
 from phenopacket_mapper.data_standards.value_set import ValueSet
 from phenopacket_mapper.preprocessing import preprocess, preprocess_method
@@ -101,7 +101,7 @@ class DataSection:
     """
     name: str = field()
     id: str = field(default=None)
-    fields: Tuple[data_node_classes, ...] = field(default_factory=tuple)
+    fields: Tuple[Union[DataField, 'DataSection', OrGroup], ...] = field(default_factory=tuple)
     required: bool = field(default=False)
     cardinality: Cardinality = field(default_factory=Cardinality)
 
@@ -177,7 +177,7 @@ class DataModel:
     :ivar resources: List of `CodeSystem` objects
     """
     data_model_name: str = field()
-    fields: Tuple[data_node_classes, ...] = field()
+    fields: Tuple[Union[DataField, DataSection, OrGroup], ...] = field()
     resources: List[CodeSystem] = field(default_factory=list)
 
     def __post_init__(self):

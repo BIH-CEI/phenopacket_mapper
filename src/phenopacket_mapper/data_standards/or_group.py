@@ -2,12 +2,12 @@ from dataclasses import dataclass, field
 from typing import Union, Tuple
 
 from phenopacket_mapper._api import DataNode
-from phenopacket_mapper.data_standards import Cardinality, data_node_classes
+from phenopacket_mapper.data_standards import Cardinality, DataField, DataSection
 
 
 @dataclass(slots=True, frozen=True)
 class OrGroup(DataNode):
-    fields: Tuple[data_node_classes, ...]
+    fields: Tuple[Union[DataField, DataSection, 'OrGroup'], ...]
     name: str = field(default='Or Group')
     id: str = field(default=None)
     description: str = field(default='')
