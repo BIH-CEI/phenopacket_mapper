@@ -110,7 +110,7 @@ class DataSection:
             from phenopacket_mapper.utils import str_to_valid_id
             object.__setattr__(self, 'id', str_to_valid_id(self.name))
 
-@dataclass(slots=True, frozen=True)
+@dataclass(slots=True)
 class DataFieldValue:
     """This class defines the value of a `DataField` in a `DataModelInstance`
 
