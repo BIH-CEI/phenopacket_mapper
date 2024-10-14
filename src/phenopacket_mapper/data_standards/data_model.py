@@ -76,8 +76,9 @@ class DataField(DataNode):
         ret = "DataField(\n"
         ret += f"\t\tid: {self.id},\n"
         ret += f"\t\tname: {self.name},\n"
-        ret += f"\t\tvalue_set: {self.specification}, required: {self.required},\n"
+        ret += f"\t\trequired: {self.required}\n"
         ret += f"\t\tspecification: {self.specification}\n"
+        ret += f"\t\tcardinality: {str(self.cardinality)}\n"
         ret += "\t)"
         return ret
 
@@ -109,6 +110,18 @@ class DataSection:
         if not self.id:
             from phenopacket_mapper.utils import str_to_valid_id
             object.__setattr__(self, 'id', str_to_valid_id(self.name))
+
+
+    def __str__(self):
+        ret = "DataSection(\n"
+        ret += f"\t\tid: {self.id},\n"
+        ret += f"\t\tname: {self.name},\n"
+        ret += f"\t\trequired: {self.required}\n"
+        ret += f"\t\tcardinality: {str(self.cardinality)}\n"
+        for _field in self.fields:
+            ret += f"\t{str(_field)}\n"
+        ret += "\t)"
+        return ret
 
 @dataclass(slots=True)
 class DataFieldValue:
@@ -191,7 +204,8 @@ class DataModel:
         raise AttributeError(f"'DataModel' object has no attribute '{var_name}'")
 
     def __str__(self):
-        ret = f"DataModel(name={self.data_model_name}\n"
+        ret = f"DataModel(\n"
+        ret += f"\tname: {self.data_model_name}\n"
         for _field in self.fields:
             ret += f"\t{str(_field)}\n"
         ret += "---\n"
@@ -512,6 +526,19 @@ class OrGroup(DataNode):
         if not self.id:
             from phenopacket_mapper.utils import str_to_valid_id
             object.__setattr__(self, 'id', str_to_valid_id(self.name))
+
+
+
+    def __str__(self):
+        ret = "OrGroup(\n"
+        ret += f"\t\tid: {self.id},\n"
+        ret += f"\t\tname: {self.name},\n"
+        ret += f"\t\trequired: {self.required}\n"
+        ret += f"\t\tcardinality: {self.cardinality}\n"
+        for _field in self.fields:
+            ret += f"\t{str(_field)}\n"
+        ret += "\t)"
+        return ret
 
 
 if __name__ == "__main__":
