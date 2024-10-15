@@ -1,0 +1,7 @@
+phenopacket\_mapper.utils.io.read\_json module
+==============================================
+
+.. automodule:: phenopacket_mapper.utils.io.read_json
+   :members:
+   :undoc-members:
+   :show-inheritance:

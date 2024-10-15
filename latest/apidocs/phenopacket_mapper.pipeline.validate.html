@@ -53,6 +53,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../user_guides.html">User Guides</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">API reference</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="phenopacket_mapper.html">phenopacket_mapper package</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="phenopacket_mapper.html#phenopacket_mapper.DataModel"><code class="docutils literal notranslate"><span class="pre">DataModel</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="phenopacket_mapper.html#phenopacket_mapper.PhenopacketMapper"><code class="docutils literal notranslate"><span class="pre">PhenopacketMapper</span></code></a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="phenopacket_mapper.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="phenopacket_mapper.cli.html">phenopacket_mapper.cli package</a></li>
@@ -94,59 +95,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-phenopacket_mapper.pipeline.validate">
-<span id="phenopacket-mapper-pipeline-validate-module"></span><h1>phenopacket_mapper.pipeline.validate module<a class="headerlink" href="#module-phenopacket_mapper.pipeline.validate" title="Link to this heading"></a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="phenopacket_mapper.pipeline.validate.Validator">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">phenopacket_mapper.pipeline.validate.</span></span><span class="sig-name descname"><span class="pre">Validator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phenopacket_mapper/pipeline/validate.html#Validator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#phenopacket_mapper.pipeline.validate.Validator" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<p>Internal class, implemented using the singleton pattern, that uses phenopacket-tools to validate phenopackets.
-This is complicated a bit by the fact that phenopacket-tools is implemented in java. The singleton pattern ensures
-that only one instance of the class is created for efficiency purposes.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="phenopacket_mapper.pipeline.validate.Validator.validate">
-<span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phenopackets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Phenopacket</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/phenopacket_mapper/pipeline/validate.html#Validator.validate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#phenopacket_mapper.pipeline.validate.Validator.validate" title="Link to this definition"></a></dt>
-<dd><p>Validate phenopackets using phenopacket-tools.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>phenopackets</strong> – List of phenopackets to validate</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>True if the phenopackets are valid, False otherwise</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="phenopacket_mapper.pipeline.validate.validate">
-<span class="sig-prename descclassname"><span class="pre">phenopacket_mapper.pipeline.validate.</span></span><span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phenopackets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Phenopacket</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/phenopacket_mapper/pipeline/validate.html#validate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#phenopacket_mapper.pipeline.validate.validate" title="Link to this definition"></a></dt>
-<dd><p>Validate phenopackets using phenopacket-tools.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>phenopackets</strong> – List of phenopackets to validate</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>True if the phenopackets are valid, False otherwise</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="phenopacket_mapper.pipeline.validate.read_validate">
-<span class="sig-prename descclassname"><span class="pre">phenopacket_mapper.pipeline.validate.</span></span><span class="sig-name descname"><span class="pre">read_validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.13)"><span class="pre">Path</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/phenopacket_mapper/pipeline/validate.html#read_validate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#phenopacket_mapper.pipeline.validate.read_validate" title="Link to this definition"></a></dt>
-<dd><p>Read phenopackets from a file and validate them.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>path</strong> – Path to the file containing phenopackets</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>True if the phenopackets are valid, False otherwise</p>
-</dd>
-</dl>
-</dd></dl>
-
+  <section id="phenopacket-mapper-pipeline-validate-module">
+<h1>phenopacket_mapper.pipeline.validate module<a class="headerlink" href="#phenopacket-mapper-pipeline-validate-module" title="Link to this heading"></a></h1>
 </section>
 
 

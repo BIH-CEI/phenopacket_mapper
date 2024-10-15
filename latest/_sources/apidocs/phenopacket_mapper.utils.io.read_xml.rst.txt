@@ -1,0 +1,7 @@
+phenopacket\_mapper.utils.io.read\_xml module
+=============================================
+
+.. automodule:: phenopacket_mapper.utils.io.read_xml
+   :members:
+   :undoc-members:
+   :show-inheritance:

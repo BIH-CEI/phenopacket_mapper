@@ -102,7 +102,7 @@
 
 
 <div class="viewcode-block" id="DataField">
-<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.data_standards.DataField">[docs]</a>
+<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.DataField">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">slots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">DataField</span><span class="p">(</span><span class="n">DataNode</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This class defines fields used in the definition of a `DataModel`</span>
@@ -171,7 +171,7 @@
 
 
 <div class="viewcode-block" id="DataSection">
-<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.data_standards.DataSection">[docs]</a>
+<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.DataSection">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">slots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">DataSection</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This class defines a section in a `DataModel`</span>
@@ -209,7 +209,7 @@
 
 
 <div class="viewcode-block" id="DataFieldValue">
-<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.data_standards.DataFieldValue">[docs]</a>
+<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.DataFieldValue">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">slots</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">DataFieldValue</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This class defines the value of a `DataField` in a `DataModelInstance`</span>
@@ -225,7 +225,7 @@
     <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">Date</span><span class="p">,</span> <span class="n">CodeSystem</span><span class="p">]</span>
 
 <div class="viewcode-block" id="DataFieldValue.validate">
-<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.data_standards.DataFieldValue.validate">[docs]</a>
+<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.DataFieldValue.validate">[docs]</a>
     <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Validates the data model instance based on data model definition</span>
 
@@ -262,7 +262,7 @@
 
 
 <div class="viewcode-block" id="DataModel">
-<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.data_standards.DataModel">[docs]</a>
+<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.DataModel">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">slots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">DataModel</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This class defines a data model for medical data using `DataField`</span>
@@ -307,7 +307,7 @@
         <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">)</span>
 
 <div class="viewcode-block" id="DataModel.get_field">
-<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.data_standards.DataModel.get_field">[docs]</a>
+<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.DataModel.get_field">[docs]</a>
     <span class="k">def</span> <span class="nf">get_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">Optional</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataField</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a DataField object by its id</span>
 
@@ -324,14 +324,14 @@
 
 
 <div class="viewcode-block" id="DataModel.get_field_ids">
-<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.data_standards.DataModel.get_field_ids">[docs]</a>
+<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.DataModel.get_field_ids">[docs]</a>
     <span class="k">def</span> <span class="nf">get_field_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a list of the ids of the DataFields in the DataModel&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="DataModel.load_data">
-<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.data_standards.DataModel.load_data">[docs]</a>
+<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.DataModel.load_data">[docs]</a>
     <span class="k">def</span> <span class="nf">load_data</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span>
@@ -356,6 +356,7 @@
 <span class="sd">        :param kwargs: Dynamically passed parameters that match {id}_column for each item</span>
 <span class="sd">        :return: A list of `DataModelInstance` objects</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO: move the dynamic params to the load method in utils.io</span>
         <span class="n">column_names</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
             <span class="n">column_param</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">_column&quot;</span>
@@ -364,7 +365,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">column_names</span><span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">column_param</span><span class="p">]</span>
 
-        <span class="kn">from</span> <span class="nn">phenopacket_mapper.pipeline</span> <span class="kn">import</span> <span class="n">load_data_using_data_model</span>
+        <span class="kn">from</span> <span class="nn">phenopacket_mapper.utils.io</span> <span class="kn">import</span> <span class="n">load_data_using_data_model</span>
         <span class="k">return</span> <span class="n">load_data_using_data_model</span><span class="p">(</span>
             <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span>
             <span class="n">data_model</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
@@ -374,7 +375,7 @@
 
 
 <div class="viewcode-block" id="DataModel.from_file">
-<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.data_standards.DataModel.from_file">[docs]</a>
+<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.DataModel.from_file">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_file</span><span class="p">(</span>
             <span class="n">data_model_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -419,7 +420,7 @@
 
 
 <div class="viewcode-block" id="DataModel.load_data_using_data_model">
-<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.data_standards.DataModel.load_data_using_data_model">[docs]</a>
+<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.DataModel.load_data_using_data_model">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">load_data_using_data_model</span><span class="p">(</span>
             <span class="n">path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span>
@@ -449,7 +450,7 @@
 
 
 <div class="viewcode-block" id="DataModelInstance">
-<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.data_standards.DataModelInstance">[docs]</a>
+<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.DataModelInstance">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">slots</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">DataModelInstance</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This class defines an instance of a `DataModel`, i.e. a record in a dataset</span>
@@ -472,7 +473,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
 
 <div class="viewcode-block" id="DataModelInstance.validate">
-<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.data_standards.DataModelInstance.validate">[docs]</a>
+<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.DataModelInstance.validate">[docs]</a>
     <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Validates the data model instance based on data model definition</span>
 
@@ -520,7 +521,7 @@
 
 
 <div class="viewcode-block" id="DataSet">
-<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.data_standards.DataSet">[docs]</a>
+<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.DataSet">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">slots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">DataSet</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This class defines a dataset as defined by a `DataModel`</span>
@@ -563,7 +564,7 @@
         <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 
 <div class="viewcode-block" id="DataSet.preprocess">
-<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.data_standards.DataSet.preprocess">[docs]</a>
+<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.DataSet.preprocess">[docs]</a>
     <span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">fields</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">DataField</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">DataField</span><span class="p">]]],</span>
@@ -623,7 +624,7 @@
 
 
 <div class="viewcode-block" id="DataSet.head">
-<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.data_standards.DataSet.head">[docs]</a>
+<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.DataSet.head">[docs]</a>
     <span class="k">def</span> <span class="nf">head</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_frame</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_frame</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
@@ -634,7 +635,7 @@
 
 
 <div class="viewcode-block" id="OrGroup">
-<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.data_standards.OrGroup">[docs]</a>
+<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.OrGroup">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">slots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">OrGroup</span><span class="p">(</span><span class="n">DataNode</span><span class="p">):</span>
     <span class="n">fields</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">DataField</span><span class="p">,</span> <span class="n">DataSection</span><span class="p">,</span> <span class="s1">&#39;OrGroup&#39;</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span>

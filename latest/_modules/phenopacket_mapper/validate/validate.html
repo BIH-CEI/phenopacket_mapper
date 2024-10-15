@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>phenopacket_mapper.pipeline.validate &mdash; phenopacket_mapper 0.0.1 documentation</title>
+  <title>phenopacket_mapper.validate.validate &mdash; phenopacket_mapper 0.0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -66,7 +66,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
-      <li class="breadcrumb-item active">phenopacket_mapper.pipeline.validate</li>
+      <li class="breadcrumb-item active">phenopacket_mapper.validate.validate</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -75,17 +75,17 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for phenopacket_mapper.pipeline.validate</h1><div class="highlight"><pre>
+  <h1>Source code for phenopacket_mapper.validate.validate</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
 
 <span class="kn">from</span> <span class="nn">phenopackets.schema.v2</span> <span class="kn">import</span> <span class="n">Phenopacket</span>
 
-<span class="kn">from</span> <span class="nn">phenopacket_mapper.pipeline</span> <span class="kn">import</span> <span class="n">read_phenopackets</span>
+<span class="kn">from</span> <span class="nn">phenopacket_mapper.utils.io</span> <span class="kn">import</span> <span class="n">read_phenopackets</span>
 
 
 <div class="viewcode-block" id="Validator">
-<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.pipeline.validate.html#phenopacket_mapper.pipeline.validate.Validator">[docs]</a>
+<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.validate.validate.html#phenopacket_mapper.validate.Validator">[docs]</a>
 <span class="k">class</span> <span class="nc">Validator</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Internal class, implemented using the singleton pattern, that uses phenopacket-tools to validate phenopackets.</span>
@@ -108,7 +108,7 @@
             <span class="c1"># TODO: Implement the validator</span>
 
 <div class="viewcode-block" id="Validator.validate">
-<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.pipeline.validate.html#phenopacket_mapper.pipeline.validate.Validator.validate">[docs]</a>
+<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.validate.validate.html#phenopacket_mapper.validate.Validator.validate">[docs]</a>
     <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phenopackets</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Phenopacket</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate phenopackets using phenopacket-tools.</span>
 
@@ -122,7 +122,7 @@
 
 
 <div class="viewcode-block" id="validate">
-<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.pipeline.validate.html#phenopacket_mapper.pipeline.validate.validate">[docs]</a>
+<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.validate.validate.html#phenopacket_mapper.validate.validate">[docs]</a>
 <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="n">phenopackets</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Phenopacket</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Validate phenopackets using phenopacket-tools.</span>
@@ -136,7 +136,7 @@
 
 
 <div class="viewcode-block" id="read_validate">
-<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.pipeline.validate.html#phenopacket_mapper.pipeline.validate.read_validate">[docs]</a>
+<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.validate.validate.html#phenopacket_mapper.validate.read_validate">[docs]</a>
 <span class="k">def</span> <span class="nf">read_validate</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Read phenopackets from a file and validate them.</span>

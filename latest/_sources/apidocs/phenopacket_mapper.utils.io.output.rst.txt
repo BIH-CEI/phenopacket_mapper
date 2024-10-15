@@ -1,0 +1,7 @@
+phenopacket\_mapper.utils.io.output module
+==========================================
+
+.. automodule:: phenopacket_mapper.utils.io.output
+   :members:
+   :undoc-members:
+   :show-inheritance:

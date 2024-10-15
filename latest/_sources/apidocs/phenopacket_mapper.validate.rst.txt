@@ -1,0 +1,15 @@
+phenopacket\_mapper.validate package
+====================================
+
+.. automodule:: phenopacket_mapper.validate
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 2
+
+   phenopacket_mapper.validate.validate

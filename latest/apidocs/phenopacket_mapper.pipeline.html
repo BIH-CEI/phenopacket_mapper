@@ -53,6 +53,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../user_guides.html">User Guides</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">API reference</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="phenopacket_mapper.html">phenopacket_mapper package</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="phenopacket_mapper.html#phenopacket_mapper.DataModel"><code class="docutils literal notranslate"><span class="pre">DataModel</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="phenopacket_mapper.html#phenopacket_mapper.PhenopacketMapper"><code class="docutils literal notranslate"><span class="pre">PhenopacketMapper</span></code></a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="phenopacket_mapper.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="phenopacket_mapper.cli.html">phenopacket_mapper.cli package</a></li>
@@ -95,159 +96,14 @@
              
   <section id="module-phenopacket_mapper.pipeline">
 <span id="phenopacket-mapper-pipeline-package"></span><h1>phenopacket_mapper.pipeline package<a class="headerlink" href="#module-phenopacket_mapper.pipeline" title="Link to this heading"></a></h1>
-<p>This module includes the pipeline for mapping  data to phenopackets.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="phenopacket_mapper.pipeline.read_data_model">
-<span class="sig-prename descclassname"><span class="pre">phenopacket_mapper.pipeline.</span></span><span class="sig-name descname"><span class="pre">read_data_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_model_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">resources</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="phenopacket_mapper.data_standards.code_system.html#phenopacket_mapper.data_standards.code_system.CodeSystem" title="phenopacket_mapper.data_standards.code_system.CodeSystem"><span class="pre">CodeSystem</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.13)"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><span class="pre">Literal</span></a><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'csv'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'excel'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'unknown'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'unknown'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.13)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">mappingproxy({'name':</span> <span class="pre">'data_field_name',</span> <span class="pre">'description':</span> <span class="pre">'description',</span> <span class="pre">'specification':</span> <span class="pre">'value_set',</span> <span class="pre">'required':</span> <span class="pre">'required'})</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parse_value_sets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_line_breaks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parse_ordinals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.data_standards.data_model.DataModel" title="phenopacket_mapper.data_standards.data_model.DataModel"><span class="pre">DataModel</span></a></span></span><a class="reference internal" href="../_modules/phenopacket_mapper/pipeline/input.html#read_data_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#phenopacket_mapper.pipeline.read_data_model" title="Link to this definition"></a></dt>
-<dd><p>Reads a Data Model from a file</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>data_model_name</strong> – Name to be given to the <cite>DataModel</cite> object</p></li>
-<li><p><strong>resources</strong> – List of <cite>CodeSystem</cite> objects to be used as resources in the <cite>DataModel</cite></p></li>
-<li><p><strong>path</strong> – Path to Data Model file</p></li>
-<li><p><strong>file_type</strong> – Type of file to read, either ‘csv’ or ‘excel’</p></li>
-<li><p><strong>column_names</strong> – A dictionary mapping from each field of the <cite>DataField</cite> (key) class to a column of the file
-(value). Leaving a value empty (<cite>‘’</cite>) will leave the field in the <cite>DataModel</cite> definition empty.</p></li>
-<li><p><strong>parse_value_sets</strong> – If True, parses the string to a ValueSet object, can later be used to check
-validity of the data. Optional, but highly recommended.</p></li>
-<li><p><strong>remove_line_breaks</strong> – Whether to remove line breaks from string values</p></li>
-<li><p><strong>parse_ordinals</strong> – Whether to extract the ordinal number from the field name. Warning: this can overwrite values
-Ordinals could look like: “1.1.”, “1.”, “I.a.”, or “ii.”, etc.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="phenopacket_mapper.pipeline.read_phenopackets">
-<span class="sig-prename descclassname"><span class="pre">phenopacket_mapper.pipeline.</span></span><span class="sig-name descname"><span class="pre">read_phenopackets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.13)"><span class="pre">Path</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Phenopacket</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/phenopacket_mapper/pipeline/input.html#read_phenopackets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#phenopacket_mapper.pipeline.read_phenopackets" title="Link to this definition"></a></dt>
-<dd><p>Reads a list of Phenopackets from JSON files in a directory.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>dir_path</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>Path</em><em>]</em>) – The directory containing JSON files.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The list of loaded Phenopackets.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>List[Phenopacket]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="phenopacket_mapper.pipeline.read_phenopacket_from_json">
-<span class="sig-prename descclassname"><span class="pre">phenopacket_mapper.pipeline.</span></span><span class="sig-name descname"><span class="pre">read_phenopacket_from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.13)"><span class="pre">Path</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Phenopacket</span></span></span><a class="reference internal" href="../_modules/phenopacket_mapper/pipeline/input.html#read_phenopacket_from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#phenopacket_mapper.pipeline.read_phenopacket_from_json" title="Link to this definition"></a></dt>
-<dd><p>Reads a Phenopacket from a JSON file.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>file_path</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>Path</em><em>]</em>) – The path to the JSON file.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The loaded Phenopacket.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Phenopacket</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="phenopacket_mapper.pipeline.load_data_using_data_model">
-<span class="sig-prename descclassname"><span class="pre">phenopacket_mapper.pipeline.</span></span><span class="sig-name descname"><span class="pre">load_data_using_data_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.13)"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.data_standards.data_model.DataModel" title="phenopacket_mapper.data_standards.data_model.DataModel"><span class="pre">DataModel</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.13)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compliance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><span class="pre">Literal</span></a><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'lenient'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'strict'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'lenient'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.data_standards.data_model.DataSet" title="phenopacket_mapper.data_standards.data_model.DataSet"><span class="pre">DataSet</span></a></span></span><a class="reference internal" href="../_modules/phenopacket_mapper/pipeline/input.html#load_data_using_data_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#phenopacket_mapper.pipeline.load_data_using_data_model" title="Link to this definition"></a></dt>
-<dd><p>Loads data from a file using a DataModel definition</p>
-<p>List a column for each field of the <cite>DataModel</cite> in the <cite>column_names</cite> dictionary. The keys of the dictionary should
-be {id}_column for each field and the values should be the name of the column in the file.</p>
-<p>E.g.:
-<code class="docutils literal notranslate"><span class="pre">`python</span>
-<span class="pre">data_model</span> <span class="pre">=</span> <span class="pre">DataModel(&quot;Test</span> <span class="pre">data</span> <span class="pre">model&quot;,</span> <span class="pre">[DataField(name=&quot;Field</span> <span class="pre">1&quot;,</span> <span class="pre">value_set=ValueSet())])</span>
-<span class="pre">column_names</span> <span class="pre">=</span> <span class="pre">{&quot;field_1_column&quot;:</span> <span class="pre">&quot;column_name_in_file&quot;}</span>
-<span class="pre">load_data_using_data_model(&quot;data.csv&quot;,</span> <span class="pre">data_model,</span> <span class="pre">column_names)</span>
-<span class="pre">`</span></code></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>path</strong> – Path to  formatted csv or excel file</p></li>
-<li><p><strong>data_model</strong> – DataModel to use for reading the file</p></li>
-<li><p><strong>column_names</strong> – A dictionary mapping from the id of each field of the <cite>DataField</cite> to the name of a
-column in the file</p></li>
-<li><p><strong>compliance</strong> – Compliance level to enforce when reading the file. If ‘lenient’, the file can have extra fields
-that are not in the DataModel. If ‘strict’, the file must have all fields in the DataModel.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>List of DataModelInstances</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="phenopacket_mapper.pipeline.write">
-<span class="sig-prename descclassname"><span class="pre">phenopacket_mapper.pipeline.</span></span><span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phenopackets_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Phenopacket</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.13)"><span class="pre">Path</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phenopacket_mapper/pipeline/output.html#write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#phenopacket_mapper.pipeline.write" title="Link to this definition"></a></dt>
-<dd><p>Writes a list of phenopackets to JSON files.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>phenopackets_list</strong> – The list of phenopackets.</p></li>
-<li><p><strong>out_dir</strong> – The output directory.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="phenopacket_mapper.pipeline.PhenopacketMapper">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">phenopacket_mapper.pipeline.</span></span><span class="sig-name descname"><span class="pre">PhenopacketMapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.data_standards.data_model.DataModel" title="phenopacket_mapper.data_standards.data_model.DataModel"><span class="pre">DataModel</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phenopacket_mapper/mapping/mapper.html#PhenopacketMapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#phenopacket_mapper.pipeline.PhenopacketMapper" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="phenopacket_mapper.pipeline.PhenopacketMapper.check_fields_adheres_to_phenopacket_allowed_values">
-<span class="sig-name descname"><span class="pre">check_fields_adheres_to_phenopacket_allowed_values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phenopacket_mapper/mapping/mapper.html#PhenopacketMapper.check_fields_adheres_to_phenopacket_allowed_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#phenopacket_mapper.pipeline.PhenopacketMapper.check_fields_adheres_to_phenopacket_allowed_values" title="Link to this definition"></a></dt>
-<dd><p>Check if the fields in the mapping adhere to the values in the Phenopacket schema</p>
-<p>Check the Phenopacket schema to see if the fields in the mapping adhere to the values allowed by the schema.
-Otherwise give precise error messages.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="phenopacket_mapper.pipeline.PhenopacketMapper.map">
-<span class="sig-name descname"><span class="pre">map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.data_standards.data_model.DataSet" title="phenopacket_mapper.data_standards.data_model.DataSet"><span class="pre">DataSet</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Phenopacket</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/phenopacket_mapper/mapping/mapper.html#PhenopacketMapper.map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#phenopacket_mapper.pipeline.PhenopacketMapper.map" title="Link to this definition"></a></dt>
-<dd><p>Map data from the DataModel to Phenopackets</p>
-<p>The mapping is based on the definition of the DataModel and the parameters passed to the constructor.</p>
-<p>If successful, a list of Phenopackets will be returned</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>data</strong> – List of DataModelInstances created from the data using the DataModel</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>List of Phenopackets</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="phenopacket_mapper.pipeline.input.html">phenopacket_mapper.pipeline.input module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="phenopacket_mapper.pipeline.input.html#phenopacket_mapper.pipeline.input.read_data_model"><code class="docutils literal notranslate"><span class="pre">read_data_model()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="phenopacket_mapper.pipeline.input.html#phenopacket_mapper.pipeline.input.load_data_using_data_model"><code class="docutils literal notranslate"><span class="pre">load_data_using_data_model()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="phenopacket_mapper.pipeline.input.html#phenopacket_mapper.pipeline.input.read_phenopackets"><code class="docutils literal notranslate"><span class="pre">read_phenopackets()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="phenopacket_mapper.pipeline.input.html#phenopacket_mapper.pipeline.input.read_phenopacket_from_json"><code class="docutils literal notranslate"><span class="pre">read_phenopacket_from_json()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="phenopacket_mapper.pipeline.input.html">phenopacket_mapper.pipeline.input module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="phenopacket_mapper.pipeline.mapper.html">phenopacket_mapper.pipeline.mapper module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="phenopacket_mapper.pipeline.output.html">phenopacket_mapper.pipeline.output module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="phenopacket_mapper.pipeline.output.html#phenopacket_mapper.pipeline.output.write"><code class="docutils literal notranslate"><span class="pre">write()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="phenopacket_mapper.pipeline.validate.html">phenopacket_mapper.pipeline.validate module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="phenopacket_mapper.pipeline.validate.html#phenopacket_mapper.pipeline.validate.Validator"><code class="docutils literal notranslate"><span class="pre">Validator</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="phenopacket_mapper.pipeline.validate.html#phenopacket_mapper.pipeline.validate.validate"><code class="docutils literal notranslate"><span class="pre">validate()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="phenopacket_mapper.pipeline.validate.html#phenopacket_mapper.pipeline.validate.read_validate"><code class="docutils literal notranslate"><span class="pre">read_validate()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="phenopacket_mapper.pipeline.output.html">phenopacket_mapper.pipeline.output module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phenopacket_mapper.pipeline.validate.html">phenopacket_mapper.pipeline.validate module</a></li>
 </ul>
 </div>
 </section>

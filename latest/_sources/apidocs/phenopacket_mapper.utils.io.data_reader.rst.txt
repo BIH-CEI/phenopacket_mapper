@@ -1,0 +1,7 @@
+phenopacket\_mapper.utils.io.data\_reader module
+================================================
+
+.. automodule:: phenopacket_mapper.utils.io.data_reader
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,19 @@
+phenopacket\_mapper.utils.io package
+====================================
+
+.. automodule:: phenopacket_mapper.utils.io
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 2
+
+   phenopacket_mapper.utils.io.data_reader
+   phenopacket_mapper.utils.io.input
+   phenopacket_mapper.utils.io.output
+   phenopacket_mapper.utils.io.read_json
+   phenopacket_mapper.utils.io.read_xml

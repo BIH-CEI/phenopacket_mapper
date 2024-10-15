@@ -1,0 +1,7 @@
+phenopacket\_mapper.utils.io.input module
+=========================================
+
+.. automodule:: phenopacket_mapper.utils.io.input
+   :members:
+   :undoc-members:
+   :show-inheritance:
