@@ -1,6 +1,6 @@
 from pathlib import Path
 from typing import Union, Tuple, List, Iterable, Literal, Dict
-from io import IOBase, TextIOWrapper, BytesIO, BufferedIOBase, TextIOBase
+from io import IOBase, TextIOWrapper, BytesIO, BufferedIOBase, TextIOBase, StringIO
 
 import pandas as pd
 
@@ -50,8 +50,8 @@ class DataReader:
                 self.is_dir = True
 
         elif isinstance(file, IOBase):
-            if isinstance(file, (TextIOWrapper, TextIOBase)):
-                pass
+            if isinstance(file, (TextIOWrapper, TextIOBase, StringIO)):
+                self.file = file
             elif isinstance(file, (BytesIO, BufferedIOBase)):
                 self.file = TextIOWrapper(file, encoding=encoding)
 
@@ -59,6 +59,8 @@ class DataReader:
                 raise ValueError("File extension must be provided when passing a file buffer.")
             else:
                 self.handle_file_extension(file_extension)
+        else:
+            raise ValueError(f"Invalid input type {type(file)}.")
 
         self.data, self.iterable = self._read()
 
