@@ -3,7 +3,7 @@ from typing import List
 
 from phenopackets.schema.v2 import Phenopacket
 
-from phenopacket_mapper.pipeline import read_phenopackets
+from phenopacket_mapper.utils.io import read_phenopackets
 
 
 class Validator:

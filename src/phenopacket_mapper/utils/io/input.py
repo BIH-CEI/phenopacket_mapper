@@ -12,6 +12,7 @@ from phenopacket_mapper.data_standards import DataModel, DataModelInstance, Data
     DataSet
 from phenopacket_mapper.utils import loc_default
 from phenopacket_mapper.utils import parsing
+from phenopacket_mapper.utils.io.data_reader import DataReader
 from phenopacket_mapper.utils.parsing import parse_ordinal
 
 
@@ -165,13 +166,11 @@ def load_data_using_data_model(
     else:
         raise ValueError(f'Path must be a string or Path object, not {type(path)}')
     
-    file_extension = path.suffix[1:]
-    if file_extension == 'csv':
-        df = pd.read_csv(path)
-    elif file_extension == 'xlsx':
-        df = pd.read_excel(path)
-    else:
-        raise ValueError(f'Unknown file type with extension {file_extension}')
+    dr = DataReader(path)
+    data, data_iterable = dr.data, dr.iterable
+
+    # TODO: for the moment assume that the data is a pandas DataFrame
+    df = data
 
     # check column_names is in the correct format
     if isinstance(column_names, MappingProxyType):
@@ -226,15 +225,15 @@ def read_phenopackets(dir_path: Path) -> List[Phenopacket]:
     return phenopackets_list
 
 
-def read_phenopacket_from_json(file_path: Union[str, Path]) -> Phenopacket:
+def read_phenopacket_from_json(path: Union[str, Path]) -> Phenopacket:
     """Reads a Phenopacket from a JSON file.
 
-    :param file_path: The path to the JSON file.
-    :type file_path: Union[str, Path]
+    :param path: The path to the JSON file.
+    :type path: Union[str, Path]
     :return: The loaded Phenopacket.
     :rtype: Phenopacket
     """
-    with open(file_path, 'r') as fh:
+    with open(path, 'r') as fh:
         json_data = fh.read()
         phenopacket = Phenopacket()
         Parse(json_data, phenopacket)

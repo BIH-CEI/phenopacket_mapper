@@ -2,8 +2,16 @@
 
 __version__ = "0.0.1"
 
-from . import cli, data_standards, pipeline, preprocessing, api_requests
+from . import data_standards, validate, preprocessing, api_requests, mapping, utils
 
-from .pipeline import PhenopacketMapper
+from .data_standards import DataModel
+from .mapping import PhenopacketMapper
 
-__all__ = ["cli", "data_standards", "pipeline", "PhenopacketMapper", "preprocessing", "api_requests"]
+__all__ = [
+    "data_standards", "DataModel",
+    "validate",
+    "preprocessing",
+    "api_requests",
+    "mapping", "PhenopacketMapper",
+    "utils",
+]
