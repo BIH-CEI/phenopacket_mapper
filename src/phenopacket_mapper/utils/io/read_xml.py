@@ -55,10 +55,27 @@ def _post_process_xml_dict(dict_: Dict) -> Dict:
     return dict_
 
 
+def remove_at_symbols(dict_: Dict) -> Dict:
+    if isinstance(dict_, dict):
+        new_dict = {}
+        for k, v in dict_.items():
+            if k.startswith("@"):
+                k = k[1:]
+            if isinstance(v, list):
+                new_dict[k] = [remove_at_symbols(item) for item in v]
+            else:
+                new_dict[k] = remove_at_symbols(v)
+
+        return new_dict
+    else:
+        return dict_
+
+
 def parse_xml(file: IOBase) -> Dict:
     """Parse an XML file into a dictionary with inferred types."""
     dict_ = xmltodict.parse(file.read())
     print(f"{dict_=}, {type(dict_)=}")
     dict_ = _post_process_xml_dict(dict_)
+    dict_ = remove_at_symbols(dict_)
     return dict_
 
