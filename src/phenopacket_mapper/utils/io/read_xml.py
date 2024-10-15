@@ -1,55 +1,64 @@
 from io import IOBase
 from pathlib import Path
 from typing import Union, Dict
-from xml.etree import ElementTree
+import xmltodict
 
 
-def read_xml(path: Union[str, Path, IOBase]) -> Dict:
+def read_xml(path: Union[str, Path, IOBase], encoding='utf-8') -> Dict:
     if isinstance(path, str):
         path = Path(path)
 
     if isinstance(path, Path):
-        f = open(path)
+        with open(path, 'r', encoding=encoding) as f:
+            return parse_xml(f)
     elif isinstance(path, IOBase):
-        f = path
+        return parse_xml(path)
     else:
         raise ValueError(f"Invalid input type {type(path)}.")
 
-    tree = ElementTree.parse(f)
-    root = tree.getroot()
 
-    return parse_xml_element(root)
-
-
-def parse_xml_element(element):
-    """Parse an XML element into a dictionary with inferred types."""
-    parsed_dict = {}
-
-    if element.text:
-        # infer type
-        text = element.text.strip()
-        if text.isdigit():  # if whole num, treat it as an integer
-            parsed_dict[element.tag] = int(text)
+def _post_process_xml_dict(dict_: Dict) -> Dict:
+    def parse_primitive_value(value: str):
+        if value.isdigit():
+            return int(value)
+        elif value.lower() == "true":
+            return True
+        elif value.lower() == "false":
+            return False
         else:
             try:
-                parsed_dict[element.tag] = float(text)
+                return float(value)
             except ValueError:
-                if text.lower() == "true":  # treat "true" as a boolean
-                    parsed_dict[element.tag] = True
-                elif text.lower() == "false":  # treat "false" as a boolean
-                    parsed_dict[element.tag] = False
+                pass
+        return value
+
+    for k, v in dict_.items():
+        print(f"{k=}, {type(k)=}, {v=}, {type(v)=}")
+        if isinstance(v, dict):
+            if v == {'@xsi:nil': 'true'}:  # resolves <null xsi:nil="true"/>
+                dict_[k] = None
+            else:
+                dict_[k] = _post_process_xml_dict(v)
+        elif isinstance(v, list):
+            list_ = []
+            print(f"{v=}")
+            for i, item in enumerate(v):
+                print(f"{item=}, {type(item)=}")
+                if isinstance(item, dict):
+                    list_.append(_post_process_xml_dict(item))
                 else:
-                    parsed_dict[element.tag] = text
+                    list_.append(parse_primitive_value(item))
+            dict_[k] = list_
+        elif isinstance(v, str):
+            dict_[k] = parse_primitive_value(v)
 
-    if len(element):
-        child_dict = {}
-        for child in element:
-            child_parsed = parse_xml_element(child)
-            child_dict.update(child_parsed)
+    return dict_
 
-        if element.tag in parsed_dict:
-            parsed_dict[element.tag].update(child_dict)  # merge with text content if it exists
-        else:
-            parsed_dict[element.tag] = child_dict
 
-    return parsed_dict
+def parse_xml(file: IOBase) -> Dict:
+    """Parse an XML file into a dictionary with inferred types."""
+    dict_ = xmltodict.parse(file.read())
+    print(f"{dict_=}, {type(dict_)=}")
+    dict_ = _post_process_xml_dict(dict_)
+    return dict_
+
