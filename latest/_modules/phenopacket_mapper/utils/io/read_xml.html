@@ -136,6 +136,25 @@
     <span class="k">return</span> <span class="n">dict_</span>
 
 
+<div class="viewcode-block" id="remove_at_symbols">
+<a class="viewcode-back" href="../../../../apidocs/phenopacket_mapper.utils.io.read_xml.html#phenopacket_mapper.utils.io.remove_at_symbols">[docs]</a>
+<span class="k">def</span> <span class="nf">remove_at_symbols</span><span class="p">(</span><span class="n">dict_</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dict_</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="n">new_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">dict_</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;@&quot;</span><span class="p">):</span>
+                <span class="n">k</span> <span class="o">=</span> <span class="n">k</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="n">new_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">remove_at_symbols</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">v</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">new_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">remove_at_symbols</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">new_dict</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dict_</span></div>
+
+
+
 <div class="viewcode-block" id="parse_xml">
 <a class="viewcode-back" href="../../../../apidocs/phenopacket_mapper.utils.io.read_xml.html#phenopacket_mapper.utils.io.parse_xml">[docs]</a>
 <span class="k">def</span> <span class="nf">parse_xml</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="n">IOBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
@@ -143,6 +162,7 @@
     <span class="n">dict_</span> <span class="o">=</span> <span class="n">xmltodict</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dict_</span><span class="si">=}</span><span class="s2">, </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">dict_</span><span class="p">)</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">dict_</span> <span class="o">=</span> <span class="n">_post_process_xml_dict</span><span class="p">(</span><span class="n">dict_</span><span class="p">)</span>
+    <span class="n">dict_</span> <span class="o">=</span> <span class="n">remove_at_symbols</span><span class="p">(</span><span class="n">dict_</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">dict_</span></div>
 
 
