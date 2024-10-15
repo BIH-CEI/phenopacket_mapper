@@ -2,13 +2,12 @@
 
 __version__ = "0.0.1"
 
-from . import cli, data_standards, validate, preprocessing, api_requests, mapping, utils
+from . import data_standards, validate, preprocessing, api_requests, mapping, utils
 
 from .data_standards import DataModel
 from .mapping import PhenopacketMapper
 
 __all__ = [
-    "cli",
     "data_standards", "DataModel",
     "validate",
     "preprocessing",
