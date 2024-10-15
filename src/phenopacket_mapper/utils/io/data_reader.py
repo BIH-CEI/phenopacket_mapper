@@ -83,9 +83,9 @@ class DataReader:
                 df = pd.read_excel(self.file)
                 return df, [row for row in df.iterrows()]
             elif self.file_extension == 'json':
-                return file_contents := read_json(self.file), [file_contents]
+                return (file_contents := read_json(self.file)), [file_contents]
             elif self.file_extension == 'xml':
-                return file_contents := read_xml(self.file), [file_contents]
+                return (file_contents := read_xml(self.file)), [file_contents]
             else:
                 raise ValueError(f'Unknown file type with extension {self.file_extension}')
         elif self.is_dir:
