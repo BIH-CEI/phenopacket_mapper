@@ -262,7 +262,8 @@ def test_reader_json(inp, expected):
     ]
 )
 def test_reader_list(inp, expected, file_extension):
-    buffers = [StringIO(f) for f in inp]
-    data = DataReader(buffers, file_extension=file_extension).data
-    for d, e in zip(data, expected):
-        assert d == e
+    for fe in [file_extension, file_extension.lower(), file_extension.upper()]:
+        buffers = [StringIO(f) for f in inp]
+        data = DataReader(buffers, file_extension=fe).data
+        for d, e in zip(data, expected):
+            assert d == e
