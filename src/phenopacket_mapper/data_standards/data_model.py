@@ -10,7 +10,6 @@ The `DataFieldValue` class is used to define the value of a `DataField` in a `Da
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from types import MappingProxyType
 from typing import Union, List, Literal, Dict, Optional, Any, Callable, Tuple
 import warnings
 
@@ -124,7 +123,7 @@ class DataSection:
         ret += "\t)"
         return ret
 
-    def __getattr__(self, var_name: str) -> Union[DataField, OrGroup, DataSection]:
+    def __getattr__(self, var_name: str) -> Union[DataField, 'OrGroup', 'DataSection']:
         for f in self.fields:
             if f.id == var_name:
                 return f
@@ -153,7 +152,7 @@ class DataModel:
         if len(self.fields) != len(set([f.id for f in self.fields])):
             raise ValueError("All fields in a DataModel must have unique identifiers")
 
-    def __getattr__(self, var_name: str) -> Union[DataField, OrGroup, DataSection]:
+    def __getattr__(self, var_name: str) -> Union[DataField, 'OrGroup', DataSection]:
         for f in self.fields:
             if f.id == var_name:
                 return f
