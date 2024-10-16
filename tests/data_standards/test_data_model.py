@@ -1,7 +1,8 @@
 import pytest
 from phenopacket_mapper import DataModel
 
-from phenopacket_mapper.data_standards import DataField
+from phenopacket_mapper.data_standards import DataField, DataSection, OrGroup
+
 
 class TestDataModel:
 
@@ -24,6 +25,61 @@ class TestDataModel:
                     )
                 ),
                 False
+            ),
+            (
+                DataModel(
+                    data_model_name="test",
+                        fields=(
+                            DataField(
+                                name="test_field",
+                                specification=int
+                            ),
+                            DataField(
+                                name="test_field2",
+                                specification=str
+                            ),
+                            DataSection(
+                                name="test_data_section",
+                                fields=(
+                                    DataField(
+                                        name="test_field3",
+                                        specification=bool
+                                    ),
+                                )
+                            )
+                        )
+                    ),
+                    True
+            ),
+            (
+                DataModel(
+                    data_model_name="test",
+                        fields=(
+                            DataField(
+                                name="test_field",
+                                specification=int
+                            ),
+                            OrGroup(
+                                name="test_or_group",
+                                fields=(
+                                    DataField(
+                                        name="test_field2",
+                                        specification=str
+                                    ),
+                                    DataSection(
+                                        name="test_data_section",
+                                        fields=(
+                                                DataField(
+                                                    name="test_field3",
+                                                    specification=bool
+                                                ),
+                                        )
+                                    )
+                                )
+                            ),
+                        )
+                    ),
+                    True
             ),
         ]
     )
