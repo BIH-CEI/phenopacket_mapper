@@ -89,3 +89,24 @@ def test_reader_csv(inp, expected):
     assert set(data_reader.data.columns) == set(expected.columns)
     for col in expected.columns:
         assert data_reader.data[col].equals(expected[col])
+
+
+@pytest.mark.parametrize(
+    "inp,expected",
+    [
+        ('{"string": "Hello World"}', {"string": "Hello World"}),
+        ('{"object": {"a": "b","c": "d"}}', {"object": {"a": "b","c": "d"}}),
+        ('{"number": 123}', {"number": 123}),
+        ('{"number": -123}', {"number": -123}),
+        ('{"number": 123.4}', {"number": 123.4}),
+        ('{"null": null}', {"null": None}),
+        ('{"color": "gold"}', {"color": "gold"}),
+        ('{"boolean": true}', {"boolean": True}),
+        ('{"boolean": false}', {"boolean": False}),
+        ('{"array": [1,2,3]}', {"array": [1,2,3]}),
+        ('{"array": [1,2,3],"boolean": true, "color": "gold","null": null,"number": 123, "object": {"a": "b","c": "d"}, "string": "Hello World"}', {"array": [1,2,3],"boolean": True, "color": "gold","null": None, "number": 123, "object": {"a": "b","c": "d"}, "string": "Hello World"})
+    ],
+)
+def test_reader_json(inp, expected):
+    data_reader = DataReader(StringIO(inp), file_extension="json")
+    assert data_reader.data == expected
