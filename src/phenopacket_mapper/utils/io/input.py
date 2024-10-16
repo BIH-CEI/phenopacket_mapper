@@ -1,5 +1,6 @@
 import math
 import os
+from io import IOBase
 from pathlib import Path
 from types import MappingProxyType
 from typing import Literal, List, Union, Dict, Tuple
@@ -122,11 +123,9 @@ def read_data_model(
         data_fields = data_fields + (
             DataField(
                 name=data_field_name,
-                section=section,
                 specification=value_set,
                 description=description,
                 required=required,
-                ordinal=ordinal
             ),
         )
 
