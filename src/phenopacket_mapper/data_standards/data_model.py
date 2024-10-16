@@ -124,6 +124,12 @@ class DataSection:
         ret += "\t)"
         return ret
 
+    def __getattr__(self, var_name: str) -> Union[DataField, OrGroup, DataSection]:
+        for f in self.fields:
+            if f.id == var_name:
+                return f
+        raise AttributeError(f"'DataSection' object has no attribute '{var_name}'")
+
 @dataclass(slots=True, frozen=True)
 class DataModel:
     """This class defines a data model for medical data using `DataField`
@@ -147,7 +153,7 @@ class DataModel:
         if len(self.fields) != len(set([f.id for f in self.fields])):
             raise ValueError("All fields in a DataModel must have unique identifiers")
 
-    def __getattr__(self, var_name: str) -> DataField:
+    def __getattr__(self, var_name: str) -> Union[DataField, OrGroup, DataSection]:
         for f in self.fields:
             if f.id == var_name:
                 return f
