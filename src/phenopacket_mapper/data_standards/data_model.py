@@ -358,10 +358,11 @@ class DataFieldValue:
 class DataSectionInstance:
     identifier: Union[str, int] = field()
     data_section: DataSection = field()
-    values = Tuple[Union[DataFieldValue, DataSectionInstance]] = field(default_factory=tuple(list()))
+    values: Tuple[Union[DataFieldValue, 'DataSectionInstance']] = field(default_factory=tuple(list()))
 
-    def validate(self):
+    def validate(self) -> bool:
         warnings.warn("The DataSectionInstance validate method has not been implemented yet.")
+        return True
 
 
 @dataclass(slots=True)
@@ -379,7 +380,7 @@ class DataModelInstance:
     """
     row_no: Union[int, str]
     data_model: DataModel
-    values: List[DataFieldValue]
+    values: List[Union[DataFieldValue, DataSectionInstance]]
     compliance: Literal['lenient', 'strict'] = 'lenient'
 
     def __post_init__(self):
