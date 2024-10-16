@@ -570,6 +570,12 @@ class OrGroup(DataNode):
         ret += "\t)"
         return ret
 
+    def __getattr__(self, var_name: str) -> Union[DataField, DataSection, OrGroup]:
+        for f in self.fields:
+            if f.id == var_name:
+                return f
+        raise AttributeError(f"'OrGroup' object has no attribute '{var_name}'")
+
 
 if __name__ == "__main__":
     df = DataField(name="Field 1", specification=int)
