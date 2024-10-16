@@ -240,13 +240,13 @@ class DataModel:
                 else:
                     column_names[f.id] = kwargs[column_param]
 
-        from phenopacket_mapper.utils.io import load_data_using_data_model
-        return load_data_using_data_model(
-            path=path,
-            data_model=self,
-            column_names=column_names,
-            compliance=compliance
-        )
+            from phenopacket_mapper.utils.io import load_tabular_data_using_data_model
+            return load_tabular_data_using_data_model(
+                file=path,
+                data_model=self,
+                column_names=column_names,
+                compliance=compliance
+            )
 
     @staticmethod
     def from_file(
