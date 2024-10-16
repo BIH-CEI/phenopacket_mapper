@@ -505,7 +505,7 @@ class OrGroup(DataNode):
         ret += "\t)"
         return ret
 
-    def __getattr__(self, var_name: str) -> Union[DataField, DataSection, OrGroup]:
+    def __getattr__(self, var_name: str) -> Union[DataField, DataSection, 'OrGroup']:
         for f in self.fields:
             if f.id == var_name:
                 return f
