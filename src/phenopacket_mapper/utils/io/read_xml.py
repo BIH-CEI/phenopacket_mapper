@@ -74,7 +74,6 @@ def remove_at_symbols(dict_: Dict) -> Dict:
 def parse_xml(file: IOBase) -> Dict:
     """Parse an XML file into a dictionary with inferred types."""
     dict_ = xmltodict.parse(file.read())
-    print(f"{dict_=}, {type(dict_)=}")
     dict_ = _post_process_xml_dict(dict_)
     dict_ = remove_at_symbols(dict_)
     return dict_
