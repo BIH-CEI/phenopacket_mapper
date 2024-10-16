@@ -96,15 +96,12 @@ def read_data_model(
     data_fields: Tuple[DataField, ...] = tuple()
     for i in range(len(df)):
         data_field_name = loc_default(df, row_index=i, column_name=column_names.get(DataField.name.__name__, ''))
-        section = loc_default(df, row_index=i, column_name=column_names.get(DataField.section.__name__, ''))
         value_set = loc_default(df, row_index=i, column_name=column_names.get(DataField.specification.__name__, ''))
         description = loc_default(df, row_index=i, column_name=column_names.get(DataField.description.__name__, ''))
         required = bool(loc_default(df, row_index=i, column_name=column_names.get(DataField.required.__name__, '')))
-        ordinal = loc_default(df, row_index=i, column_name=column_names.get(DataField.ordinal.__name__, ''))
 
         if remove_line_breaks:
             data_field_name = remove_line_breaks_if_not_none(data_field_name)
-            section = remove_line_breaks_if_not_none(section)
             description = remove_line_breaks_if_not_none(description)
 
         if parse_ordinals:
