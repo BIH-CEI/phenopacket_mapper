@@ -155,8 +155,8 @@ def load_tabular_data_using_data_model(
                         that are not in the DataModel. If 'strict', the file must have all fields in the DataModel.
     :return: List of DataModelInstances
     """
-    dr = DataReader(file)
-    data, data_iterable = dr.data, dr.iterable
+    data_reader = DataReader(file)
+    data, data_iterable = data_reader.data, data_reader.iterable
 
     df = data
 
