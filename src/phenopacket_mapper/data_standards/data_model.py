@@ -342,6 +342,16 @@ class DataFieldValue:
 
 
 @dataclass(slots=True)
+class DataSectionInstance:
+    identifier: Union[str, int] = field()
+    data_section: DataSection = field()
+    values = Tuple[Union[DataFieldValue, DataSectionInstance]] = field(default_factory=tuple(list()))
+
+    def validate(self):
+        warnings.warn("The DataSectionInstance validate method has not been implemented yet.")
+
+
+@dataclass(slots=True)
 class DataModelInstance:
     """This class defines an instance of a `DataModel`, i.e. a record in a dataset
 
