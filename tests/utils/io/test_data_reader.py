@@ -154,3 +154,28 @@ def test_reader_csv(inp, expected):
 def test_reader_json(inp, expected):
     data_reader = DataReader(StringIO(inp), file_extension="json")
     assert data_reader.data == expected
+
+
+@pytest.mark.parametrize(
+    "inp, expected, file_extension",
+    [
+        (
+            [
+                '{"pat_id": "patient_426387", "name":"Joe Johnson", "condition": {"term_id": "1253", "term_label": "acute_madeupgitis"}, "hospitalized": true}',
+                '{"pat_id": "patient_426388", "name":"Jane Doe", "condition": {"term_id": "1254", "term_label": "chronic_madeupgitis"}, "hospitalized": false}',
+                '{"pat_id": "patient_426389", "name":"Mark Markington", "condition": {"term_id": "1255", "term_label": "wild_type_madeupgitis"}, "hospitalized": true}'
+            ],
+            [
+                {'pat_id': 'patient_426387', 'name':'Joe Johnson', 'condition': {'term_id': '1253', 'term_label': 'acute_madeupgitis'}, 'hospitalized': True},
+                {'pat_id': 'patient_426388', 'name':'Jane Doe', 'condition': {'term_id': '1254', 'term_label': 'chronic_madeupgitis'}, 'hospitalized': False},
+                {'pat_id': 'patient_426389', 'name':'Mark Markington', 'condition': {'term_id': '1255', 'term_label': 'wild_type_madeupgitis'}, 'hospitalized': True}
+            ],
+            'json'
+        ),
+    ]
+)
+def test_reader_list(inp, expected, file_extension):
+    buffers = [StringIO(f) for f in inp]
+    data = DataReader(buffers, file_extension=file_extension).data
+    for d, e in zip(data, expected):
+        assert d == e
