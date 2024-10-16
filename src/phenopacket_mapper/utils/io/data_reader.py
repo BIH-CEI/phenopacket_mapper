@@ -59,6 +59,8 @@ class DataReader:
             else:
                 self.handle_file_extension(file_extension)
         elif isinstance(file, list):
+            if file_extension.lower() not in ['json', 'xml']:
+                raise ValueError(f"File extension {file_extension} not supported for reading multiple files.")
             self.data = [DataReader(f, encoding=encoding, file_extension=file_extension).data for f in file]
             self.iterable = self.data
         else:
