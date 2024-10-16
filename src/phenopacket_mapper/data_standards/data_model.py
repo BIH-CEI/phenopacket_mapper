@@ -229,13 +229,16 @@ class DataModel:
         :return: A list of `DataModelInstance` objects
         """
         # TODO: move the dynamic params to the load method in utils.io
-        column_names = dict()
-        for f in self.fields:
-            column_param = f"{f.id}_column"
-            if column_param not in kwargs:
-                raise TypeError(f"load_data() missing 1 required argument: '{column_param}'")
-            else:
-                column_names[f.id] = kwargs[column_param]
+        if self.is_hierarchical:
+            raise NotImplementedError
+        else:
+            column_names = dict()
+            for f in self.fields:
+                column_param = f"{f.id}_column"
+                if column_param not in kwargs:
+                    raise TypeError(f"load_data() missing 1 required argument: '{column_param}'")
+                else:
+                    column_names[f.id] = kwargs[column_param]
 
         from phenopacket_mapper.utils.io import load_data_using_data_model
         return load_data_using_data_model(
