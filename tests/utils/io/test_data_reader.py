@@ -1,5 +1,6 @@
 from io import StringIO
 
+import pandas as pd
 import pytest
 from phenopacket_mapper.utils.io import DataReader
 
@@ -65,3 +66,26 @@ def test_read_xml_no_at_symbols_in_keys(inp):
     data_reader = DataReader(StringIO(inp), file_extension="xml")
     num_at_symbols = str(data_reader.data.keys()).count('@')
     assert num_at_symbols == 0
+
+
+@pytest.mark.parametrize(
+    "inp, expected",
+    [
+        (
+            "a,b,c,d\n1,1.23,False,hello\n2,-123,FALSE,how\n3,.5,TRUE,#!$%$^@&*/\n4,0.5,True,are\n5,0,true,you",
+            pd.DataFrame(
+                {
+                    "a": [1, 2, 3, 4, 5],
+                    "b": [1.23, -123, 0.5, 0.5, 0],
+                    "c": [False, False, True, True, True],
+                    "d": ["hello", "how", "#!$%$^@&*/", "are", "you"],
+                }
+            )
+        )
+    ]
+)
+def test_reader_csv(inp, expected):
+    data_reader = DataReader(StringIO(inp), file_extension="csv")
+    assert set(data_reader.data.columns) == set(expected.columns)
+    for col in expected.columns:
+        assert data_reader.data[col].equals(expected[col])
