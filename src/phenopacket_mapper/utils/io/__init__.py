@@ -3,7 +3,7 @@
 from .read_json import read_json
 from .read_xml import read_xml, parse_xml
 from .data_reader import DataReader
-from .input import read_data_model, read_phenopackets, read_phenopacket_from_json, load_data_using_data_model
+from .input import read_data_model, read_phenopackets, read_phenopacket_from_json, load_tabular_data_using_data_model
 from .output import write
 
 __all__ = [
@@ -13,7 +13,7 @@ __all__ = [
     'read_data_model',
     'read_phenopackets',
     'read_phenopacket_from_json',
-    'load_data_using_data_model',
+    'load_tabular_data_using_data_model',
 
     'write',
 ]

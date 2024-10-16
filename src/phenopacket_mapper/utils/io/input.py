@@ -133,8 +133,8 @@ def read_data_model(
     return DataModel(data_model_name=data_model_name, fields=data_fields, resources=resources)
 
 
-def load_data_using_data_model(
-        path: Union[str, Path],
+def load_tabular_data_using_data_model(
+        file: Union[str, Path, IOBase, List[str], List[Path], List[IOBase]],
         data_model: DataModel,
         column_names: Dict[str, str],
         compliance: Literal['lenient', 'strict'] = 'lenient',
@@ -151,7 +151,7 @@ def load_data_using_data_model(
     load_data_using_data_model("data.csv", data_model, column_names)
     ```
 
-    :param path: Path to  formatted csv or excel file
+    :param file:
     :param data_model: DataModel to use for reading the file
     :param column_names: A dictionary mapping from the id of each field of the `DataField` to the name of a
                         column in the file
@@ -159,14 +159,7 @@ def load_data_using_data_model(
                         that are not in the DataModel. If 'strict', the file must have all fields in the DataModel.
     :return: List of DataModelInstances
     """
-    if isinstance(path, Path):
-        pass
-    elif isinstance(path, str):
-        path = Path(path)
-    else:
-        raise ValueError(f'Path must be a string or Path object, not {type(path)}')
-    
-    dr = DataReader(path)
+    dr = DataReader(file)
     data, data_iterable = dr.data, dr.iterable
 
     # TODO: for the moment assume that the data is a pandas DataFrame
