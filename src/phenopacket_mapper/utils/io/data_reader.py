@@ -22,7 +22,6 @@ class DataReader:
         :param file_extension: The file extension of the file to read. If `None`, the file extension is inferred from the
         file path. Default is `None`.
         """
-        # TODO: fix read xml
         # TODO: add option to pass a list of files to read
         self.is_dir = False
         self.file_extension = None
@@ -59,10 +58,14 @@ class DataReader:
                 raise ValueError("File extension must be provided when passing a file buffer.")
             else:
                 self.handle_file_extension(file_extension)
+        elif isinstance(file, list):
+            self.data = [DataReader(f, encoding=encoding, file_extension=file_extension).data for f in file]
+            self.iterable = self.data
         else:
             raise ValueError(f"Invalid input type {type(file)}.")
 
-        self.data, self.iterable = self._read()
+        if not isinstance(file, list):
+            self.data, self.iterable = self._read()
 
     def handle_file_extension(self, fe: str):
         if fe.lower() in ['csv', 'xlsx', 'json', 'xml']:
