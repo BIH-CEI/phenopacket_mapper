@@ -297,11 +297,17 @@ class DataFieldValue:
 
 @dataclass(slots=True)
 class DataSectionInstance:
+    """
+    :ivar identifier: The id of the instance, i.e. the row number
+    :ivar data_section: The `DataSection` object that defines the data model for this instance
+    :ivar values: A list of `DataFieldValue` objects, each adhering to the `DataField` definition in the `DataModel`
+    """
     identifier: Union[str, int] = field()
     data_section: DataSection = field()
-    values: Tuple[Union[DataFieldValue, 'DataSectionInstance']] = field(default_factory=tuple(list()))
+    values: Tuple[Union[DataFieldValue, 'DataSectionInstance']] = field()
 
     def validate(self) -> bool:
+        tmp = self.identifier
         warnings.warn("The DataSectionInstance validate method has not been implemented yet.")
         return True
 
