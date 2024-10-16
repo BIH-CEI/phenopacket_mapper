@@ -167,6 +167,19 @@ class DataModel:
     def __iter__(self):
         return iter(self.fields)
 
+    @property
+    def is_hierarchical(self) -> bool:
+        def recursive_is_hierarchical(d: Union[DataField, DataSection, OrGroup]):
+            if isinstance(d, DataField):
+                return False
+            elif isinstance(d, DataSection):
+                return True
+            else:  # OrGroup
+                return any([recursive_is_hierarchical(f) for f in d.fields])
+
+        return any([recursive_is_hierarchical(f) for f in self.fields])
+
+
     def get_field(self, field_id: str, default: Optional = None) -> Optional[DataField]:
         """Returns a DataField object by its id
 
