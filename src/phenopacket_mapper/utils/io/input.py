@@ -161,7 +161,6 @@ def load_tabular_data_using_data_model(
     dr = DataReader(file)
     data, data_iterable = dr.data, dr.iterable
 
-    # TODO: for the moment assume that the data is a pandas DataFrame
     df = data
 
     # check column_names is in the correct format
@@ -176,7 +175,7 @@ def load_tabular_data_using_data_model(
 
     data_model_instances = []
 
-    for i in range(len(df)):  # todo: change to iter also non tabular data
+    for i in range(len(df)):
         values = []
         for f in data_model.fields:
             column_name = column_names[f.id]
