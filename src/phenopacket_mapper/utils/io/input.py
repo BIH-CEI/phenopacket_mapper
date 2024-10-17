@@ -322,7 +322,7 @@ def load_hierarchical_data_recursive(
 
 
 def load_hierarchical_dataset(
-        file: Union[str, Path, IOBase, List[str], List[Path], List[IOBase]],
+        file: Union[str, Path, List[str], List[Path], List[IOBase]],
         data_model: DataModel,
         file_extension: Literal['csv', 'xlsx', 'json', 'xml'] = None,
         compliance: Literal['lenient', 'strict'] = 'lenient',
