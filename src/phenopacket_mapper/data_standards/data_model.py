@@ -128,6 +128,7 @@ class DataSection:
                 return f
         raise AttributeError(f"'DataSection' object has no attribute '{var_name}'")
 
+
 @dataclass(slots=True, frozen=True)
 class DataModel:
     """This class defines a data model for medical data using `DataField`
@@ -186,7 +187,6 @@ class DataModel:
                 return any([recursive_is_hierarchical(f) for f in d.fields])
 
         return any([recursive_is_hierarchical(f) for f in self.fields])
-
 
     def get_field(self, field_id: str, default: Optional = None) -> Optional[DataField]:
         """Returns a DataField object by its id
@@ -492,7 +492,7 @@ class OrGroup(DataNode):
     id: str = field(default=None)
     description: str = field(default='')
     required: bool = field(default=False)
-    cardinality: Cardinality = field(default_factory=Cardinality)
+    cardinality: Cardinality = field(default=Cardinality.ZERO_TO_N)
 
     def __post_init__(self):
         if not self.id:
