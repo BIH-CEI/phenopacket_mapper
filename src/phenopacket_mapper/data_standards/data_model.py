@@ -304,7 +304,7 @@ class DataSectionInstance:
     """
     identifier: Union[str, int] = field()
     data_section: DataSection = field()
-    values: Tuple[Union[DataFieldValue, 'DataSectionInstance']] = field()
+    values: Tuple[Union[DataFieldValue, 'DataSectionInstance'], ...] = field()
 
     def validate(self) -> bool:
         tmp = self.identifier
@@ -327,7 +327,7 @@ class DataModelInstance:
     """
     row_no: Union[int, str]
     data_model: DataModel
-    values: List[Union[DataFieldValue, DataSectionInstance]]
+    values: Tuple[Union[DataFieldValue, DataSectionInstance], ...]
     compliance: Literal['lenient', 'strict'] = 'lenient'
 
     def __post_init__(self):
