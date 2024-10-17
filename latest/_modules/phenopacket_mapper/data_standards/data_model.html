@@ -88,7 +88,7 @@
 
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Iterable</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -647,6 +647,34 @@
             <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">var_name</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">f</span>
         <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;OrGroup&#39; object has no attribute &#39;</span><span class="si">{</span><span class="n">var_name</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="recursive_collect_all_members_data_model">
+<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.recursive_collect_all_members_data_model">[docs]</a>
+<span class="k">def</span> <span class="nf">recursive_collect_all_members_data_model</span><span class="p">(</span>
+        <span class="n">data_model</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">DataModel</span><span class="p">,</span> <span class="n">DataSection</span><span class="p">,</span> <span class="n">OrGroup</span><span class="p">,</span> <span class="n">DataField</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">DataSection</span><span class="p">,</span> <span class="n">OrGroup</span><span class="p">,</span> <span class="n">DataField</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Recursively collect all members of a DataModel, DataSection, OrGroup, or DataField</span>
+
+<span class="sd">    :param data_model: DataModel, DataSection, OrGroup, or DataField to collect all members from</span>
+<span class="sd">    :return: Iterable of DataSection, OrGroup, and DataField members</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data_model</span><span class="p">,</span> <span class="n">DataModel</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">data_model</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+            <span class="k">yield from</span> <span class="n">recursive_collect_all_members_data_model</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data_model</span><span class="p">,</span> <span class="n">DataSection</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="n">data_model</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">data_model</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+            <span class="k">yield from</span> <span class="n">recursive_collect_all_members_data_model</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data_model</span><span class="p">,</span> <span class="n">OrGroup</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="n">data_model</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">data_model</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+            <span class="k">yield from</span> <span class="n">recursive_collect_all_members_data_model</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data_model</span><span class="p">,</span> <span class="n">DataField</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="n">data_model</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported data_model type: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">data_model</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 </pre></div>
 
