@@ -518,8 +518,3 @@ class OrGroup(DataNode):
             if f.id == var_name:
                 return f
         raise AttributeError(f"'OrGroup' object has no attribute '{var_name}'")
-
-
-if __name__ == "__main__":
-    df = DataField(name="Field 1", specification=int)
-    print(df.specification == ValueSet((int,)))
