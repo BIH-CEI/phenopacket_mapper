@@ -1,5 +1,6 @@
 import math
 import os
+import warnings
 from io import IOBase
 from pathlib import Path
 from types import MappingProxyType
@@ -10,11 +11,13 @@ from phenopackets.schema.v2 import Phenopacket
 from google.protobuf.json_format import Parse
 
 from phenopacket_mapper.data_standards import DataModel, DataModelInstance, DataField, CodeSystem, DataFieldValue, \
-    DataSet
-from phenopacket_mapper.utils import loc_default
+    DataSet, OrGroup, DataSection
+from phenopacket_mapper.data_standards.data_model import DataSectionInstance
+from phenopacket_mapper.utils import loc_default, recursive_dict_call
 from phenopacket_mapper.utils import parsing
 from phenopacket_mapper.utils.io.data_reader import DataReader
 from phenopacket_mapper.utils.parsing import parse_ordinal
+from tests.utils.parsing.test_parse_coding import resources
 
 
 def read_data_model(
@@ -185,6 +188,9 @@ def load_tabular_data_using_data_model(
             value_str = str(pandas_value)
             value = parsing.parse_value(value_str=value_str, resources=data_model.resources, compliance=compliance)
             values.append(DataFieldValue(row_no=i, field=f, value=value))
+
+        values = tuple(values)
+
         data_model_instances.append(
             DataModelInstance(
                 row_no=i,
@@ -226,3 +232,127 @@ def read_phenopacket_from_json(path: Union[str, Path]) -> Phenopacket:
         phenopacket = Phenopacket()
         Parse(json_data, phenopacket)
         return phenopacket
+
+
+def load_hierarchical_data_recursive(
+        loaded_data_instance_identifier: Union[int, str],
+        loaded_data_instance: Dict,
+        data_model: Union[DataModel, DataSection, OrGroup, DataField],
+        resources: List[CodeSystem],
+        compliance: Literal['lenient', 'strict'] = 'lenient',
+        mapping: Dict[DataField, str] = None,
+) -> Union[Tuple, Union[DataModelInstance, DataSectionInstance, DataFieldValue, None]]:
+    """Helper method for `load_hierarchical_data`, recurses through hierarchical :class:`DataModel`
+
+    `loaded_data_instance` is expected to be a dictionary as returned by `DataReader.data` when reading a single xml or json file
+
+    :param loaded_data_instance_identifier: identifier of the loaded data_instance
+    :param loaded_data_instance: data loaded in by :class:`DataReader`
+    :param data_model:
+    :param resources: List of `CodeSystem` objects to be used as resources in the `DataModel`
+    :param compliance: Compliance level to enforce when reading the file. If 'lenient', the file can have extra fields
+                        that are not in the DataModel. If 'strict', the file must have all fields in the DataModel.
+    :param mapping: specifies the mapping from data fields present in the data model to identifiers of fields in the data
+    """
+    if isinstance(data_model, DataModel):
+        tmp: List[Union[DataModelInstance, DataSectionInstance, DataFieldValue, None]] = [
+            load_hierarchical_data_recursive(
+                loaded_data_instance_identifier=loaded_data_instance_identifier,
+                loaded_data_instance=loaded_data_instance,
+                data_model=f,
+                resources=resources,
+                compliance=compliance,
+                mapping=mapping
+            )
+            for f in data_model.fields
+        ]
+        return tuple(tmp)
+    elif isinstance(data_model, DataSection):
+        data_section: DataSection = data_model
+
+        values = tuple([
+            load_hierarchical_data_recursive(
+                loaded_data_instance_identifier=loaded_data_instance_identifier,
+                loaded_data_instance=loaded_data_instance,
+                data_model=f,
+                resources=resources,
+                compliance=compliance,
+                mapping=mapping,
+            )
+            for f in data_section.fields
+        ])
+
+        return DataSectionInstance(
+            identifier=str(loaded_data_instance_identifier) + ":" + data_section.id,  # TODO: get identifiers of parents
+            data_section=data_section,
+            values=values,
+        )
+    elif isinstance(data_model, OrGroup):
+        # TODO: resolve or this seems to be very difficult
+        pass
+    elif isinstance(data_model, DataField):
+        data_field = data_model
+
+        keys_str = mapping.get(data_model, None)
+
+        if keys_str:
+            keys = keys_str.split('.')
+            dict_value = recursive_dict_call(loaded_data_instance, keys)
+
+            if not dict_value or (isinstance(dict_value, float) and math.isnan(dict_value)):
+                return None
+
+            value_str = str(dict_value)
+            value = parsing.parse_value(value_str=value_str, resources=data_model.resources, compliance=compliance)
+            data_field_value = DataFieldValue(
+                row_no=str(loaded_data_instance_identifier) + ":" + keys_str,
+                field=data_field,
+                value=value
+            )
+
+            return data_field_value
+    else:
+        err_msg = f"DataModel {data_model} is not a valid type ({type(data_model)})."
+        if compliance == 'strict':
+            raise ValueError(err_msg)
+        elif compliance == 'lenient':
+            warnings.warn(err_msg)
+        else:
+            raise ValueError(f"Invalid compliance level: {compliance}")
+
+
+def load_hierarchical_data(
+        file: Union[str, Path, IOBase, List[str], List[Path], List[IOBase]],
+        data_model: DataModel,
+        file_extension: Literal['csv', 'xlsx', 'json', 'xml'] = None,
+        compliance: Literal['lenient', 'strict'] = 'lenient',
+        mapping: Dict[DataField, str] = None,
+):
+    if not mapping:
+        raise AttributeError(f"Parameter 'mapping' must not be empty or None. {mapping=}, {type(mapping)=}")
+
+    if not data_model.is_hierarchical:
+        warnings.warn("This method is only for loading hierarchical data, it may behave unexpectedly for tabular data.")
+
+    data_reader = DataReader(file, file_extension=file_extension)
+    data, data_iterable = data_reader.data, data_reader.iterable
+
+    # assembling data model instances
+    data_model_instances = []
+
+    for i, data_instance in enumerate(data_iterable):
+        data_model_instances.append(
+            DataModelInstance(
+                row_no=i,
+                data_model=data_model,
+                values=load_hierarchical_data_recursive(
+                    loaded_data_instance_identifier=str(i),
+                    loaded_data_instance=data_instance,
+                    data_model=data_model,
+                    resources=data_model.resources,
+                    compliance=compliance,
+                    mapping=mapping
+                ),
+                compliance=compliance,
+            )
+        )
