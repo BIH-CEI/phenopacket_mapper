@@ -357,3 +357,42 @@ def load_hierarchical_dataset(
                 compliance=compliance,
             )
         )
+
+    return DataSet(data_model=data_model, data=data_model_instances)
+
+
+def load_hierarchical_data(
+        file: Union[str, Path, IOBase],
+        data_model: DataModel,
+        instance_identifier: Union[int, str] = None,
+        file_extension: Literal['csv', 'xlsx', 'json', 'xml'] = None,
+        compliance: Literal['lenient', 'strict'] = 'lenient',
+        mapping: Dict[DataField, str] = None,
+):
+    if not mapping:
+        raise AttributeError(f"Parameter 'mapping' must not be empty or None. {mapping=}, {type(mapping)=}")
+
+    if not data_model.is_hierarchical:
+        warnings.warn("This method is only for loading hierarchical data, it may behave unexpectedly for tabular data.")
+
+    data_reader = DataReader(file, file_extension=file_extension)
+
+    # TODO: give instances identifiers based on file names
+    if not instance_identifier:
+        instance_identifier = "PLACEHOLDER_IDENTIFIER"
+
+    data_instance = data_reader.data
+
+    return DataModelInstance(
+        id=instance_identifier,  # TODO: give instances identifiers based on file names
+        data_model=data_model,
+        values=load_hierarchical_data_recursive(
+            loaded_data_instance_identifier=instance_identifier,
+            loaded_data_instance=data_instance,
+            data_model=data_model,
+            resources=data_model.resources,
+            compliance=compliance,
+            mapping=mapping
+        ),
+        compliance=compliance,
+    )
