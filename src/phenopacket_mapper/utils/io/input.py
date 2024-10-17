@@ -253,7 +253,6 @@ def load_hierarchical_data_recursive(
                         that are not in the DataModel. If 'strict', the file must have all fields in the DataModel.
     :param mapping: specifies the mapping from data fields present in the data model to identifiers of fields in the data
     """
-    print(f"{data_model.name=} {type(data_model)=}")
     if isinstance(data_model, DataModel):
         data_model_instance_values: List[Union[DataModelInstance, DataSectionInstance, DataFieldValue, None]] = [
             load_hierarchical_data_recursive(
@@ -342,7 +341,6 @@ def load_hierarchical_dataset(
 
     for i, data_instance in enumerate(data_iterable):
         instance_identifier = str(i)  # TODO: give instances identifiers based on file names if available
-        print(f"{data_instance=}")
         data_model_instances.append(
             DataModelInstance(
                 id=instance_identifier,
