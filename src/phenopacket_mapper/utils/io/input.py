@@ -341,13 +341,14 @@ def load_hierarchical_dataset(
     data_model_instances = []
 
     for i, data_instance in enumerate(data_iterable):
+        instance_identifier = str(i)  # TODO: give instances identifiers based on file names if available
         print(f"{data_instance=}")
         data_model_instances.append(
             DataModelInstance(
-                id=i,
+                id=instance_identifier,
                 data_model=data_model,
                 values=load_hierarchical_data_recursive(
-                    loaded_data_instance_identifier=str(i),
+                    loaded_data_instance_identifier=instance_identifier,
                     loaded_data_instance=data_instance,
                     data_model=data_model,
                     resources=data_model.resources,
@@ -377,14 +378,14 @@ def load_hierarchical_data(
 
     data_reader = DataReader(file, file_extension=file_extension)
 
-    # TODO: give instances identifiers based on file names
+    # TODO: give instances identifiers based on file names if available
     if not instance_identifier:
         instance_identifier = "PLACEHOLDER_IDENTIFIER"
 
     data_instance = data_reader.data
 
     return DataModelInstance(
-        id=instance_identifier,  # TODO: give instances identifiers based on file names
+        id=instance_identifier,  # TODO: give instances identifiers based on file names if available
         data_model=data_model,
         values=load_hierarchical_data_recursive(
             loaded_data_instance_identifier=instance_identifier,
