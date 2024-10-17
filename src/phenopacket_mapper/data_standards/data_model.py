@@ -65,10 +65,10 @@ class DataField(DataNode):
             object.__setattr__(self, 'cardinality', Cardinality(min=1, max=self.cardinality.max))
 
         if isinstance(self.specification, type):
-            object.__setattr__(self, 'specification', ValueSet(elements=[self.specification]))
+            object.__setattr__(self, 'specification', ValueSet(elements=(self.specification,)))
         if isinstance(self.specification, list):
             if all(isinstance(e, type) for e in self.specification):
-                object.__setattr__(self, 'specification', ValueSet(elements=self.specification))
+                object.__setattr__(self, 'specification', ValueSet(elements=tuple(self.specification)))
 
     def __str__(self):
         ret = "DataField(\n"
@@ -146,7 +146,7 @@ class DataModel:
     """
     data_model_name: str = field()
     fields: Tuple[Union[DataField, DataSection, 'OrGroup'], ...] = field()
-    resources: List[CodeSystem] = field(default_factory=list)
+    resources: Tuple[CodeSystem, ...] = field(default_factory=tuple)
 
     def __post_init__(self):
         if len(self.fields) != len(set([f.id for f in self.fields])):
@@ -248,7 +248,7 @@ class DataModel:
             )
 
 
-@dataclass(slots=True)
+@dataclass(slots=True, frozen=True)
 class DataFieldValue:
     """This class defines the value of a `DataField` in a `DataModelInstance`
 
@@ -295,7 +295,7 @@ class DataFieldValue:
         return False
 
 
-@dataclass(slots=True)
+@dataclass(slots=True, frozen=True)
 class DataSectionInstance:
     """
     :ivar identifier: The id of the instance, i.e. the row number
@@ -312,7 +312,7 @@ class DataSectionInstance:
         return True
 
 
-@dataclass(slots=True)
+@dataclass(slots=True, frozen=True)
 class DataModelInstance:
     """This class defines an instance of a `DataModel`, i.e. a record in a dataset
 
@@ -520,4 +520,4 @@ class OrGroup(DataNode):
 
 if __name__ == "__main__":
     df = DataField(name="Field 1", specification=int)
-    print(df.specification == ValueSet([int]))
+    print(df.specification == ValueSet((int,)))

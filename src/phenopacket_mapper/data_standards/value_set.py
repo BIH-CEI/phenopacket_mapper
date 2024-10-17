@@ -33,9 +33,12 @@ class ValueSet:
         = field(default_factory=list)
     name: str = field(default="")
     description: str = field(default="")
-    _resources: List[CodeSystem] = field(default_factory=list, repr=False)
+    _resources: Tuple[CodeSystem, ...] = field(default_factory=tuple, repr=False)
 
     def __post_init__(self):
+        if isinstance(self.elements, list):
+            object.__setattr__(self, 'elements', tuple(self.elements))
+
         if Coding in self.elements or CodeableConcept in self.elements:
             warnings.warn("The ValueSet contains Coding or CodeableConcept. It is recommended to limit the dataset to"
                           "the CodeSystems that are used in the DataField. This will improve the interoperability of"
@@ -52,12 +55,15 @@ class ValueSet:
                         description=self.description)
 
     @property
-    def resources(self) -> List[CodeSystem]:
+    def resources(self) -> Tuple[CodeSystem, ...]:
         """Returns the resources if they exist, otherwise provides a default empty list."""
+        resources = list()
         if len(self._resources) == 0:
             for e in self.elements:
                 if isinstance(e, CodeSystem):
-                    self._resources.append(e)
+                    resources.append(e)
+
+        object.__setattr__(self, '_resources', tuple(resources))
         return self._resources
 
     @staticmethod
