@@ -174,7 +174,7 @@ class DataModel:
         return ret
 
     def __iter__(self):
-        return iter(self.fields)
+        return iter(recursive_collect_all_members_data_model(self))
 
     @property
     def is_hierarchical(self) -> bool:
