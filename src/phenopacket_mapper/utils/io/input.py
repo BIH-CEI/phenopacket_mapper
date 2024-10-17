@@ -17,7 +17,6 @@ from phenopacket_mapper.utils import loc_default, recursive_dict_call
 from phenopacket_mapper.utils import parsing
 from phenopacket_mapper.utils.io.data_reader import DataReader
 from phenopacket_mapper.utils.parsing import parse_ordinal
-from tests.utils.parsing.test_parse_coding import resources
 
 
 def read_data_model(
