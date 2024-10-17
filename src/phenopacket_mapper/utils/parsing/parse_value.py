@@ -1,4 +1,4 @@
-from typing import List, Literal, Union
+from typing import List, Literal, Union, Tuple
 
 from phenopacket_mapper.data_standards import CodeSystem, Coding, CodeableConcept, Date
 from phenopacket_mapper.utils.parsing import parse_primitive_data_value, parse_date, parse_coding
@@ -6,7 +6,7 @@ from phenopacket_mapper.utils.parsing import parse_primitive_data_value, parse_d
 
 def parse_value(
         value_str: str,
-        resources: List[CodeSystem],
+        resources: Tuple[CodeSystem, ...],
         compliance: Literal['strict', 'lenient'] = 'lenient'
 ) -> Union[Coding, CodeableConcept, CodeSystem, str, bool, int, float, Date, type]:
     """Parses a string representing a value to the appropriate type

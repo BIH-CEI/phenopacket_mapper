@@ -22,7 +22,7 @@ from tests.utils.parsing.test_parse_coding import resources
 
 def read_data_model(
         data_model_name: str,
-        resources: List[CodeSystem],
+        resources: Tuple[CodeSystem, ...],
         path: Union[str, Path],
         file_type: Literal['csv', 'excel', 'unknown'] = 'unknown',
         column_names: Dict[str, str] = MappingProxyType({
@@ -238,7 +238,7 @@ def load_hierarchical_data_recursive(
         loaded_data_instance_identifier: Union[int, str],
         loaded_data_instance: Dict,
         data_model: Union[DataModel, DataSection, OrGroup, DataField],
-        resources: List[CodeSystem],
+        resources: Tuple[CodeSystem, ...],
         compliance: Literal['lenient', 'strict'] = 'lenient',
         mapping: Dict[DataField, str] = None,
 ) -> Union[Tuple, Union[DataModelInstance, DataSectionInstance, DataFieldValue, None]]:
