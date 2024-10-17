@@ -10,7 +10,6 @@ The `DataFieldValue` class is used to define the value of a `DataField` in a `Da
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from types import MappingProxyType
 from typing import Union, List, Literal, Dict, Optional, Any, Callable, Tuple
 import warnings
 
@@ -66,10 +65,10 @@ class DataField(DataNode):
             object.__setattr__(self, 'cardinality', Cardinality(min=1, max=self.cardinality.max))
 
         if isinstance(self.specification, type):
-            object.__setattr__(self, 'specification', ValueSet(elements=[self.specification]))
+            object.__setattr__(self, 'specification', ValueSet(elements=(self.specification,)))
         if isinstance(self.specification, list):
             if all(isinstance(e, type) for e in self.specification):
-                object.__setattr__(self, 'specification', ValueSet(elements=self.specification))
+                object.__setattr__(self, 'specification', ValueSet(elements=tuple(self.specification)))
 
     def __str__(self):
         ret = "DataField(\n"
@@ -80,7 +79,6 @@ class DataField(DataNode):
         ret += f"\t\tcardinality: {str(self.cardinality)}\n"
         ret += "\t)"
         return ret
-
 
     def __eq__(self, other):
         if not isinstance(other, DataField):
@@ -124,51 +122,11 @@ class DataSection:
         ret += "\t)"
         return ret
 
-@dataclass(slots=True)
-class DataFieldValue:
-    """This class defines the value of a `DataField` in a `DataModelInstance`
-
-    Equivalent to a cell value in a table.
-
-    :ivar row_no: The id of the value, i.e. the row number
-    :ivar field: DataField: The `DataField` to which this value belongs and which defines the value set for the field.
-    :ivar value: The value of the field.
-    """
-    row_no: Union[str, int]
-    field: DataField
-    value: Union[int, float, str, bool, Date, CodeSystem]
-
-    def validate(self) -> bool:
-        """Validates the data model instance based on data model definition
-
-        This method checks if the instance is valid based on the data model definition. It checks if all required fields
-        are present, if the values are in the value set, etc.
-
-        :return: True if the instance is valid, False otherwise
-        """
-        if self.field.required and self.value is None:  # no value
-            warnings.warn(f"Field {self.field.name} is required but has no value")
-            return False
-        elif self.value is not None and self.field.specification:
-            if Any in self.field.specification:  # value set allows any
-                return True
-            elif self.value in self.field.specification:  # raw value (likely a primitive) is in the value set
-                return True
-            else:  # check if the value matches one of the types in the value set
-                for e in self.field.specification:
-                    if isinstance(e, type):
-                        cur_type = e
-                        if cur_type is type(self.value):
-                            return True
-                    elif isinstance(e, CodeSystem):
-                        cs = e
-                        from phenopacket_mapper.data_standards import Coding
-                        if isinstance(self.value, Coding) and self.value.system == cs:
-                            return True
-
-        warnings.warn(f"Value {self.value} of type {type(self.value)} is not in the value set of field "
-                      f"{self.field.name} (row {self.row_no})")
-        return False
+    def __getattr__(self, var_name: str) -> Union[DataField, 'OrGroup', 'DataSection']:
+        for f in self.fields:
+            if f.id == var_name:
+                return f
+        raise AttributeError(f"'DataSection' object has no attribute '{var_name}'")
 
 
 @dataclass(slots=True, frozen=True)
@@ -182,19 +140,23 @@ class DataModel:
     be accessed using the `id` as an attribute of the `DataModel` object. E.g.: `data_model.date_of_birth`. This is
     useful in the data reading and mapping processes.
 
-    :ivar data_model_name: Name of the data model
+    :ivar name: Name of the data model
     :ivar fields: List of `DataField` objects
     :ivar resources: List of `CodeSystem` objects
     """
-    data_model_name: str = field()
+    name: str = field()
     fields: Tuple[Union[DataField, DataSection, 'OrGroup'], ...] = field()
-    resources: List[CodeSystem] = field(default_factory=list)
+    id: str = field(default=None)
+    resources: Tuple[CodeSystem, ...] = field(default_factory=tuple)
 
     def __post_init__(self):
+        if not self.id:
+            from phenopacket_mapper.utils import str_to_valid_id
+            object.__setattr__(self, 'id', str_to_valid_id(self.name))
         if len(self.fields) != len(set([f.id for f in self.fields])):
             raise ValueError("All fields in a DataModel must have unique identifiers")
 
-    def __getattr__(self, var_name: str) -> DataField:
+    def __getattr__(self, var_name: str) -> Union[DataField, 'OrGroup', DataSection]:
         for f in self.fields:
             if f.id == var_name:
                 return f
@@ -202,7 +164,7 @@ class DataModel:
 
     def __str__(self):
         ret = f"DataModel(\n"
-        ret += f"\tname: {self.data_model_name}\n"
+        ret += f"\tname: {self.name}\n"
         for _field in self.fields:
             ret += f"\t{str(_field)}\n"
         ret += "---\n"
@@ -213,6 +175,18 @@ class DataModel:
 
     def __iter__(self):
         return iter(self.fields)
+
+    @property
+    def is_hierarchical(self) -> bool:
+        def recursive_is_hierarchical(d: Union[DataField, DataSection, OrGroup]):
+            if isinstance(d, DataField):
+                return False
+            elif isinstance(d, DataSection):
+                return True
+            else:  # OrGroup
+                return any([recursive_is_hierarchical(f) for f in d.fields])
+
+        return any([recursive_is_hierarchical(f) for f in self.fields])
 
     def get_field(self, field_id: str, default: Optional = None) -> Optional[DataField]:
         """Returns a DataField object by its id
@@ -257,106 +231,107 @@ class DataModel:
         :return: A list of `DataModelInstance` objects
         """
         # TODO: move the dynamic params to the load method in utils.io
-        column_names = dict()
-        for f in self.fields:
-            column_param = f"{f.id}_column"
-            if column_param not in kwargs:
-                raise TypeError(f"load_data() missing 1 required argument: '{column_param}'")
-            else:
-                column_names[f.id] = kwargs[column_param]
+        if self.is_hierarchical:
+            raise NotImplementedError
+        else:
+            column_names = dict()
+            for f in self.fields:
+                column_param = f"{f.id}_column"
+                if column_param not in kwargs:
+                    raise TypeError(f"load_data() missing 1 required argument: '{column_param}'")
+                else:
+                    column_names[f.id] = kwargs[column_param]
 
-        from phenopacket_mapper.utils.io import load_data_using_data_model
-        return load_data_using_data_model(
-            path=path,
-            data_model=self,
-            column_names=column_names,
-            compliance=compliance
-        )
+            from phenopacket_mapper.utils.io import load_tabular_data_using_data_model
+            return load_tabular_data_using_data_model(
+                file=path,
+                data_model=self,
+                column_names=column_names,
+                compliance=compliance
+            )
 
-    @staticmethod
-    def from_file(
-            data_model_name: str,
-            resources: List[CodeSystem],
-            path: Union[str, Path],
-            file_type: Literal['csv', 'excel', 'unknown'] = 'unknown',
-            column_names: Dict[str, str] = MappingProxyType({
-                DataField.name.__name__: 'data_field_name',
-                DataField.description.__name__: 'description',
-                DataField.specification.__name__: 'value_set',
-                DataField.required.__name__: 'required',
-            }),
-            parse_value_sets: bool = False,
-            remove_line_breaks: bool = False,
-            parse_ordinals: bool = True,
-    ) -> 'DataModel':
-        """Reads a Data Model from a file
 
-        :param data_model_name: Name to be given to the `DataModel` object
-        :param resources: List of `CodeSystem` objects to be used as resources in the `DataModel`
-        :param path: Path to Data Model file
-        :param file_type: Type of file to read, either 'csv' or 'excel'
-        :param column_names: A dictionary mapping from each field of the `DataField` (key) class to a column of the file
-                            (value). Leaving a value empty (`''`) will leave the field in the `DataModel` definition empty.
-        :param parse_value_sets: If True, parses the string to a ValueSet object, can later be used to check
-                            validity of the data. Optional, but highly recommended.
-        :param remove_line_breaks: Whether to remove line breaks from string values
-        :param parse_ordinals: Whether to extract the ordinal number from the field name. Warning: this can overwrite values
-                                 Ordinals could look like: "1.1.", "1.", "I.a.", or "ii.", etc.
+@dataclass(slots=True, frozen=True)
+class DataFieldValue:
+    """This class defines the value of a `DataField` in a `DataModelInstance`
+
+    Equivalent to a cell value in a table.
+
+    :ivar id: The id of the value, i.e. the row number
+    :ivar field: DataField: The `DataField` to which this value belongs and which defines the value set for the field.
+    :ivar value: The value of the field.
+    """
+    id: Union[str, int]
+    field: DataField
+    value: Union[int, float, str, bool, Date, CodeSystem]
+
+    def validate(self) -> bool:
+        """Validates the data model instance based on data model definition
+
+        This method checks if the instance is valid based on the data model definition. It checks if all required fields
+        are present, if the values are in the value set, etc.
+
+        :return: True if the instance is valid, False otherwise
         """
-        from phenopacket_mapper.pipeline import read_data_model
-        return read_data_model(
-            data_model_name,
-            resources,
-            path,
-            file_type,
-            column_names,
-            parse_value_sets,
-            remove_line_breaks,
-            parse_ordinals
-        )
+        if self.field.required and self.value is None:  # no value
+            warnings.warn(f"Field {self.field.name} is required but has no value")
+            return False
+        elif self.value is not None and self.field.specification:
+            if Any in self.field.specification:  # value set allows any
+                return True
+            elif self.value in self.field.specification:  # raw value (likely a primitive) is in the value set
+                return True
+            else:  # check if the value matches one of the types in the value set
+                for e in self.field.specification:
+                    if isinstance(e, type):
+                        cur_type = e
+                        if cur_type is type(self.value):
+                            return True
+                    elif isinstance(e, CodeSystem):
+                        cs = e
+                        from phenopacket_mapper.data_standards import Coding
+                        if isinstance(self.value, Coding) and self.value.system == cs:
+                            return True
 
-    @staticmethod
-    def load_data_using_data_model(
-            path: Union[str, Path],
-            data_model: 'DataModel',
-            column_names: Dict[str, str],
-            compliance: Literal['lenient', 'strict'] = 'lenient',
-    ) -> 'DataSet':
-        """Loads data from a file using a DataModel definition
-
-        :param path: Path to  formatted csv or excel file
-        :param data_model: DataModel to use for reading the file
-        :param column_names: A dictionary mapping from the id of each field of the `DataField` to the name of a
-                            column in the file
-        :param compliance: Compliance level to enforce when reading the file. If 'lenient', the file can have extra fields
-                            that are not in the DataModel. If 'strict', the file must have all fields in the DataModel.
-        :return: List of DataModelInstances
-        """
-        from phenopacket_mapper.pipeline import load_data_using_data_model
-        return load_data_using_data_model(
-            path=path,
-            data_model=data_model,
-            column_names=column_names,
-            compliance=compliance
-        )
+        warnings.warn(f"Value {self.value} of type {type(self.value)} is not in the value set of field "
+                      f"{self.field.name} (row {self.id})")
+        return False
 
 
-@dataclass(slots=True)
+@dataclass(slots=True, frozen=True)
+class DataSectionInstance:
+    """
+    :ivar id: The id of the instance, i.e. the row number
+    :ivar section: The `DataSection` object that defines the data model for this instance
+    :ivar values: A list of `DataFieldValue` objects, each adhering to the `DataField` definition in the `DataModel`
+    """
+    id: Union[str, int] = field()
+    section: DataSection = field()
+    values: Tuple[Union[DataFieldValue, 'DataSectionInstance'], ...] = field()
+
+    def validate(self) -> bool:
+        # TODO: implement this method
+        tmp = self.id
+        warnings.warn("The DataSectionInstance validate method has not been implemented yet.")
+        return True
+
+
+@dataclass(slots=True, frozen=True)
 class DataModelInstance:
     """This class defines an instance of a `DataModel`, i.e. a record in a dataset
 
     This class is used to define an instance of a `DataModel`, i.e. a record or row in a dataset.
 
-    :ivar row_no: The id of the instance, i.e. the row number
+    :ivar id: The id of the instance, i.e. the row number
     :ivar data_model: The `DataModel` object that defines the data model for this instance
     :ivar values: A list of `DataFieldValue` objects, each adhering to the `DataField` definition in the `DataModel`
     :ivar compliance: Compliance level to enforce when validating the instance. If 'lenient', the instance can have extra
                         fields that are not in the DataModel. If 'strict', the instance must have all fields in the
                         DataModel.
     """
-    row_no: Union[int, str]
+    id: Union[int, str]
     data_model: DataModel
-    values: List[DataFieldValue]
+    values: Tuple[Union[DataFieldValue, DataSectionInstance], ...]
     compliance: Literal['lenient', 'strict'] = 'lenient'
 
     def __post_init__(self):
@@ -370,7 +345,7 @@ class DataModelInstance:
 
         :return: True if the instance is valid, False otherwise
         """
-        error_msg = f"Instance values do not comply with their respective fields' valuesets. (row {self.row_no})"
+        error_msg = f"Instance values do not comply with their respective fields' valuesets. (row {self.id})"
         for v in self.values:
             if not v.validate():
                 if self.compliance == 'strict':
@@ -381,19 +356,22 @@ class DataModelInstance:
                 else:
                     raise ValueError(f"Compliance level {self.compliance} is not valid")
 
-        is_required = set(f.id for f in self.data_model.fields if f.required)
-        fields_present = set(v.field.id for v in self.values)
+        if not self.data_model.is_hierarchical:
+            is_required = set(f.id for f in self.data_model.fields if f.required)
+            fields_present = set(v.field.id for v in self.values)
 
-        if len(missing_fields := (is_required - fields_present)) > 0:
-            error_msg = (f"Required fields are missing in the instance. (row {self.row_no}) "
-                         f"\n(missing_fields={', '.join(missing_fields)})")
-            if self.compliance == 'strict':
-                raise ValueError(error_msg)
-            elif self.compliance == 'lenient':
-                warnings.warn(error_msg)
-                return False
-            else:
-                raise ValueError(f"Compliance level {self.compliance} is not valid")
+            if len(missing_fields := (is_required - fields_present)) > 0:
+                error_msg = (f"Required fields are missing in the instance. (row {self.id}) "
+                             f"\n(missing_fields={', '.join(missing_fields)})")
+                if self.compliance == 'strict':
+                    raise ValueError(error_msg)
+                elif self.compliance == 'lenient':
+                    warnings.warn(error_msg)
+                    return False
+                else:
+                    raise ValueError(f"Compliance level {self.compliance} is not valid")
+        else:
+            pass  # TODO: implement validation of hierarchical data
         return True
 
     def __iter__(self):
@@ -518,7 +496,7 @@ class OrGroup(DataNode):
     id: str = field(default=None)
     description: str = field(default='')
     required: bool = field(default=False)
-    cardinality: Cardinality = field(default_factory=Cardinality)
+    cardinality: Cardinality = field(default=Cardinality.ZERO_TO_N)
 
     def __post_init__(self):
         if not self.id:
@@ -527,7 +505,6 @@ class OrGroup(DataNode):
 
         if self.required:
             object.__setattr__(self, 'cardinality', Cardinality(min=1, max=self.cardinality.max))
-
 
     def __str__(self):
         ret = "OrGroup(\n"
@@ -540,7 +517,8 @@ class OrGroup(DataNode):
         ret += "\t)"
         return ret
 
-
-if __name__ == "__main__":
-    df = DataField(name="Field 1", specification=int)
-    print(df.specification == ValueSet([int]))
+    def __getattr__(self, var_name: str) -> Union[DataField, DataSection, 'OrGroup']:
+        for f in self.fields:
+            if f.id == var_name:
+                return f
+        raise AttributeError(f"'OrGroup' object has no attribute '{var_name}'")

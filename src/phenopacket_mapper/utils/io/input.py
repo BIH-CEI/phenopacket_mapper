@@ -1,5 +1,7 @@
 import math
 import os
+import warnings
+from io import IOBase
 from pathlib import Path
 from types import MappingProxyType
 from typing import Literal, List, Union, Dict, Tuple
@@ -9,8 +11,9 @@ from phenopackets.schema.v2 import Phenopacket
 from google.protobuf.json_format import Parse
 
 from phenopacket_mapper.data_standards import DataModel, DataModelInstance, DataField, CodeSystem, DataFieldValue, \
-    DataSet
-from phenopacket_mapper.utils import loc_default
+    DataSet, OrGroup, DataSection
+from phenopacket_mapper.data_standards.data_model import DataSectionInstance
+from phenopacket_mapper.utils import loc_default, recursive_dict_call
 from phenopacket_mapper.utils import parsing
 from phenopacket_mapper.utils.io.data_reader import DataReader
 from phenopacket_mapper.utils.parsing import parse_ordinal
@@ -18,7 +21,7 @@ from phenopacket_mapper.utils.parsing import parse_ordinal
 
 def read_data_model(
         data_model_name: str,
-        resources: List[CodeSystem],
+        resources: Tuple[CodeSystem, ...],
         path: Union[str, Path],
         file_type: Literal['csv', 'excel', 'unknown'] = 'unknown',
         column_names: Dict[str, str] = MappingProxyType({
@@ -95,15 +98,12 @@ def read_data_model(
     data_fields: Tuple[DataField, ...] = tuple()
     for i in range(len(df)):
         data_field_name = loc_default(df, row_index=i, column_name=column_names.get(DataField.name.__name__, ''))
-        section = loc_default(df, row_index=i, column_name=column_names.get(DataField.section.__name__, ''))
         value_set = loc_default(df, row_index=i, column_name=column_names.get(DataField.specification.__name__, ''))
         description = loc_default(df, row_index=i, column_name=column_names.get(DataField.description.__name__, ''))
         required = bool(loc_default(df, row_index=i, column_name=column_names.get(DataField.required.__name__, '')))
-        ordinal = loc_default(df, row_index=i, column_name=column_names.get(DataField.ordinal.__name__, ''))
 
         if remove_line_breaks:
             data_field_name = remove_line_breaks_if_not_none(data_field_name)
-            section = remove_line_breaks_if_not_none(section)
             description = remove_line_breaks_if_not_none(description)
 
         if parse_ordinals:
@@ -122,19 +122,17 @@ def read_data_model(
         data_fields = data_fields + (
             DataField(
                 name=data_field_name,
-                section=section,
                 specification=value_set,
                 description=description,
                 required=required,
-                ordinal=ordinal
             ),
         )
 
-    return DataModel(data_model_name=data_model_name, fields=data_fields, resources=resources)
+    return DataModel(name=data_model_name, fields=data_fields, resources=resources)
 
 
-def load_data_using_data_model(
-        path: Union[str, Path],
+def load_tabular_data_using_data_model(
+        file: Union[str, Path, IOBase, List[str], List[Path], List[IOBase]],
         data_model: DataModel,
         column_names: Dict[str, str],
         compliance: Literal['lenient', 'strict'] = 'lenient',
@@ -151,7 +149,7 @@ def load_data_using_data_model(
     load_data_using_data_model("data.csv", data_model, column_names)
     ```
 
-    :param path: Path to  formatted csv or excel file
+    :param file:
     :param data_model: DataModel to use for reading the file
     :param column_names: A dictionary mapping from the id of each field of the `DataField` to the name of a
                         column in the file
@@ -159,17 +157,9 @@ def load_data_using_data_model(
                         that are not in the DataModel. If 'strict', the file must have all fields in the DataModel.
     :return: List of DataModelInstances
     """
-    if isinstance(path, Path):
-        pass
-    elif isinstance(path, str):
-        path = Path(path)
-    else:
-        raise ValueError(f'Path must be a string or Path object, not {type(path)}')
-    
-    dr = DataReader(path)
-    data, data_iterable = dr.data, dr.iterable
+    data_reader = DataReader(file)
+    data, data_iterable = data_reader.data, data_reader.iterable
 
-    # TODO: for the moment assume that the data is a pandas DataFrame
     df = data
 
     # check column_names is in the correct format
@@ -184,7 +174,7 @@ def load_data_using_data_model(
 
     data_model_instances = []
 
-    for i in range(len(df)):  # todo: change to iter also non tabular data
+    for i in range(len(df)):
         values = []
         for f in data_model.fields:
             column_name = column_names[f.id]
@@ -196,10 +186,13 @@ def load_data_using_data_model(
 
             value_str = str(pandas_value)
             value = parsing.parse_value(value_str=value_str, resources=data_model.resources, compliance=compliance)
-            values.append(DataFieldValue(row_no=i, field=f, value=value))
+            values.append(DataFieldValue(id=i, field=f, value=value))
+
+        values = tuple(values)
+
         data_model_instances.append(
             DataModelInstance(
-                row_no=i,
+                id="row:" + str(i),
                 data_model=data_model,
                 values=values,
                 compliance=compliance)
@@ -238,3 +231,179 @@ def read_phenopacket_from_json(path: Union[str, Path]) -> Phenopacket:
         phenopacket = Phenopacket()
         Parse(json_data, phenopacket)
         return phenopacket
+
+
+def load_hierarchical_data_recursive(
+        loaded_data_instance_identifier: Union[int, str],
+        loaded_data_instance: Dict,
+        data_model: Union[DataModel, DataSection, OrGroup, DataField],
+        resources: Tuple[CodeSystem, ...],
+        compliance: Literal['lenient', 'strict'] = 'lenient',
+        mapping: Dict[DataField, str] = None,
+) -> Union[Tuple, Union[DataModelInstance, DataSectionInstance, DataFieldValue, None]]:
+    """Helper method for `load_hierarchical_data`, recurses through hierarchical :class:`DataModel`
+
+    `loaded_data_instance` is expected to be a dictionary as returned by `DataReader.data` when reading a single xml or json file
+
+    :param loaded_data_instance_identifier: identifier of the loaded data_instance
+    :param loaded_data_instance: data loaded in by :class:`DataReader`
+    :param data_model:
+    :param resources: List of `CodeSystem` objects to be used as resources in the `DataModel`
+    :param compliance: Compliance level to enforce when reading the file. If 'lenient', the file can have extra fields
+                        that are not in the DataModel. If 'strict', the file must have all fields in the DataModel.
+    :param mapping: specifies the mapping from data fields present in the data model to identifiers of fields in the data
+    """
+    if isinstance(data_model, DataModel):
+        data_model_instance_values: List[Union[DataModelInstance, DataSectionInstance, DataFieldValue, None]] = [
+            load_hierarchical_data_recursive(
+                loaded_data_instance_identifier=loaded_data_instance_identifier,
+                loaded_data_instance=loaded_data_instance,
+                data_model=f,
+                resources=resources,
+                compliance=compliance,
+                mapping=mapping
+            )
+            for f in data_model.fields
+        ]
+        return tuple(data_model_instance_values)
+    elif isinstance(data_model, DataSection):
+        data_section: DataSection = data_model
+
+        values = tuple([
+            load_hierarchical_data_recursive(
+                loaded_data_instance_identifier=loaded_data_instance_identifier,
+                loaded_data_instance=loaded_data_instance,
+                data_model=f,
+                resources=resources,
+                compliance=compliance,
+                mapping=mapping,
+            )
+            for f in data_section.fields
+        ])
+
+        return DataSectionInstance(
+            id=str(loaded_data_instance_identifier) + ":" + data_section.id,  # TODO: get identifiers of parents
+            section=data_section,
+            values=values,
+        )
+    elif isinstance(data_model, OrGroup):
+        # TODO: resolve or this seems to be very difficult
+        pass
+    elif isinstance(data_model, DataField):
+        data_field = data_model
+
+        keys_str = mapping.get(data_model, None)
+
+        if keys_str:
+            keys = keys_str.split('.')
+            dict_value = recursive_dict_call(loaded_data_instance, keys)
+
+            if not dict_value or (isinstance(dict_value, float) and math.isnan(dict_value)):
+                return None
+
+            value_str = str(dict_value)
+            value = parsing.parse_value(value_str=value_str, resources=resources, compliance=compliance)
+            data_field_value = DataFieldValue(
+                id=str(loaded_data_instance_identifier) + ":" + keys_str,
+                field=data_field,
+                value=value
+            )
+
+            return data_field_value
+    else:
+        err_msg = f"DataModel {data_model} is not a valid type ({type(data_model)})."
+        if compliance == 'strict':
+            raise ValueError(err_msg)
+        elif compliance == 'lenient':
+            warnings.warn(err_msg)
+        else:
+            raise ValueError(f"Invalid compliance level: {compliance}")
+
+
+def load_hierarchical_dataset(
+        file: Union[str, Path, List[str], List[Path], List[IOBase]],
+        data_model: DataModel,
+        file_extension: Literal['csv', 'xlsx', 'json', 'xml'] = None,
+        compliance: Literal['lenient', 'strict'] = 'lenient',
+        mapping: Dict[DataField, str] = None,
+):
+    if not mapping:
+        raise AttributeError(f"Parameter 'mapping' must not be empty or None. {mapping=}, {type(mapping)=}")
+
+    if not data_model.is_hierarchical:
+        warnings.warn("This method is only for loading hierarchical data, it may behave unexpectedly for tabular data.")
+
+    data_reader = DataReader(file, file_extension=file_extension)
+    data, data_iterable = data_reader.data, data_reader.iterable
+
+    # assembling data model instances
+    data_model_instances = []
+
+    for i, data_instance in enumerate(data_iterable):
+        instance_identifier = str(i)  # TODO: give instances identifiers based on file names if available
+        data_model_instances.append(
+            DataModelInstance(
+                id=instance_identifier,
+                data_model=data_model,
+                values=tuple(filter(lambda x: x is not None, list(load_hierarchical_data_recursive(
+                    loaded_data_instance_identifier=instance_identifier,
+                    loaded_data_instance=data_instance,
+                    data_model=data_model,
+                    resources=data_model.resources,
+                    compliance=compliance,
+                    mapping=mapping
+                )))),
+                compliance=compliance,
+            )
+        )
+
+    return DataSet(data_model=data_model, data=data_model_instances)
+
+
+def load_hierarchical_data(
+        file: Union[str, Path, IOBase],
+        data_model: DataModel,
+        instance_identifier: Union[int, str] = None,
+        file_extension: Literal['csv', 'xlsx', 'json', 'xml'] = None,
+        compliance: Literal['lenient', 'strict'] = 'lenient',
+        mapping: Dict[DataField, str] = None,
+):
+    """
+    Loads hierarchical single data from one hierarchical file using a DataModel definition
+
+    :param file: file to load data from
+    :param data_model: DataModel to use for reading the file
+    :param instance_identifier: identifier of the data instance
+    :param file_extension: file extension of the file
+    :param compliance: Compliance level to enforce when reading the file. If 'lenient', the file can have extra fields
+                        that are not in the DataModel. If 'strict', the file must have all fields in the DataModel.
+    :param mapping: specifies the mapping from data fields present in the data model to ids of fields in the data
+
+    """
+    if not mapping:
+        raise AttributeError(f"Parameter 'mapping' must not be empty or None. {mapping=}, {type(mapping)=}")
+
+    if not data_model.is_hierarchical:
+        warnings.warn("This method is only for loading hierarchical data, it may behave unexpectedly for tabular data.")
+
+    data_reader = DataReader(file, file_extension=file_extension)
+
+    # TODO: give instances identifiers based on file names if available
+    if not instance_identifier:
+        instance_identifier = "PLACEHOLDER_IDENTIFIER"
+
+    data_instance = data_reader.data
+
+    return DataModelInstance(
+        id=instance_identifier,  # TODO: give instances identifiers based on file names if available
+        data_model=data_model,
+        values=tuple(filter(lambda x: x is not None, list(load_hierarchical_data_recursive(
+            loaded_data_instance_identifier=instance_identifier,
+            loaded_data_instance=data_instance,
+            data_model=data_model,
+            resources=data_model.resources,
+            compliance=compliance,
+            mapping=mapping
+        )))),
+        compliance=compliance,
+    )

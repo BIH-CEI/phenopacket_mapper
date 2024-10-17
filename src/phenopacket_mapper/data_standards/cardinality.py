@@ -20,3 +20,35 @@ class Cardinality:
 
     def __str__(self):
         return f"{self.min}..{self.max}"
+
+    # Singleton instances
+    _instances = {}
+
+    @classmethod
+    @property
+    def ZERO_TO_ONE(cls) -> 'Cardinality':
+        if 'ZERO_TO_ONE' not in cls._instances:
+            cls._instances['ZERO_TO_ONE'] = cls(0, 1)
+        return cls._instances['ZERO_TO_ONE']
+
+    @classmethod
+    @property
+    def ZERO_TO_N(cls) -> 'Cardinality':
+        if 'ZERO_TO_N' not in cls._instances:
+            cls._instances['ZERO_TO_N'] = cls(0, 'n')
+        return cls._instances['ZERO_TO_N']
+
+    @classmethod
+    @property
+    def ONE(cls) -> 'Cardinality':
+        if 'OPTIONAL' not in cls._instances:
+            cls._instances['ONE'] = cls(1, 1)
+        return cls._instances['ONE']
+
+    @classmethod
+    @property
+    def ONE_TO_N(cls) -> 'Cardinality':
+        if 'ONE_TO_N' not in cls._instances:
+            cls._instances['ONE_TO_N'] = cls(1, 'n')
+        return cls._instances['ONE_TO_N']
+

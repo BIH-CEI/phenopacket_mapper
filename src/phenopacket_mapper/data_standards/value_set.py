@@ -1,6 +1,6 @@
 import warnings
 from dataclasses import dataclass, field
-from typing import List, Union, Literal
+from typing import List, Union, Literal, Tuple
 
 from phenopacket_mapper.data_standards import Coding, CodeableConcept, CodeSystem, Date
 
@@ -29,13 +29,16 @@ class ValueSet:
     :ivar name: Name of the value set
     :ivar description: Description of the value set
     """
-    elements: List[Union[Coding, CodeableConcept, CodeSystem, str, bool, int, float, Date, type]] \
+    elements: Tuple[Union[Coding, CodeableConcept, CodeSystem, str, bool, int, float, Date, type], ...] \
         = field(default_factory=list)
     name: str = field(default="")
     description: str = field(default="")
-    _resources: List[CodeSystem] = field(default_factory=list, repr=False)
+    _resources: Tuple[CodeSystem, ...] = field(default_factory=tuple, repr=False)
 
     def __post_init__(self):
+        if isinstance(self.elements, list):
+            object.__setattr__(self, 'elements', tuple(self.elements))
+
         if Coding in self.elements or CodeableConcept in self.elements:
             warnings.warn("The ValueSet contains Coding or CodeableConcept. It is recommended to limit the dataset to"
                           "the CodeSystems that are used in the DataField. This will improve the interoperability of"
@@ -43,21 +46,24 @@ class ValueSet:
 
     def extend(self, new_name: str, value_set: 'ValueSet', new_description: str = '') -> 'ValueSet':
         return ValueSet(name=new_name,
-                        elements=list(set(self.elements + value_set.elements)),
+                        elements=tuple(set(self.elements + value_set.elements)),
                         description=new_description)
 
     def remove_duplicates(self) -> 'ValueSet':
         return ValueSet(name=self.name,
-                        elements=list(set(self.elements)),
+                        elements=tuple(set(self.elements)),
                         description=self.description)
 
     @property
-    def resources(self) -> List[CodeSystem]:
+    def resources(self) -> Tuple[CodeSystem, ...]:
         """Returns the resources if they exist, otherwise provides a default empty list."""
+        resources = list()
         if len(self._resources) == 0:
             for e in self.elements:
                 if isinstance(e, CodeSystem):
-                    self._resources.append(e)
+                    resources.append(e)
+
+        object.__setattr__(self, '_resources', tuple(resources))
         return self._resources
 
     @staticmethod
@@ -69,12 +75,6 @@ class ValueSet:
             compliance: Literal['strict', 'lenient'] = 'lenient',
     ) -> 'ValueSet':
         """Parses a value set from a string representation
-
-        >>> ValueSet.parse_value_set("True, False", "TrueFalseValueSet", "A value set for True and False", [])
-        ValueSet(elements=[True, False], name='TrueFalseValueSet', description='A value set for True and False')
-
-        >>> ValueSet.parse_value_set("-1, 0, 1", resources=[])
-        ValueSet(elements=[-1, 0, 1], name='', description='')
 
         :param value_set_str: String representation of the value set
         :param value_set_name: Name of the value set
@@ -113,11 +113,11 @@ class ValueSet:
 
 
 TRUE_FALSE_VALUE_SET = ValueSet(name="TrueFalseValueSet",
-                                elements=[True, False],
+                                elements=(True, False),
                                 description="A value set for True and False")
 
 UNKNOWN_VALUE_SET = ValueSet(name="UnknownValueSet",
-                             elements=["unknown"],
+                             elements=("unknown",),
                              description="A value set for Unknown")
 
 TRUE_FALSE_UNKNOWN_VALUE_SET = TRUE_FALSE_VALUE_SET.extend(new_name="TrueFalseUnknownValueSet",

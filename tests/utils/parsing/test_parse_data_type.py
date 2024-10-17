@@ -4,9 +4,8 @@ import pytest
 
 from phenopacket_mapper.data_standards import Date
 from phenopacket_mapper.data_standards.code_system import HPO, SNOMED_CT, ICD10CM, ICD9
-from phenopacket_mapper.data_standards.data_models import parse_data_type
 from phenopacket_mapper.utils.parsing.parse_data_type import \
-    parse_single_data_type
+    parse_single_data_type, parse_data_type
 
 
 @pytest.fixture

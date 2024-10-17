@@ -33,7 +33,6 @@ def _post_process_xml_dict(dict_: Dict) -> Dict:
         return value
 
     for k, v in dict_.items():
-        print(f"{k=}, {type(k)=}, {v=}, {type(v)=}")
         if isinstance(v, dict):
             if v == {'@xsi:nil': 'true'}:  # resolves <null xsi:nil="true"/>
                 dict_[k] = None
@@ -41,9 +40,7 @@ def _post_process_xml_dict(dict_: Dict) -> Dict:
                 dict_[k] = _post_process_xml_dict(v)
         elif isinstance(v, list):
             list_ = []
-            print(f"{v=}")
             for i, item in enumerate(v):
-                print(f"{item=}, {type(item)=}")
                 if isinstance(item, dict):
                     list_.append(_post_process_xml_dict(item))
                 else:

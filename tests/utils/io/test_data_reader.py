@@ -154,3 +154,116 @@ def test_reader_csv(inp, expected):
 def test_reader_json(inp, expected):
     data_reader = DataReader(StringIO(inp), file_extension="json")
     assert data_reader.data == expected
+
+
+@pytest.mark.parametrize(
+    "inp, expected, file_extension",
+    [
+        (
+            [
+                '{"pat_id": "patient_426387", "name":"Joe Johnson", "condition": {"term_id": "1253", "term_label": "acute_madeupgitis"}, "hospitalized": true}',
+                '{"pat_id": "patient_426388", "name":"Jane Doe", "condition": {"term_id": "1254", "term_label": "chronic_madeupgitis"}, "hospitalized": false}',
+                '{"pat_id": "patient_426389", "name":"Mark Markington", "condition": {"term_id": "1255", "term_label": "wild_type_madeupgitis"}, "hospitalized": true}'
+            ],
+            [
+                {'pat_id': 'patient_426387', 'name':'Joe Johnson', 'condition': {'term_id': '1253', 'term_label': 'acute_madeupgitis'}, 'hospitalized': True},
+                {'pat_id': 'patient_426388', 'name':'Jane Doe', 'condition': {'term_id': '1254', 'term_label': 'chronic_madeupgitis'}, 'hospitalized': False},
+                {'pat_id': 'patient_426389', 'name':'Mark Markington', 'condition': {'term_id': '1255', 'term_label': 'wild_type_madeupgitis'}, 'hospitalized': True}
+            ],
+            'json'
+        ),
+        (
+            [
+                '<?xml version="1.0" encoding="UTF-8" ?> '
+                '<ODM>'
+                '<ClinicalData StudyOID="test_study" MetaDataVersionOID="Metadata.test_study_2024-10-16_1142">'
+                '<SubjectData SubjectKey="101" redcap:RecordIdField="record_id">'
+                '<Item id="patient_name">Joe Johnson</Item>'
+                '<Section id="condition">'
+                '<Item id="term_id">12353</Item>'
+                '<Item id="term_label">acute_madeupgitis</Item>'
+                '</Section>'
+                '<Item id="hospitalized">true</Item>'
+                '</SubjectData>'
+                '</ClinicalData>'
+                '</ODM>',
+
+                '<?xml version="1.0" encoding="UTF-8" ?> '
+                '<ODM>'
+                '<ClinicalData StudyOID="test_study" MetaDataVersionOID="Metadata.test_study_2024-10-16_1142">'
+                '<SubjectData SubjectKey="102" redcap:RecordIdField="record_id">'
+                '<Item id="patient_name">Jane Doe</Item>'
+                '<Section id="condition">'
+                '<Item id="term_id">12354</Item>'
+                '<Item id="term_label">chronic_madeupgitis</Item>'
+                '</Section>'
+                '<Item id="hospitalized">false</Item>'
+                '</SubjectData>'
+                '</ClinicalData>'
+                '</ODM>',
+
+                '<?xml version="1.0" encoding="UTF-8" ?> '
+                '<ODM>'
+                '<ClinicalData StudyOID="test_study" MetaDataVersionOID="Metadata.test_study_2024-10-16_1142">'
+                '<SubjectData SubjectKey="103" redcap:RecordIdField="record_id">'
+                '<Item id="patient_name">Mark Markington</Item>'
+                '<Section id="condition">'
+                '<Item id="term_id">12355</Item>'
+                '<Item id="term_label">wild_type_madeupgitis</Item>'
+                '</Section>'
+                '<Item id="hospitalized">true</Item>'
+                '</SubjectData>'
+                '</ClinicalData>'
+                '</ODM>',
+            ],
+            [
+                {'ODM': {'ClinicalData': {'MetaDataVersionOID': 'Metadata.test_study_2024-10-16_1142',
+                                          'StudyOID': 'test_study',
+                                          'SubjectData': {'Item': [{'#text': 'Joe Johnson',
+                                                                    'id': 'patient_name'},
+                                                                   {'#text': True,
+                                                                    'id': 'hospitalized'}],
+                                                          'Section': {'Item': [{'#text': 12353,
+                                                                                'id': 'term_id'},
+                                                                               {'#text': 'acute_madeupgitis',
+                                                                                'id': 'term_label'}],
+                                                                      'id': 'condition'},
+                                                          'SubjectKey': 101,
+                                                          'redcap:RecordIdField': 'record_id'}}}},
+                {'ODM': {'ClinicalData': {'MetaDataVersionOID': 'Metadata.test_study_2024-10-16_1142',
+                                          'StudyOID': 'test_study',
+                                          'SubjectData': {'Item': [{'#text': 'Jane Doe',
+                                                                    'id': 'patient_name'},
+                                                                   {'#text': False,
+                                                                    'id': 'hospitalized'}],
+                                                          'Section': {'Item': [{'#text': 12354,
+                                                                                'id': 'term_id'},
+                                                                               {'#text': 'chronic_madeupgitis',
+                                                                                'id': 'term_label'}],
+                                                                      'id': 'condition'},
+                                                          'SubjectKey': 102,
+                                                          'redcap:RecordIdField': 'record_id'}}}},
+                {'ODM': {'ClinicalData': {'MetaDataVersionOID': 'Metadata.test_study_2024-10-16_1142',
+                                          'StudyOID': 'test_study',
+                                          'SubjectData': {'Item': [{'#text': 'Mark Markington',
+                                                                    'id': 'patient_name'},
+                                                                   {'#text': True,
+                                                                    'id': 'hospitalized'}],
+                                                          'Section': {'Item': [{'#text': 12355,
+                                                                                'id': 'term_id'},
+                                                                               {'#text': 'wild_type_madeupgitis',
+                                                                                'id': 'term_label'}],
+                                                                      'id': 'condition'},
+                                                          'SubjectKey': 103,
+                                                          'redcap:RecordIdField': 'record_id'}}}}
+            ],
+            'xml'
+        ),
+    ]
+)
+def test_reader_list(inp, expected, file_extension):
+    for fe in [file_extension, file_extension.lower(), file_extension.upper()]:
+        buffers = [StringIO(f) for f in inp]
+        data = DataReader(buffers, file_extension=fe).data
+        for d, e in zip(data, expected):
+            assert d == e

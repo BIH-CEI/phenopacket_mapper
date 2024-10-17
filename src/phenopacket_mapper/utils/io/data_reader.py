@@ -22,10 +22,10 @@ class DataReader:
         :param file_extension: The file extension of the file to read. If `None`, the file extension is inferred from the
         file path. Default is `None`.
         """
-        # TODO: fix read xml
-        # TODO: add option to pass a list of files to read
+        # TODO: fix file names so we can identify data instances correctly, can do this at the start
         self.is_dir = False
         self.file_extension = None
+        self.file_names = None
 
         if isinstance(file, str):
             self.path = Path(file)
@@ -59,10 +59,18 @@ class DataReader:
                 raise ValueError("File extension must be provided when passing a file buffer.")
             else:
                 self.handle_file_extension(file_extension)
+        elif isinstance(file, list):
+            if file_extension.lower() not in ['json', 'xml']:
+                raise ValueError(f"File extension {file_extension} not supported for reading multiple files.")
+            data_readers = [DataReader(f, encoding=encoding, file_extension=file_extension) for f in file]
+            self.data = [dr.data for dr in data_readers]
+            self.iterable = self.data
+            self.file_names = [dr.file_names for dr in data_readers]
         else:
             raise ValueError(f"Invalid input type {type(file)}.")
 
-        self.data, self.iterable = self._read()
+        if not isinstance(file, list):
+            self.data, self.iterable = self._read()
 
     def handle_file_extension(self, fe: str):
         if fe.lower() in ['csv', 'xlsx', 'json', 'xml']:
@@ -77,7 +85,7 @@ class DataReader:
         """
         # we know that file is always a buffer with the contents of the file
         # change this to work with self.file
-        if not self.is_dir:
+        if not self.is_dir:  # is a file
             if self.file_extension == 'csv':
                 df = pd.read_csv(self.file)
                 return df, [row for row in df.iterrows()]
@@ -91,6 +99,7 @@ class DataReader:
             else:
                 raise ValueError(f'Unknown file type with extension {self.file_extension}')
         elif self.is_dir:
+            self.file_names = [str(file) for file in self.path.iterdir() if file.is_file()]
             # collect list of all files in the folder
             files: List[Path] = [file for file in self.path.iterdir() if file.is_file()]
             file_extension = list(set([file.suffix[1:] for file in files]))
