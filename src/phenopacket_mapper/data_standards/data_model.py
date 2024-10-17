@@ -144,7 +144,7 @@ class DataModel:
     :ivar resources: List of `CodeSystem` objects
     """
     name: str = field()
-    fields: Tuple[Union[DataField, DataModelSection, 'OrGroup'], ...] = field()
+    fields: Tuple[Union[DataField, DataSection, 'OrGroup'], ...] = field()
     id: str = field(default=None)
     resources: Tuple[CodeSystem, ...] = field(default_factory=tuple)
 

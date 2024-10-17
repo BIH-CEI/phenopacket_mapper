@@ -38,7 +38,7 @@ class TestDataModel:
                                     name="test_field2",
                                     specification=str
                                 ),
-                                DataModelSection(
+                                DataSection(
                                     name="test_data_section",
                                     fields=(
                                             DataField(
@@ -66,7 +66,7 @@ class TestDataModel:
                                                 name="test_field2",
                                                 specification=str
                                             ),
-                                            DataModelSection(
+                                            DataSection(
                                                 name="test_data_section",
                                                 fields=(
                                                         DataField(
