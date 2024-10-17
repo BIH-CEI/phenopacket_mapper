@@ -303,7 +303,7 @@ def load_hierarchical_data_recursive(
                 return None
 
             value_str = str(dict_value)
-            value = parsing.parse_value(value_str=value_str, resources=data_model.resources, compliance=compliance)
+            value = parsing.parse_value(value_str=value_str, resources=resources, compliance=compliance)
             data_field_value = DataFieldValue(
                 row_no=str(loaded_data_instance_identifier) + ":" + keys_str,
                 field=data_field,
