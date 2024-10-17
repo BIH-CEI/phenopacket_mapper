@@ -370,6 +370,18 @@ def load_hierarchical_data(
         compliance: Literal['lenient', 'strict'] = 'lenient',
         mapping: Dict[DataField, str] = None,
 ):
+    """
+    Loads hierarchical single data from one hierarchical file using a DataModel definition
+
+    :param file: file to load data from
+    :param data_model: DataModel to use for reading the file
+    :param instance_identifier: identifier of the data instance
+    :param file_extension: file extension of the file
+    :param compliance: Compliance level to enforce when reading the file. If 'lenient', the file can have extra fields
+                        that are not in the DataModel. If 'strict', the file must have all fields in the DataModel.
+    :param mapping: specifies the mapping from data fields present in the data model to ids of fields in the data
+
+    """
     if not mapping:
         raise AttributeError(f"Parameter 'mapping' must not be empty or None. {mapping=}, {type(mapping)=}")
 
