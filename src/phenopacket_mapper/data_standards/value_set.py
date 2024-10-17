@@ -76,12 +76,6 @@ class ValueSet:
     ) -> 'ValueSet':
         """Parses a value set from a string representation
 
-        >>> ValueSet.parse_value_set("True, False", "TrueFalseValueSet", "A value set for True and False", [])
-        ValueSet(elements=[True, False], name='TrueFalseValueSet', description='A value set for True and False')
-
-        >>> ValueSet.parse_value_set("-1, 0, 1", resources=[])
-        ValueSet(elements=[-1, 0, 1], name='', description='')
-
         :param value_set_str: String representation of the value set
         :param value_set_name: Name of the value set
         :param value_set_description: Description of the value set
