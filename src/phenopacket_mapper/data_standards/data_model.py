@@ -321,14 +321,14 @@ class DataModelInstance:
 
     This class is used to define an instance of a `DataModel`, i.e. a record or row in a dataset.
 
-    :ivar row_no: The id of the instance, i.e. the row number
+    :ivar id: The id of the instance, i.e. the row number
     :ivar data_model: The `DataModel` object that defines the data model for this instance
     :ivar values: A list of `DataFieldValue` objects, each adhering to the `DataField` definition in the `DataModel`
     :ivar compliance: Compliance level to enforce when validating the instance. If 'lenient', the instance can have extra
                         fields that are not in the DataModel. If 'strict', the instance must have all fields in the
                         DataModel.
     """
-    row_no: Union[int, str]
+    id: Union[int, str]
     data_model: DataModel
     values: Tuple[Union[DataFieldValue, DataSectionInstance], ...]
     compliance: Literal['lenient', 'strict'] = 'lenient'
@@ -344,7 +344,7 @@ class DataModelInstance:
 
         :return: True if the instance is valid, False otherwise
         """
-        error_msg = f"Instance values do not comply with their respective fields' valuesets. (row {self.row_no})"
+        error_msg = f"Instance values do not comply with their respective fields' valuesets. (row {self.id})"
         for v in self.values:
             if not v.validate():
                 if self.compliance == 'strict':
@@ -359,7 +359,7 @@ class DataModelInstance:
         fields_present = set(v.field.id for v in self.values)
 
         if len(missing_fields := (is_required - fields_present)) > 0:
-            error_msg = (f"Required fields are missing in the instance. (row {self.row_no}) "
+            error_msg = (f"Required fields are missing in the instance. (row {self.id}) "
                          f"\n(missing_fields={', '.join(missing_fields)})")
             if self.compliance == 'strict':
                 raise ValueError(error_msg)

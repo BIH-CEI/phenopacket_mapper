@@ -193,7 +193,7 @@ def load_tabular_data_using_data_model(
 
         data_model_instances.append(
             DataModelInstance(
-                row_no=i,
+                id=i,
                 data_model=data_model,
                 values=values,
                 compliance=compliance)
@@ -254,9 +254,9 @@ def load_hierarchical_data_recursive(
                         that are not in the DataModel. If 'strict', the file must have all fields in the DataModel.
     :param mapping: specifies the mapping from data fields present in the data model to identifiers of fields in the data
     """
-    print(f"{data_model=} {type(data_model)=}")
+    print(f"{data_model.name=} {type(data_model)=}")
     if isinstance(data_model, DataModel):
-        ret: List[Union[DataModelInstance, DataSectionInstance, DataFieldValue, None]] = [
+        data_model_instance_values: List[Union[DataModelInstance, DataSectionInstance, DataFieldValue, None]] = [
             load_hierarchical_data_recursive(
                 loaded_data_instance_identifier=loaded_data_instance_identifier,
                 loaded_data_instance=loaded_data_instance,
@@ -267,7 +267,7 @@ def load_hierarchical_data_recursive(
             )
             for f in data_model.fields
         ]
-        return tuple(ret)
+        return tuple(data_model_instance_values)
     elif isinstance(data_model, DataSection):
         data_section: DataSection = data_model
 
@@ -345,7 +345,7 @@ def load_hierarchical_data(
         print(f"{data_instance=}")
         data_model_instances.append(
             DataModelInstance(
-                row_no=i,
+                id=i,
                 data_model=data_model,
                 values=load_hierarchical_data_recursive(
                     loaded_data_instance_identifier=str(i),
