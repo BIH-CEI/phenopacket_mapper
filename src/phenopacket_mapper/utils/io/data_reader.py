@@ -22,7 +22,7 @@ class DataReader:
         :param file_extension: The file extension of the file to read. If `None`, the file extension is inferred from the
         file path. Default is `None`.
         """
-        # TODO: add option to pass a list of files to read
+        # TODO: fix file names so we can identify data instances correctly, can do this at the start
         self.is_dir = False
         self.file_extension = None
 
