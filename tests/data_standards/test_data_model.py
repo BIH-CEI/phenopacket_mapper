@@ -12,7 +12,7 @@ class TestDataModel:
         [
             (
                     DataModel(
-                        data_model_name="test",
+                        name="test",
                         fields=(
                                 DataField(
                                     name="test_field",
@@ -28,7 +28,7 @@ class TestDataModel:
             ),
             (
                     DataModel(
-                        data_model_name="test",
+                        name="test",
                         fields=(
                                 DataField(
                                     name="test_field",
@@ -38,7 +38,7 @@ class TestDataModel:
                                     name="test_field2",
                                     specification=str
                                 ),
-                                DataSection(
+                                DataModelSection(
                                     name="test_data_section",
                                     fields=(
                                             DataField(
@@ -53,7 +53,7 @@ class TestDataModel:
             ),
             (
                     DataModel(
-                        data_model_name="test",
+                        name="test",
                         fields=(
                                 DataField(
                                     name="test_field",
@@ -66,7 +66,7 @@ class TestDataModel:
                                                 name="test_field2",
                                                 specification=str
                                             ),
-                                            DataSection(
+                                            DataModelSection(
                                                 name="test_data_section",
                                                 fields=(
                                                         DataField(
@@ -89,7 +89,7 @@ class TestDataModel:
     @staticmethod
     @pytest.fixture
     def data_model():
-        return DataModel(resources=tuple(), data_model_name='test_data_model', fields=(
+        return DataModel(resources=tuple(), name='test_data_model', fields=(
             DataField(name='Field 0', specification=ValueSet()),
             DataField(name='Date of Birth', specification=ValueSet()),
             DataField(name='%^&#12pseudonym!2', specification=ValueSet()),
