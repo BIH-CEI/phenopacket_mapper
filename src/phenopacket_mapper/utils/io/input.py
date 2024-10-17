@@ -192,7 +192,7 @@ def load_tabular_data_using_data_model(
 
         data_model_instances.append(
             DataModelInstance(
-                id=i,
+                id="row:" + str(i),
                 data_model=data_model,
                 values=values,
                 compliance=compliance)
