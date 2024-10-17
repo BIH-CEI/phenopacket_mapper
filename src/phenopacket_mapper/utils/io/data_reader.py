@@ -25,6 +25,7 @@ class DataReader:
         # TODO: fix file names so we can identify data instances correctly, can do this at the start
         self.is_dir = False
         self.file_extension = None
+        self.file_names = None
 
         if isinstance(file, str):
             self.path = Path(file)
@@ -61,8 +62,10 @@ class DataReader:
         elif isinstance(file, list):
             if file_extension.lower() not in ['json', 'xml']:
                 raise ValueError(f"File extension {file_extension} not supported for reading multiple files.")
-            self.data = [DataReader(f, encoding=encoding, file_extension=file_extension).data for f in file]
+            data_readers = [DataReader(f, encoding=encoding, file_extension=file_extension) for f in file]
+            self.data = [dr.data for dr in data_readers]
             self.iterable = self.data
+            self.file_names = [dr.file_names for dr in data_readers]
         else:
             raise ValueError(f"Invalid input type {type(file)}.")
 
@@ -82,7 +85,7 @@ class DataReader:
         """
         # we know that file is always a buffer with the contents of the file
         # change this to work with self.file
-        if not self.is_dir:
+        if not self.is_dir:  # is a file
             if self.file_extension == 'csv':
                 df = pd.read_csv(self.file)
                 return df, [row for row in df.iterrows()]
@@ -96,6 +99,7 @@ class DataReader:
             else:
                 raise ValueError(f'Unknown file type with extension {self.file_extension}')
         elif self.is_dir:
+            self.file_names = [str(file) for file in self.path.iterdir() if file.is_file()]
             # collect list of all files in the folder
             files: List[Path] = [file for file in self.path.iterdir() if file.is_file()]
             file_extension = list(set([file.suffix[1:] for file in files]))
