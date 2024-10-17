@@ -257,11 +257,11 @@ class DataFieldValue:
 
     Equivalent to a cell value in a table.
 
-    :ivar row_no: The id of the value, i.e. the row number
+    :ivar id: The id of the value, i.e. the row number
     :ivar field: DataField: The `DataField` to which this value belongs and which defines the value set for the field.
     :ivar value: The value of the field.
     """
-    row_no: Union[str, int]
+    id: Union[str, int]
     field: DataField
     value: Union[int, float, str, bool, Date, CodeSystem]
 
@@ -294,7 +294,7 @@ class DataFieldValue:
                             return True
 
         warnings.warn(f"Value {self.value} of type {type(self.value)} is not in the value set of field "
-                      f"{self.field.name} (row {self.row_no})")
+                      f"{self.field.name} (row {self.id})")
         return False
 
 

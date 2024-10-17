@@ -186,7 +186,7 @@ def load_tabular_data_using_data_model(
 
             value_str = str(pandas_value)
             value = parsing.parse_value(value_str=value_str, resources=data_model.resources, compliance=compliance)
-            values.append(DataFieldValue(row_no=i, field=f, value=value))
+            values.append(DataFieldValue(id=i, field=f, value=value))
 
         values = tuple(values)
 
@@ -305,7 +305,7 @@ def load_hierarchical_data_recursive(
             value_str = str(dict_value)
             value = parsing.parse_value(value_str=value_str, resources=resources, compliance=compliance)
             data_field_value = DataFieldValue(
-                row_no=str(loaded_data_instance_identifier) + ":" + keys_str,
+                id=str(loaded_data_instance_identifier) + ":" + keys_str,
                 field=data_field,
                 value=value
             )
