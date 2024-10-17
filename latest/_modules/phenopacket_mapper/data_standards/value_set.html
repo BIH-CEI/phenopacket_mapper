@@ -78,7 +78,7 @@
   <h1>Source code for phenopacket_mapper.data_standards.value_set</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Literal</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">from</span> <span class="nn">phenopacket_mapper.data_standards</span> <span class="kn">import</span> <span class="n">Coding</span><span class="p">,</span> <span class="n">CodeableConcept</span><span class="p">,</span> <span class="n">CodeSystem</span><span class="p">,</span> <span class="n">Date</span>
 
@@ -109,13 +109,16 @@
 <span class="sd">    :ivar name: Name of the value set</span>
 <span class="sd">    :ivar description: Description of the value set</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">elements</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Coding</span><span class="p">,</span> <span class="n">CodeableConcept</span><span class="p">,</span> <span class="n">CodeSystem</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Date</span><span class="p">,</span> <span class="nb">type</span><span class="p">]]</span> \
+    <span class="n">elements</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Coding</span><span class="p">,</span> <span class="n">CodeableConcept</span><span class="p">,</span> <span class="n">CodeSystem</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Date</span><span class="p">,</span> <span class="nb">type</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span> \
         <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
     <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
-    <span class="n">_resources</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">CodeSystem</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">_resources</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">CodeSystem</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;elements&#39;</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">))</span>
+
         <span class="k">if</span> <span class="n">Coding</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">elements</span> <span class="ow">or</span> <span class="n">CodeableConcept</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;The ValueSet contains Coding or CodeableConcept. It is recommended to limit the dataset to&quot;</span>
                           <span class="s2">&quot;the CodeSystems that are used in the DataField. This will improve the interoperability of&quot;</span>
@@ -125,7 +128,7 @@
 <a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.value_set.html#phenopacket_mapper.data_standards.ValueSet.extend">[docs]</a>
     <span class="k">def</span> <span class="nf">extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value_set</span><span class="p">:</span> <span class="s1">&#39;ValueSet&#39;</span><span class="p">,</span> <span class="n">new_description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;ValueSet&#39;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">ValueSet</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">new_name</span><span class="p">,</span>
-                        <span class="n">elements</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span> <span class="o">+</span> <span class="n">value_set</span><span class="o">.</span><span class="n">elements</span><span class="p">)),</span>
+                        <span class="n">elements</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span> <span class="o">+</span> <span class="n">value_set</span><span class="o">.</span><span class="n">elements</span><span class="p">)),</span>
                         <span class="n">description</span><span class="o">=</span><span class="n">new_description</span><span class="p">)</span></div>
 
 
@@ -133,17 +136,20 @@
 <a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.value_set.html#phenopacket_mapper.data_standards.ValueSet.remove_duplicates">[docs]</a>
     <span class="k">def</span> <span class="nf">remove_duplicates</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;ValueSet&#39;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">ValueSet</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-                        <span class="n">elements</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">)),</span>
+                        <span class="n">elements</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">)),</span>
                         <span class="n">description</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">resources</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">CodeSystem</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">resources</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">CodeSystem</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the resources if they exist, otherwise provides a default empty list.&quot;&quot;&quot;</span>
+        <span class="n">resources</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_resources</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">CodeSystem</span><span class="p">):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_resources</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                    <span class="n">resources</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_resources&#39;</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">resources</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resources</span>
 
 <div class="viewcode-block" id="ValueSet.parse_value_set">
@@ -157,12 +163,6 @@
             <span class="n">compliance</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;strict&#39;</span><span class="p">,</span> <span class="s1">&#39;lenient&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;lenient&#39;</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;ValueSet&#39;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parses a value set from a string representation</span>
-
-<span class="sd">        &gt;&gt;&gt; ValueSet.parse_value_set(&quot;True, False&quot;, &quot;TrueFalseValueSet&quot;, &quot;A value set for True and False&quot;, [])</span>
-<span class="sd">        ValueSet(elements=[True, False], name=&#39;TrueFalseValueSet&#39;, description=&#39;A value set for True and False&#39;)</span>
-
-<span class="sd">        &gt;&gt;&gt; ValueSet.parse_value_set(&quot;-1, 0, 1&quot;, resources=[])</span>
-<span class="sd">        ValueSet(elements=[-1, 0, 1], name=&#39;&#39;, description=&#39;&#39;)</span>
 
 <span class="sd">        :param value_set_str: String representation of the value set</span>
 <span class="sd">        :param value_set_name: Name of the value set</span>
@@ -203,11 +203,11 @@
 
 
 <span class="n">TRUE_FALSE_VALUE_SET</span> <span class="o">=</span> <span class="n">ValueSet</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;TrueFalseValueSet&quot;</span><span class="p">,</span>
-                                <span class="n">elements</span><span class="o">=</span><span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">],</span>
+                                <span class="n">elements</span><span class="o">=</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
                                 <span class="n">description</span><span class="o">=</span><span class="s2">&quot;A value set for True and False&quot;</span><span class="p">)</span>
 
 <span class="n">UNKNOWN_VALUE_SET</span> <span class="o">=</span> <span class="n">ValueSet</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;UnknownValueSet&quot;</span><span class="p">,</span>
-                             <span class="n">elements</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;unknown&quot;</span><span class="p">],</span>
+                             <span class="n">elements</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;unknown&quot;</span><span class="p">,),</span>
                              <span class="n">description</span><span class="o">=</span><span class="s2">&quot;A value set for Unknown&quot;</span><span class="p">)</span>
 
 <span class="n">TRUE_FALSE_UNKNOWN_VALUE_SET</span> <span class="o">=</span> <span class="n">TRUE_FALSE_VALUE_SET</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">new_name</span><span class="o">=</span><span class="s2">&quot;TrueFalseUnknownValueSet&quot;</span><span class="p">,</span>

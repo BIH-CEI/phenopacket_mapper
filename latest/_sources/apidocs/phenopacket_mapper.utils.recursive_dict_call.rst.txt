@@ -1,0 +1,7 @@
+phenopacket\_mapper.utils.recursive\_dict\_call module
+======================================================
+
+.. automodule:: phenopacket_mapper.utils.recursive_dict_call
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -78,6 +78,8 @@
   <h1>Source code for phenopacket_mapper.utils.io.input</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">IOBase</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">MappingProxyType</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Tuple</span>
@@ -87,8 +89,9 @@
 <span class="kn">from</span> <span class="nn">google.protobuf.json_format</span> <span class="kn">import</span> <span class="n">Parse</span>
 
 <span class="kn">from</span> <span class="nn">phenopacket_mapper.data_standards</span> <span class="kn">import</span> <span class="n">DataModel</span><span class="p">,</span> <span class="n">DataModelInstance</span><span class="p">,</span> <span class="n">DataField</span><span class="p">,</span> <span class="n">CodeSystem</span><span class="p">,</span> <span class="n">DataFieldValue</span><span class="p">,</span> \
-    <span class="n">DataSet</span>
-<span class="kn">from</span> <span class="nn">phenopacket_mapper.utils</span> <span class="kn">import</span> <span class="n">loc_default</span>
+    <span class="n">DataSet</span><span class="p">,</span> <span class="n">OrGroup</span><span class="p">,</span> <span class="n">DataSection</span>
+<span class="kn">from</span> <span class="nn">phenopacket_mapper.data_standards.data_model</span> <span class="kn">import</span> <span class="n">DataSectionInstance</span>
+<span class="kn">from</span> <span class="nn">phenopacket_mapper.utils</span> <span class="kn">import</span> <span class="n">loc_default</span><span class="p">,</span> <span class="n">recursive_dict_call</span>
 <span class="kn">from</span> <span class="nn">phenopacket_mapper.utils</span> <span class="kn">import</span> <span class="n">parsing</span>
 <span class="kn">from</span> <span class="nn">phenopacket_mapper.utils.io.data_reader</span> <span class="kn">import</span> <span class="n">DataReader</span>
 <span class="kn">from</span> <span class="nn">phenopacket_mapper.utils.parsing</span> <span class="kn">import</span> <span class="n">parse_ordinal</span>
@@ -98,7 +101,7 @@
 <a class="viewcode-back" href="../../../../apidocs/phenopacket_mapper.utils.io.input.html#phenopacket_mapper.utils.io.read_data_model">[docs]</a>
 <span class="k">def</span> <span class="nf">read_data_model</span><span class="p">(</span>
         <span class="n">data_model_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">resources</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">CodeSystem</span><span class="p">],</span>
+        <span class="n">resources</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">CodeSystem</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
         <span class="n">path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span>
         <span class="n">file_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;csv&#39;</span><span class="p">,</span> <span class="s1">&#39;excel&#39;</span><span class="p">,</span> <span class="s1">&#39;unknown&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;unknown&#39;</span><span class="p">,</span>
         <span class="n">column_names</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">MappingProxyType</span><span class="p">({</span>
@@ -175,15 +178,12 @@
     <span class="n">data_fields</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">DataField</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)):</span>
         <span class="n">data_field_name</span> <span class="o">=</span> <span class="n">loc_default</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">row_index</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">column_name</span><span class="o">=</span><span class="n">column_names</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">DataField</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
-        <span class="n">section</span> <span class="o">=</span> <span class="n">loc_default</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">row_index</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">column_name</span><span class="o">=</span><span class="n">column_names</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">DataField</span><span class="o">.</span><span class="n">section</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
         <span class="n">value_set</span> <span class="o">=</span> <span class="n">loc_default</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">row_index</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">column_name</span><span class="o">=</span><span class="n">column_names</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">DataField</span><span class="o">.</span><span class="n">specification</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
         <span class="n">description</span> <span class="o">=</span> <span class="n">loc_default</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">row_index</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">column_name</span><span class="o">=</span><span class="n">column_names</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">DataField</span><span class="o">.</span><span class="n">description</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
         <span class="n">required</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">loc_default</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">row_index</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">column_name</span><span class="o">=</span><span class="n">column_names</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">DataField</span><span class="o">.</span><span class="n">required</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)))</span>
-        <span class="n">ordinal</span> <span class="o">=</span> <span class="n">loc_default</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">row_index</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">column_name</span><span class="o">=</span><span class="n">column_names</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">DataField</span><span class="o">.</span><span class="n">ordinal</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">remove_line_breaks</span><span class="p">:</span>
             <span class="n">data_field_name</span> <span class="o">=</span> <span class="n">remove_line_breaks_if_not_none</span><span class="p">(</span><span class="n">data_field_name</span><span class="p">)</span>
-            <span class="n">section</span> <span class="o">=</span> <span class="n">remove_line_breaks_if_not_none</span><span class="p">(</span><span class="n">section</span><span class="p">)</span>
             <span class="n">description</span> <span class="o">=</span> <span class="n">remove_line_breaks_if_not_none</span><span class="p">(</span><span class="n">description</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">parse_ordinals</span><span class="p">:</span>
@@ -202,22 +202,20 @@
         <span class="n">data_fields</span> <span class="o">=</span> <span class="n">data_fields</span> <span class="o">+</span> <span class="p">(</span>
             <span class="n">DataField</span><span class="p">(</span>
                 <span class="n">name</span><span class="o">=</span><span class="n">data_field_name</span><span class="p">,</span>
-                <span class="n">section</span><span class="o">=</span><span class="n">section</span><span class="p">,</span>
                 <span class="n">specification</span><span class="o">=</span><span class="n">value_set</span><span class="p">,</span>
                 <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span>
                 <span class="n">required</span><span class="o">=</span><span class="n">required</span><span class="p">,</span>
-                <span class="n">ordinal</span><span class="o">=</span><span class="n">ordinal</span>
             <span class="p">),</span>
         <span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">DataModel</span><span class="p">(</span><span class="n">data_model_name</span><span class="o">=</span><span class="n">data_model_name</span><span class="p">,</span> <span class="n">fields</span><span class="o">=</span><span class="n">data_fields</span><span class="p">,</span> <span class="n">resources</span><span class="o">=</span><span class="n">resources</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">DataModel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">data_model_name</span><span class="p">,</span> <span class="n">fields</span><span class="o">=</span><span class="n">data_fields</span><span class="p">,</span> <span class="n">resources</span><span class="o">=</span><span class="n">resources</span><span class="p">)</span></div>
 
 
 
-<div class="viewcode-block" id="load_data_using_data_model">
-<a class="viewcode-back" href="../../../../apidocs/phenopacket_mapper.utils.io.input.html#phenopacket_mapper.utils.io.load_data_using_data_model">[docs]</a>
-<span class="k">def</span> <span class="nf">load_data_using_data_model</span><span class="p">(</span>
-        <span class="n">path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span>
+<div class="viewcode-block" id="load_tabular_data_using_data_model">
+<a class="viewcode-back" href="../../../../apidocs/phenopacket_mapper.utils.io.input.html#phenopacket_mapper.utils.io.load_tabular_data_using_data_model">[docs]</a>
+<span class="k">def</span> <span class="nf">load_tabular_data_using_data_model</span><span class="p">(</span>
+        <span class="n">file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="n">IOBase</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">IOBase</span><span class="p">]],</span>
         <span class="n">data_model</span><span class="p">:</span> <span class="n">DataModel</span><span class="p">,</span>
         <span class="n">column_names</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
         <span class="n">compliance</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;lenient&#39;</span><span class="p">,</span> <span class="s1">&#39;strict&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;lenient&#39;</span><span class="p">,</span>
@@ -234,7 +232,7 @@
 <span class="sd">    load_data_using_data_model(&quot;data.csv&quot;, data_model, column_names)</span>
 <span class="sd">    ```</span>
 
-<span class="sd">    :param path: Path to  formatted csv or excel file</span>
+<span class="sd">    :param file:</span>
 <span class="sd">    :param data_model: DataModel to use for reading the file</span>
 <span class="sd">    :param column_names: A dictionary mapping from the id of each field of the `DataField` to the name of a</span>
 <span class="sd">                        column in the file</span>
@@ -242,17 +240,9 @@
 <span class="sd">                        that are not in the DataModel. If &#39;strict&#39;, the file must have all fields in the DataModel.</span>
 <span class="sd">    :return: List of DataModelInstances</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">Path</span><span class="p">):</span>
-        <span class="k">pass</span>
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Path must be a string or Path object, not </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-    
-    <span class="n">dr</span> <span class="o">=</span> <span class="n">DataReader</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-    <span class="n">data</span><span class="p">,</span> <span class="n">data_iterable</span> <span class="o">=</span> <span class="n">dr</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">dr</span><span class="o">.</span><span class="n">iterable</span>
+    <span class="n">data_reader</span> <span class="o">=</span> <span class="n">DataReader</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="n">data</span><span class="p">,</span> <span class="n">data_iterable</span> <span class="o">=</span> <span class="n">data_reader</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">data_reader</span><span class="o">.</span><span class="n">iterable</span>
 
-    <span class="c1"># TODO: for the moment assume that the data is a pandas DataFrame</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">data</span>
 
     <span class="c1"># check column_names is in the correct format</span>
@@ -267,7 +257,7 @@
 
     <span class="n">data_model_instances</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)):</span>  <span class="c1"># todo: change to iter also non tabular data</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)):</span>
         <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">data_model</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
             <span class="n">column_name</span> <span class="o">=</span> <span class="n">column_names</span><span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">id</span><span class="p">]</span>
@@ -279,10 +269,13 @@
 
             <span class="n">value_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">pandas_value</span><span class="p">)</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">parsing</span><span class="o">.</span><span class="n">parse_value</span><span class="p">(</span><span class="n">value_str</span><span class="o">=</span><span class="n">value_str</span><span class="p">,</span> <span class="n">resources</span><span class="o">=</span><span class="n">data_model</span><span class="o">.</span><span class="n">resources</span><span class="p">,</span> <span class="n">compliance</span><span class="o">=</span><span class="n">compliance</span><span class="p">)</span>
-            <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">DataFieldValue</span><span class="p">(</span><span class="n">row_no</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">f</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">))</span>
+            <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">DataFieldValue</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">f</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">))</span>
+
+        <span class="n">values</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+
         <span class="n">data_model_instances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
             <span class="n">DataModelInstance</span><span class="p">(</span>
-                <span class="n">row_no</span><span class="o">=</span><span class="n">i</span><span class="p">,</span>
+                <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;row:&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">),</span>
                 <span class="n">data_model</span><span class="o">=</span><span class="n">data_model</span><span class="p">,</span>
                 <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">,</span>
                 <span class="n">compliance</span><span class="o">=</span><span class="n">compliance</span><span class="p">)</span>
@@ -327,6 +320,191 @@
         <span class="n">phenopacket</span> <span class="o">=</span> <span class="n">Phenopacket</span><span class="p">()</span>
         <span class="n">Parse</span><span class="p">(</span><span class="n">json_data</span><span class="p">,</span> <span class="n">phenopacket</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">phenopacket</span></div>
+
+
+
+<div class="viewcode-block" id="load_hierarchical_data_recursive">
+<a class="viewcode-back" href="../../../../apidocs/phenopacket_mapper.utils.io.input.html#phenopacket_mapper.utils.io.load_hierarchical_data_recursive">[docs]</a>
+<span class="k">def</span> <span class="nf">load_hierarchical_data_recursive</span><span class="p">(</span>
+        <span class="n">loaded_data_instance_identifier</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+        <span class="n">loaded_data_instance</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
+        <span class="n">data_model</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">DataModel</span><span class="p">,</span> <span class="n">DataSection</span><span class="p">,</span> <span class="n">OrGroup</span><span class="p">,</span> <span class="n">DataField</span><span class="p">],</span>
+        <span class="n">resources</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">CodeSystem</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+        <span class="n">compliance</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;lenient&#39;</span><span class="p">,</span> <span class="s1">&#39;strict&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;lenient&#39;</span><span class="p">,</span>
+        <span class="n">mapping</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">DataField</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">DataModelInstance</span><span class="p">,</span> <span class="n">DataSectionInstance</span><span class="p">,</span> <span class="n">DataFieldValue</span><span class="p">,</span> <span class="kc">None</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper method for `load_hierarchical_data`, recurses through hierarchical :class:`DataModel`</span>
+
+<span class="sd">    `loaded_data_instance` is expected to be a dictionary as returned by `DataReader.data` when reading a single xml or json file</span>
+
+<span class="sd">    :param loaded_data_instance_identifier: identifier of the loaded data_instance</span>
+<span class="sd">    :param loaded_data_instance: data loaded in by :class:`DataReader`</span>
+<span class="sd">    :param data_model:</span>
+<span class="sd">    :param resources: List of `CodeSystem` objects to be used as resources in the `DataModel`</span>
+<span class="sd">    :param compliance: Compliance level to enforce when reading the file. If &#39;lenient&#39;, the file can have extra fields</span>
+<span class="sd">                        that are not in the DataModel. If &#39;strict&#39;, the file must have all fields in the DataModel.</span>
+<span class="sd">    :param mapping: specifies the mapping from data fields present in the data model to identifiers of fields in the data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data_model</span><span class="p">,</span> <span class="n">DataModel</span><span class="p">):</span>
+        <span class="n">data_model_instance_values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">DataModelInstance</span><span class="p">,</span> <span class="n">DataSectionInstance</span><span class="p">,</span> <span class="n">DataFieldValue</span><span class="p">,</span> <span class="kc">None</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">load_hierarchical_data_recursive</span><span class="p">(</span>
+                <span class="n">loaded_data_instance_identifier</span><span class="o">=</span><span class="n">loaded_data_instance_identifier</span><span class="p">,</span>
+                <span class="n">loaded_data_instance</span><span class="o">=</span><span class="n">loaded_data_instance</span><span class="p">,</span>
+                <span class="n">data_model</span><span class="o">=</span><span class="n">f</span><span class="p">,</span>
+                <span class="n">resources</span><span class="o">=</span><span class="n">resources</span><span class="p">,</span>
+                <span class="n">compliance</span><span class="o">=</span><span class="n">compliance</span><span class="p">,</span>
+                <span class="n">mapping</span><span class="o">=</span><span class="n">mapping</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">data_model</span><span class="o">.</span><span class="n">fields</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">data_model_instance_values</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data_model</span><span class="p">,</span> <span class="n">DataSection</span><span class="p">):</span>
+        <span class="n">data_section</span><span class="p">:</span> <span class="n">DataSection</span> <span class="o">=</span> <span class="n">data_model</span>
+
+        <span class="n">values</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span>
+            <span class="n">load_hierarchical_data_recursive</span><span class="p">(</span>
+                <span class="n">loaded_data_instance_identifier</span><span class="o">=</span><span class="n">loaded_data_instance_identifier</span><span class="p">,</span>
+                <span class="n">loaded_data_instance</span><span class="o">=</span><span class="n">loaded_data_instance</span><span class="p">,</span>
+                <span class="n">data_model</span><span class="o">=</span><span class="n">f</span><span class="p">,</span>
+                <span class="n">resources</span><span class="o">=</span><span class="n">resources</span><span class="p">,</span>
+                <span class="n">compliance</span><span class="o">=</span><span class="n">compliance</span><span class="p">,</span>
+                <span class="n">mapping</span><span class="o">=</span><span class="n">mapping</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">data_section</span><span class="o">.</span><span class="n">fields</span>
+        <span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">DataSectionInstance</span><span class="p">(</span>
+            <span class="nb">id</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">loaded_data_instance_identifier</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span> <span class="o">+</span> <span class="n">data_section</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>  <span class="c1"># TODO: get identifiers of parents</span>
+            <span class="n">section</span><span class="o">=</span><span class="n">data_section</span><span class="p">,</span>
+            <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data_model</span><span class="p">,</span> <span class="n">OrGroup</span><span class="p">):</span>
+        <span class="c1"># TODO: resolve or this seems to be very difficult</span>
+        <span class="k">pass</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data_model</span><span class="p">,</span> <span class="n">DataField</span><span class="p">):</span>
+        <span class="n">data_field</span> <span class="o">=</span> <span class="n">data_model</span>
+
+        <span class="n">keys_str</span> <span class="o">=</span> <span class="n">mapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">data_model</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">keys_str</span><span class="p">:</span>
+            <span class="n">keys</span> <span class="o">=</span> <span class="n">keys_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+            <span class="n">dict_value</span> <span class="o">=</span> <span class="n">recursive_dict_call</span><span class="p">(</span><span class="n">loaded_data_instance</span><span class="p">,</span> <span class="n">keys</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">dict_value</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">dict_value</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="ow">and</span> <span class="n">math</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">dict_value</span><span class="p">)):</span>
+                <span class="k">return</span> <span class="kc">None</span>
+
+            <span class="n">value_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">dict_value</span><span class="p">)</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">parsing</span><span class="o">.</span><span class="n">parse_value</span><span class="p">(</span><span class="n">value_str</span><span class="o">=</span><span class="n">value_str</span><span class="p">,</span> <span class="n">resources</span><span class="o">=</span><span class="n">resources</span><span class="p">,</span> <span class="n">compliance</span><span class="o">=</span><span class="n">compliance</span><span class="p">)</span>
+            <span class="n">data_field_value</span> <span class="o">=</span> <span class="n">DataFieldValue</span><span class="p">(</span>
+                <span class="nb">id</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">loaded_data_instance_identifier</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span> <span class="o">+</span> <span class="n">keys_str</span><span class="p">,</span>
+                <span class="n">field</span><span class="o">=</span><span class="n">data_field</span><span class="p">,</span>
+                <span class="n">value</span><span class="o">=</span><span class="n">value</span>
+            <span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">data_field_value</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">err_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;DataModel </span><span class="si">{</span><span class="n">data_model</span><span class="si">}</span><span class="s2"> is not a valid type (</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">data_model</span><span class="p">)</span><span class="si">}</span><span class="s2">).&quot;</span>
+        <span class="k">if</span> <span class="n">compliance</span> <span class="o">==</span> <span class="s1">&#39;strict&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">err_msg</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">compliance</span> <span class="o">==</span> <span class="s1">&#39;lenient&#39;</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">err_msg</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid compliance level: </span><span class="si">{</span><span class="n">compliance</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="load_hierarchical_dataset">
+<a class="viewcode-back" href="../../../../apidocs/phenopacket_mapper.utils.io.input.html#phenopacket_mapper.utils.io.load_hierarchical_dataset">[docs]</a>
+<span class="k">def</span> <span class="nf">load_hierarchical_dataset</span><span class="p">(</span>
+        <span class="n">file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">IOBase</span><span class="p">]],</span>
+        <span class="n">data_model</span><span class="p">:</span> <span class="n">DataModel</span><span class="p">,</span>
+        <span class="n">file_extension</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;csv&#39;</span><span class="p">,</span> <span class="s1">&#39;xlsx&#39;</span><span class="p">,</span> <span class="s1">&#39;json&#39;</span><span class="p">,</span> <span class="s1">&#39;xml&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">compliance</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;lenient&#39;</span><span class="p">,</span> <span class="s1">&#39;strict&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;lenient&#39;</span><span class="p">,</span>
+        <span class="n">mapping</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">DataField</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">mapping</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parameter &#39;mapping&#39; must not be empty or None. </span><span class="si">{</span><span class="n">mapping</span><span class="si">=}</span><span class="s2">, </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">mapping</span><span class="p">)</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">data_model</span><span class="o">.</span><span class="n">is_hierarchical</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;This method is only for loading hierarchical data, it may behave unexpectedly for tabular data.&quot;</span><span class="p">)</span>
+
+    <span class="n">data_reader</span> <span class="o">=</span> <span class="n">DataReader</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">file_extension</span><span class="o">=</span><span class="n">file_extension</span><span class="p">)</span>
+    <span class="n">data</span><span class="p">,</span> <span class="n">data_iterable</span> <span class="o">=</span> <span class="n">data_reader</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">data_reader</span><span class="o">.</span><span class="n">iterable</span>
+
+    <span class="c1"># assembling data model instances</span>
+    <span class="n">data_model_instances</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">data_instance</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data_iterable</span><span class="p">):</span>
+        <span class="n">instance_identifier</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>  <span class="c1"># TODO: give instances identifiers based on file names if available</span>
+        <span class="n">data_model_instances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">DataModelInstance</span><span class="p">(</span>
+                <span class="nb">id</span><span class="o">=</span><span class="n">instance_identifier</span><span class="p">,</span>
+                <span class="n">data_model</span><span class="o">=</span><span class="n">data_model</span><span class="p">,</span>
+                <span class="n">values</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">load_hierarchical_data_recursive</span><span class="p">(</span>
+                    <span class="n">loaded_data_instance_identifier</span><span class="o">=</span><span class="n">instance_identifier</span><span class="p">,</span>
+                    <span class="n">loaded_data_instance</span><span class="o">=</span><span class="n">data_instance</span><span class="p">,</span>
+                    <span class="n">data_model</span><span class="o">=</span><span class="n">data_model</span><span class="p">,</span>
+                    <span class="n">resources</span><span class="o">=</span><span class="n">data_model</span><span class="o">.</span><span class="n">resources</span><span class="p">,</span>
+                    <span class="n">compliance</span><span class="o">=</span><span class="n">compliance</span><span class="p">,</span>
+                    <span class="n">mapping</span><span class="o">=</span><span class="n">mapping</span>
+                <span class="p">)))),</span>
+                <span class="n">compliance</span><span class="o">=</span><span class="n">compliance</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">DataSet</span><span class="p">(</span><span class="n">data_model</span><span class="o">=</span><span class="n">data_model</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data_model_instances</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="load_hierarchical_data">
+<a class="viewcode-back" href="../../../../apidocs/phenopacket_mapper.utils.io.input.html#phenopacket_mapper.utils.io.load_hierarchical_data">[docs]</a>
+<span class="k">def</span> <span class="nf">load_hierarchical_data</span><span class="p">(</span>
+        <span class="n">file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="n">IOBase</span><span class="p">],</span>
+        <span class="n">data_model</span><span class="p">:</span> <span class="n">DataModel</span><span class="p">,</span>
+        <span class="n">instance_identifier</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">file_extension</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;csv&#39;</span><span class="p">,</span> <span class="s1">&#39;xlsx&#39;</span><span class="p">,</span> <span class="s1">&#39;json&#39;</span><span class="p">,</span> <span class="s1">&#39;xml&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">compliance</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;lenient&#39;</span><span class="p">,</span> <span class="s1">&#39;strict&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;lenient&#39;</span><span class="p">,</span>
+        <span class="n">mapping</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">DataField</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Loads hierarchical single data from one hierarchical file using a DataModel definition</span>
+
+<span class="sd">    :param file: file to load data from</span>
+<span class="sd">    :param data_model: DataModel to use for reading the file</span>
+<span class="sd">    :param instance_identifier: identifier of the data instance</span>
+<span class="sd">    :param file_extension: file extension of the file</span>
+<span class="sd">    :param compliance: Compliance level to enforce when reading the file. If &#39;lenient&#39;, the file can have extra fields</span>
+<span class="sd">                        that are not in the DataModel. If &#39;strict&#39;, the file must have all fields in the DataModel.</span>
+<span class="sd">    :param mapping: specifies the mapping from data fields present in the data model to ids of fields in the data</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">mapping</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parameter &#39;mapping&#39; must not be empty or None. </span><span class="si">{</span><span class="n">mapping</span><span class="si">=}</span><span class="s2">, </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">mapping</span><span class="p">)</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">data_model</span><span class="o">.</span><span class="n">is_hierarchical</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;This method is only for loading hierarchical data, it may behave unexpectedly for tabular data.&quot;</span><span class="p">)</span>
+
+    <span class="n">data_reader</span> <span class="o">=</span> <span class="n">DataReader</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">file_extension</span><span class="o">=</span><span class="n">file_extension</span><span class="p">)</span>
+
+    <span class="c1"># TODO: give instances identifiers based on file names if available</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">instance_identifier</span><span class="p">:</span>
+        <span class="n">instance_identifier</span> <span class="o">=</span> <span class="s2">&quot;PLACEHOLDER_IDENTIFIER&quot;</span>
+
+    <span class="n">data_instance</span> <span class="o">=</span> <span class="n">data_reader</span><span class="o">.</span><span class="n">data</span>
+
+    <span class="k">return</span> <span class="n">DataModelInstance</span><span class="p">(</span>
+        <span class="nb">id</span><span class="o">=</span><span class="n">instance_identifier</span><span class="p">,</span>  <span class="c1"># TODO: give instances identifiers based on file names if available</span>
+        <span class="n">data_model</span><span class="o">=</span><span class="n">data_model</span><span class="p">,</span>
+        <span class="n">values</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">load_hierarchical_data_recursive</span><span class="p">(</span>
+            <span class="n">loaded_data_instance_identifier</span><span class="o">=</span><span class="n">instance_identifier</span><span class="p">,</span>
+            <span class="n">loaded_data_instance</span><span class="o">=</span><span class="n">data_instance</span><span class="p">,</span>
+            <span class="n">data_model</span><span class="o">=</span><span class="n">data_model</span><span class="p">,</span>
+            <span class="n">resources</span><span class="o">=</span><span class="n">data_model</span><span class="o">.</span><span class="n">resources</span><span class="p">,</span>
+            <span class="n">compliance</span><span class="o">=</span><span class="n">compliance</span><span class="p">,</span>
+            <span class="n">mapping</span><span class="o">=</span><span class="n">mapping</span>
+        <span class="p">)))),</span>
+        <span class="n">compliance</span><span class="o">=</span><span class="n">compliance</span><span class="p">,</span>
+    <span class="p">)</span></div>
 
 </pre></div>
 

@@ -97,36 +97,6 @@
              
   <section id="module-phenopacket_mapper.data_standards.data_models">
 <span id="phenopacket-mapper-data-standards-data-models-package"></span><h1>phenopacket_mapper.data_standards.data_models package<a class="headerlink" href="#module-phenopacket_mapper.data_standards.data_models" title="Link to this heading"></a></h1>
-<p>Selection of rare disease specific data models</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="phenopacket_mapper.data_standards.data_models.parse_data_type">
-<span class="sig-prename descclassname"><span class="pre">phenopacket_mapper.data_standards.data_models.</span></span><span class="sig-name descname"><span class="pre">parse_data_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type_str</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">resources</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="phenopacket_mapper.data_standards.code_system.html#phenopacket_mapper.data_standards.code_system.CodeSystem" title="phenopacket_mapper.data_standards.code_system.CodeSystem"><span class="pre">CodeSystem</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compliance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><span class="pre">Literal</span></a><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'lenient'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'strict'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'lenient'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><span class="pre">Any</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="phenopacket_mapper.data_standards.code_system.html#phenopacket_mapper.data_standards.code_system.CodeSystem" title="phenopacket_mapper.data_standards.code_system.CodeSystem"><span class="pre">CodeSystem</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.13)"><span class="pre">type</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/phenopacket_mapper/utils/parsing/parse_data_type.html#parse_data_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#phenopacket_mapper.data_standards.data_models.parse_data_type" title="Link to this definition"></a></dt>
-<dd><p>Parses a string representing of one or multiple data types or code systems to a list of <cite>type</cite> in Python</p>
-<p>The purpose of this method is to parse entries in a Data Model tabular file for <cite>DataField.data_type</cite>. In the
-tabular file, the user can list typical primitive data types such as string, int, etc., or date as a data type.
-Further is it possible to list the name space prefix (e.g., “SCT” for SNOMED CT) of a specific resource (given its
-inclusion in the list passed as the <cite>resources</cite> parameter) to indicate that codes or terms from that resource are
-permittable.</p>
-<p>When <cite>compliance</cite> is set to <cite>‘lenient’</cite> (default), this method only issues warnings if a data type is unrecognized and
-adds a literal to the list of allowed data types. When <cite>compliance</cite> is set to <cite>‘strict’</cite>, it throws a <cite>ValueError</cite> in
-the case described above.</p>
-<p>E.g.
-&gt;&gt;&gt; parse_data_type(“integer, str, Boolean”, [])
-[&lt;class ‘int’&gt;, &lt;class ‘str’&gt;, &lt;class ‘bool’&gt;]</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>type_str</strong></p></li>
-<li><p><strong>resources</strong></p></li>
-<li><p><strong>compliance</strong></p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p></p>
-</dd>
-</dl>
-</dd></dl>
-
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
 <div class="toctree-wrapper compound">

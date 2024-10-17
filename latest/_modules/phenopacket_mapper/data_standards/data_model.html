@@ -88,7 +88,6 @@
 
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">MappingProxyType</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Tuple</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
@@ -146,10 +145,10 @@
             <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;cardinality&#39;</span><span class="p">,</span> <span class="n">Cardinality</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cardinality</span><span class="o">.</span><span class="n">max</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">specification</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
-            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;specification&#39;</span><span class="p">,</span> <span class="n">ValueSet</span><span class="p">(</span><span class="n">elements</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">specification</span><span class="p">]))</span>
+            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;specification&#39;</span><span class="p">,</span> <span class="n">ValueSet</span><span class="p">(</span><span class="n">elements</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">specification</span><span class="p">,)))</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">specification</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">specification</span><span class="p">):</span>
-                <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;specification&#39;</span><span class="p">,</span> <span class="n">ValueSet</span><span class="p">(</span><span class="n">elements</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">specification</span><span class="p">))</span>
+                <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;specification&#39;</span><span class="p">,</span> <span class="n">ValueSet</span><span class="p">(</span><span class="n">elements</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">specification</span><span class="p">)))</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="s2">&quot;DataField(</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -160,7 +159,6 @@
         <span class="n">ret</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2">cardinality: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cardinality</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="n">ret</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">)&quot;</span>
         <span class="k">return</span> <span class="n">ret</span>
-
 
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">DataField</span><span class="p">):</span>
@@ -205,59 +203,13 @@
         <span class="k">for</span> <span class="n">_field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
             <span class="n">ret</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">_field</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="n">ret</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">)&quot;</span>
-        <span class="k">return</span> <span class="n">ret</span></div>
+        <span class="k">return</span> <span class="n">ret</span>
 
-
-<div class="viewcode-block" id="DataFieldValue">
-<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.DataFieldValue">[docs]</a>
-<span class="nd">@dataclass</span><span class="p">(</span><span class="n">slots</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">DataFieldValue</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;This class defines the value of a `DataField` in a `DataModelInstance`</span>
-
-<span class="sd">    Equivalent to a cell value in a table.</span>
-
-<span class="sd">    :ivar row_no: The id of the value, i.e. the row number</span>
-<span class="sd">    :ivar field: DataField: The `DataField` to which this value belongs and which defines the value set for the field.</span>
-<span class="sd">    :ivar value: The value of the field.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">row_no</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
-    <span class="n">field</span><span class="p">:</span> <span class="n">DataField</span>
-    <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">Date</span><span class="p">,</span> <span class="n">CodeSystem</span><span class="p">]</span>
-
-<div class="viewcode-block" id="DataFieldValue.validate">
-<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.DataFieldValue.validate">[docs]</a>
-    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validates the data model instance based on data model definition</span>
-
-<span class="sd">        This method checks if the instance is valid based on the data model definition. It checks if all required fields</span>
-<span class="sd">        are present, if the values are in the value set, etc.</span>
-
-<span class="sd">        :return: True if the instance is valid, False otherwise</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">required</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># no value</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Field </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> is required but has no value&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">specification</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">Any</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">specification</span><span class="p">:</span>  <span class="c1"># value set allows any</span>
-                <span class="k">return</span> <span class="kc">True</span>
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">specification</span><span class="p">:</span>  <span class="c1"># raw value (likely a primitive) is in the value set</span>
-                <span class="k">return</span> <span class="kc">True</span>
-            <span class="k">else</span><span class="p">:</span>  <span class="c1"># check if the value matches one of the types in the value set</span>
-                <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">specification</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
-                        <span class="n">cur_type</span> <span class="o">=</span> <span class="n">e</span>
-                        <span class="k">if</span> <span class="n">cur_type</span> <span class="ow">is</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">):</span>
-                            <span class="k">return</span> <span class="kc">True</span>
-                    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">CodeSystem</span><span class="p">):</span>
-                        <span class="n">cs</span> <span class="o">=</span> <span class="n">e</span>
-                        <span class="kn">from</span> <span class="nn">phenopacket_mapper.data_standards</span> <span class="kn">import</span> <span class="n">Coding</span>
-                        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">Coding</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">system</span> <span class="o">==</span> <span class="n">cs</span><span class="p">:</span>
-                            <span class="k">return</span> <span class="kc">True</span>
-
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Value </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2"> of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s2"> is not in the value set of field &quot;</span>
-                      <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> (row </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">row_no</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="kc">False</span></div>
-</div>
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">DataField</span><span class="p">,</span> <span class="s1">&#39;OrGroup&#39;</span><span class="p">,</span> <span class="s1">&#39;DataSection&#39;</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">var_name</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">f</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;DataSection&#39; object has no attribute &#39;</span><span class="si">{</span><span class="n">var_name</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span></div>
 
 
 
@@ -274,19 +226,23 @@
 <span class="sd">    be accessed using the `id` as an attribute of the `DataModel` object. E.g.: `data_model.date_of_birth`. This is</span>
 <span class="sd">    useful in the data reading and mapping processes.</span>
 
-<span class="sd">    :ivar data_model_name: Name of the data model</span>
+<span class="sd">    :ivar name: Name of the data model</span>
 <span class="sd">    :ivar fields: List of `DataField` objects</span>
 <span class="sd">    :ivar resources: List of `CodeSystem` objects</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">data_model_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">()</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">()</span>
     <span class="n">fields</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">DataField</span><span class="p">,</span> <span class="n">DataSection</span><span class="p">,</span> <span class="s1">&#39;OrGroup&#39;</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">()</span>
-    <span class="n">resources</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">CodeSystem</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">resources</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">CodeSystem</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">tuple</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">phenopacket_mapper.utils</span> <span class="kn">import</span> <span class="n">str_to_valid_id</span>
+            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">str_to_valid_id</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="n">f</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">])):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;All fields in a DataModel must have unique identifiers&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataField</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">DataField</span><span class="p">,</span> <span class="s1">&#39;OrGroup&#39;</span><span class="p">,</span> <span class="n">DataSection</span><span class="p">]:</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">var_name</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">f</span>
@@ -294,7 +250,7 @@
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;DataModel(</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="n">ret</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">name: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">data_model_name</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">ret</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">name: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="k">for</span> <span class="n">_field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
             <span class="n">ret</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">_field</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="n">ret</span> <span class="o">+=</span> <span class="s2">&quot;---</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -305,6 +261,18 @@
 
     <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_hierarchical</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">recursive_is_hierarchical</span><span class="p">(</span><span class="n">d</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">DataField</span><span class="p">,</span> <span class="n">DataSection</span><span class="p">,</span> <span class="n">OrGroup</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">DataField</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">DataSection</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># OrGroup</span>
+                <span class="k">return</span> <span class="nb">any</span><span class="p">([</span><span class="n">recursive_is_hierarchical</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">fields</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="nb">any</span><span class="p">([</span><span class="n">recursive_is_hierarchical</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">])</span>
 
 <div class="viewcode-block" id="DataModel.get_field">
 <a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.DataModel.get_field">[docs]</a>
@@ -357,116 +325,123 @@
 <span class="sd">        :return: A list of `DataModelInstance` objects</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># TODO: move the dynamic params to the load method in utils.io</span>
-        <span class="n">column_names</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
-            <span class="n">column_param</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">_column&quot;</span>
-            <span class="k">if</span> <span class="n">column_param</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;load_data() missing 1 required argument: &#39;</span><span class="si">{</span><span class="n">column_param</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">column_names</span><span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">column_param</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_hierarchical</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">column_names</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+                <span class="n">column_param</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">_column&quot;</span>
+                <span class="k">if</span> <span class="n">column_param</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;load_data() missing 1 required argument: &#39;</span><span class="si">{</span><span class="n">column_param</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">column_names</span><span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">column_param</span><span class="p">]</span>
 
-        <span class="kn">from</span> <span class="nn">phenopacket_mapper.utils.io</span> <span class="kn">import</span> <span class="n">load_data_using_data_model</span>
-        <span class="k">return</span> <span class="n">load_data_using_data_model</span><span class="p">(</span>
-            <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span>
-            <span class="n">data_model</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
-            <span class="n">column_names</span><span class="o">=</span><span class="n">column_names</span><span class="p">,</span>
-            <span class="n">compliance</span><span class="o">=</span><span class="n">compliance</span>
-        <span class="p">)</span></div>
+            <span class="kn">from</span> <span class="nn">phenopacket_mapper.utils.io</span> <span class="kn">import</span> <span class="n">load_tabular_data_using_data_model</span>
+            <span class="k">return</span> <span class="n">load_tabular_data_using_data_model</span><span class="p">(</span>
+                <span class="n">file</span><span class="o">=</span><span class="n">path</span><span class="p">,</span>
+                <span class="n">data_model</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+                <span class="n">column_names</span><span class="o">=</span><span class="n">column_names</span><span class="p">,</span>
+                <span class="n">compliance</span><span class="o">=</span><span class="n">compliance</span>
+            <span class="p">)</span></div>
+</div>
 
 
-<div class="viewcode-block" id="DataModel.from_file">
-<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.DataModel.from_file">[docs]</a>
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">from_file</span><span class="p">(</span>
-            <span class="n">data_model_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-            <span class="n">resources</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">CodeSystem</span><span class="p">],</span>
-            <span class="n">path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span>
-            <span class="n">file_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;csv&#39;</span><span class="p">,</span> <span class="s1">&#39;excel&#39;</span><span class="p">,</span> <span class="s1">&#39;unknown&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;unknown&#39;</span><span class="p">,</span>
-            <span class="n">column_names</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">MappingProxyType</span><span class="p">({</span>
-                <span class="n">DataField</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span> <span class="s1">&#39;data_field_name&#39;</span><span class="p">,</span>
-                <span class="n">DataField</span><span class="o">.</span><span class="n">description</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span> <span class="s1">&#39;description&#39;</span><span class="p">,</span>
-                <span class="n">DataField</span><span class="o">.</span><span class="n">specification</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span> <span class="s1">&#39;value_set&#39;</span><span class="p">,</span>
-                <span class="n">DataField</span><span class="o">.</span><span class="n">required</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span> <span class="s1">&#39;required&#39;</span><span class="p">,</span>
-            <span class="p">}),</span>
-            <span class="n">parse_value_sets</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-            <span class="n">remove_line_breaks</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-            <span class="n">parse_ordinals</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;DataModel&#39;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads a Data Model from a file</span>
 
-<span class="sd">        :param data_model_name: Name to be given to the `DataModel` object</span>
-<span class="sd">        :param resources: List of `CodeSystem` objects to be used as resources in the `DataModel`</span>
-<span class="sd">        :param path: Path to Data Model file</span>
-<span class="sd">        :param file_type: Type of file to read, either &#39;csv&#39; or &#39;excel&#39;</span>
-<span class="sd">        :param column_names: A dictionary mapping from each field of the `DataField` (key) class to a column of the file</span>
-<span class="sd">                            (value). Leaving a value empty (`&#39;&#39;`) will leave the field in the `DataModel` definition empty.</span>
-<span class="sd">        :param parse_value_sets: If True, parses the string to a ValueSet object, can later be used to check</span>
-<span class="sd">                            validity of the data. Optional, but highly recommended.</span>
-<span class="sd">        :param remove_line_breaks: Whether to remove line breaks from string values</span>
-<span class="sd">        :param parse_ordinals: Whether to extract the ordinal number from the field name. Warning: this can overwrite values</span>
-<span class="sd">                                 Ordinals could look like: &quot;1.1.&quot;, &quot;1.&quot;, &quot;I.a.&quot;, or &quot;ii.&quot;, etc.</span>
+<div class="viewcode-block" id="DataFieldValue">
+<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.DataFieldValue">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">slots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">DataFieldValue</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This class defines the value of a `DataField` in a `DataModelInstance`</span>
+
+<span class="sd">    Equivalent to a cell value in a table.</span>
+
+<span class="sd">    :ivar id: The id of the value, i.e. the row number</span>
+<span class="sd">    :ivar field: DataField: The `DataField` to which this value belongs and which defines the value set for the field.</span>
+<span class="sd">    :ivar value: The value of the field.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
+    <span class="n">field</span><span class="p">:</span> <span class="n">DataField</span>
+    <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">Date</span><span class="p">,</span> <span class="n">CodeSystem</span><span class="p">]</span>
+
+<div class="viewcode-block" id="DataFieldValue.validate">
+<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.DataFieldValue.validate">[docs]</a>
+    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validates the data model instance based on data model definition</span>
+
+<span class="sd">        This method checks if the instance is valid based on the data model definition. It checks if all required fields</span>
+<span class="sd">        are present, if the values are in the value set, etc.</span>
+
+<span class="sd">        :return: True if the instance is valid, False otherwise</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">phenopacket_mapper.pipeline</span> <span class="kn">import</span> <span class="n">read_data_model</span>
-        <span class="k">return</span> <span class="n">read_data_model</span><span class="p">(</span>
-            <span class="n">data_model_name</span><span class="p">,</span>
-            <span class="n">resources</span><span class="p">,</span>
-            <span class="n">path</span><span class="p">,</span>
-            <span class="n">file_type</span><span class="p">,</span>
-            <span class="n">column_names</span><span class="p">,</span>
-            <span class="n">parse_value_sets</span><span class="p">,</span>
-            <span class="n">remove_line_breaks</span><span class="p">,</span>
-            <span class="n">parse_ordinals</span>
-        <span class="p">)</span></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">required</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># no value</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Field </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> is required but has no value&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">specification</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">Any</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">specification</span><span class="p">:</span>  <span class="c1"># value set allows any</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">specification</span><span class="p">:</span>  <span class="c1"># raw value (likely a primitive) is in the value set</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># check if the value matches one of the types in the value set</span>
+                <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">specification</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+                        <span class="n">cur_type</span> <span class="o">=</span> <span class="n">e</span>
+                        <span class="k">if</span> <span class="n">cur_type</span> <span class="ow">is</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">):</span>
+                            <span class="k">return</span> <span class="kc">True</span>
+                    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">CodeSystem</span><span class="p">):</span>
+                        <span class="n">cs</span> <span class="o">=</span> <span class="n">e</span>
+                        <span class="kn">from</span> <span class="nn">phenopacket_mapper.data_standards</span> <span class="kn">import</span> <span class="n">Coding</span>
+                        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">Coding</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">system</span> <span class="o">==</span> <span class="n">cs</span><span class="p">:</span>
+                            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Value </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2"> of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s2"> is not in the value set of field &quot;</span>
+                      <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> (row </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+</div>
 
 
-<div class="viewcode-block" id="DataModel.load_data_using_data_model">
-<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.DataModel.load_data_using_data_model">[docs]</a>
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">load_data_using_data_model</span><span class="p">(</span>
-            <span class="n">path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span>
-            <span class="n">data_model</span><span class="p">:</span> <span class="s1">&#39;DataModel&#39;</span><span class="p">,</span>
-            <span class="n">column_names</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
-            <span class="n">compliance</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;lenient&#39;</span><span class="p">,</span> <span class="s1">&#39;strict&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;lenient&#39;</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;DataSet&#39;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Loads data from a file using a DataModel definition</span>
 
-<span class="sd">        :param path: Path to  formatted csv or excel file</span>
-<span class="sd">        :param data_model: DataModel to use for reading the file</span>
-<span class="sd">        :param column_names: A dictionary mapping from the id of each field of the `DataField` to the name of a</span>
-<span class="sd">                            column in the file</span>
-<span class="sd">        :param compliance: Compliance level to enforce when reading the file. If &#39;lenient&#39;, the file can have extra fields</span>
-<span class="sd">                            that are not in the DataModel. If &#39;strict&#39;, the file must have all fields in the DataModel.</span>
-<span class="sd">        :return: List of DataModelInstances</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">phenopacket_mapper.pipeline</span> <span class="kn">import</span> <span class="n">load_data_using_data_model</span>
-        <span class="k">return</span> <span class="n">load_data_using_data_model</span><span class="p">(</span>
-            <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span>
-            <span class="n">data_model</span><span class="o">=</span><span class="n">data_model</span><span class="p">,</span>
-            <span class="n">column_names</span><span class="o">=</span><span class="n">column_names</span><span class="p">,</span>
-            <span class="n">compliance</span><span class="o">=</span><span class="n">compliance</span>
-        <span class="p">)</span></div>
+<div class="viewcode-block" id="DataSectionInstance">
+<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.DataSectionInstance">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">slots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">DataSectionInstance</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :ivar id: The id of the instance, i.e. the row number</span>
+<span class="sd">    :ivar section: The `DataSection` object that defines the data model for this instance</span>
+<span class="sd">    :ivar values: A list of `DataFieldValue` objects, each adhering to the `DataField` definition in the `DataModel`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">()</span>
+    <span class="n">section</span><span class="p">:</span> <span class="n">DataSection</span> <span class="o">=</span> <span class="n">field</span><span class="p">()</span>
+    <span class="n">values</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">DataFieldValue</span><span class="p">,</span> <span class="s1">&#39;DataSectionInstance&#39;</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">()</span>
+
+<div class="viewcode-block" id="DataSectionInstance.validate">
+<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.DataSectionInstance.validate">[docs]</a>
+    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="c1"># TODO: implement this method</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;The DataSectionInstance validate method has not been implemented yet.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
 </div>
 
 
 
 <div class="viewcode-block" id="DataModelInstance">
 <a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.data_model.html#phenopacket_mapper.DataModelInstance">[docs]</a>
-<span class="nd">@dataclass</span><span class="p">(</span><span class="n">slots</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">slots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">DataModelInstance</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This class defines an instance of a `DataModel`, i.e. a record in a dataset</span>
 
 <span class="sd">    This class is used to define an instance of a `DataModel`, i.e. a record or row in a dataset.</span>
 
-<span class="sd">    :ivar row_no: The id of the instance, i.e. the row number</span>
+<span class="sd">    :ivar id: The id of the instance, i.e. the row number</span>
 <span class="sd">    :ivar data_model: The `DataModel` object that defines the data model for this instance</span>
 <span class="sd">    :ivar values: A list of `DataFieldValue` objects, each adhering to the `DataField` definition in the `DataModel`</span>
 <span class="sd">    :ivar compliance: Compliance level to enforce when validating the instance. If &#39;lenient&#39;, the instance can have extra</span>
 <span class="sd">                        fields that are not in the DataModel. If &#39;strict&#39;, the instance must have all fields in the</span>
 <span class="sd">                        DataModel.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">row_no</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
     <span class="n">data_model</span><span class="p">:</span> <span class="n">DataModel</span>
-    <span class="n">values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">DataFieldValue</span><span class="p">]</span>
+    <span class="n">values</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">DataFieldValue</span><span class="p">,</span> <span class="n">DataSectionInstance</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span>
     <span class="n">compliance</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;lenient&#39;</span><span class="p">,</span> <span class="s1">&#39;strict&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;lenient&#39;</span>
 
     <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -482,7 +457,7 @@
 
 <span class="sd">        :return: True if the instance is valid, False otherwise</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">error_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Instance values do not comply with their respective fields&#39; valuesets. (row </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">row_no</span><span class="si">}</span><span class="s2">)&quot;</span>
+        <span class="n">error_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Instance values do not comply with their respective fields&#39; valuesets. (row </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">)&quot;</span>
         <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">v</span><span class="o">.</span><span class="n">validate</span><span class="p">():</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">compliance</span> <span class="o">==</span> <span class="s1">&#39;strict&#39;</span><span class="p">:</span>
@@ -493,19 +468,22 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Compliance level </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">compliance</span><span class="si">}</span><span class="s2"> is not valid&quot;</span><span class="p">)</span>
 
-        <span class="n">is_required</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_model</span><span class="o">.</span><span class="n">fields</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">required</span><span class="p">)</span>
-        <span class="n">fields_present</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_model</span><span class="o">.</span><span class="n">is_hierarchical</span><span class="p">:</span>
+            <span class="n">is_required</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_model</span><span class="o">.</span><span class="n">fields</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">required</span><span class="p">)</span>
+            <span class="n">fields_present</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing_fields</span> <span class="o">:=</span> <span class="p">(</span><span class="n">is_required</span> <span class="o">-</span> <span class="n">fields_present</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">error_msg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Required fields are missing in the instance. (row </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">row_no</span><span class="si">}</span><span class="s2">) &quot;</span>
-                         <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">(missing_fields=</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">missing_fields</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">compliance</span> <span class="o">==</span> <span class="s1">&#39;strict&#39;</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">error_msg</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">compliance</span> <span class="o">==</span> <span class="s1">&#39;lenient&#39;</span><span class="p">:</span>
-                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">error_msg</span><span class="p">)</span>
-                <span class="k">return</span> <span class="kc">False</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Compliance level </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">compliance</span><span class="si">}</span><span class="s2"> is not valid&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing_fields</span> <span class="o">:=</span> <span class="p">(</span><span class="n">is_required</span> <span class="o">-</span> <span class="n">fields_present</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">error_msg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Required fields are missing in the instance. (row </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">) &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">(missing_fields=</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">missing_fields</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">compliance</span> <span class="o">==</span> <span class="s1">&#39;strict&#39;</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">error_msg</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">compliance</span> <span class="o">==</span> <span class="s1">&#39;lenient&#39;</span><span class="p">:</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">error_msg</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Compliance level </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">compliance</span><span class="si">}</span><span class="s2"> is not valid&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>  <span class="c1"># TODO: implement validation of hierarchical data</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 
 
@@ -643,7 +621,7 @@
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
     <span class="n">required</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="n">cardinality</span><span class="p">:</span> <span class="n">Cardinality</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">Cardinality</span><span class="p">)</span>
+    <span class="n">cardinality</span><span class="p">:</span> <span class="n">Cardinality</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">Cardinality</span><span class="o">.</span><span class="n">ZERO_TO_N</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
@@ -652,7 +630,6 @@
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">required</span><span class="p">:</span>
             <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;cardinality&#39;</span><span class="p">,</span> <span class="n">Cardinality</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cardinality</span><span class="o">.</span><span class="n">max</span><span class="p">))</span>
-
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="s2">&quot;OrGroup(</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -663,13 +640,14 @@
         <span class="k">for</span> <span class="n">_field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
             <span class="n">ret</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">_field</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="n">ret</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">)&quot;</span>
-        <span class="k">return</span> <span class="n">ret</span></div>
+        <span class="k">return</span> <span class="n">ret</span>
 
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">DataField</span><span class="p">,</span> <span class="n">DataSection</span><span class="p">,</span> <span class="s1">&#39;OrGroup&#39;</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">var_name</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">f</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;OrGroup&#39; object has no attribute &#39;</span><span class="si">{</span><span class="n">var_name</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span></div>
 
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">DataField</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Field 1&quot;</span><span class="p">,</span> <span class="n">specification</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">specification</span> <span class="o">==</span> <span class="n">ValueSet</span><span class="p">([</span><span class="nb">int</span><span class="p">]))</span>
 </pre></div>
 
            </div>

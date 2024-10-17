@@ -99,7 +99,51 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parameter max must be a positive integer. (Not: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">min</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">min</span><span class="si">}</span><span class="s2">..</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max</span><span class="si">}</span><span class="s2">&quot;</span></div>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">min</span><span class="si">}</span><span class="s2">..</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="c1"># Singleton instances</span>
+    <span class="n">_instances</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="Cardinality.ZERO_TO_ONE">
+<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.cardinality.html#phenopacket_mapper.data_standards.Cardinality.ZERO_TO_ONE">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ZERO_TO_ONE</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Cardinality&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;ZERO_TO_ONE&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_instances</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_instances</span><span class="p">[</span><span class="s1">&#39;ZERO_TO_ONE&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_instances</span><span class="p">[</span><span class="s1">&#39;ZERO_TO_ONE&#39;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="Cardinality.ZERO_TO_N">
+<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.cardinality.html#phenopacket_mapper.data_standards.Cardinality.ZERO_TO_N">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ZERO_TO_N</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Cardinality&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;ZERO_TO_N&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_instances</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_instances</span><span class="p">[</span><span class="s1">&#39;ZERO_TO_N&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_instances</span><span class="p">[</span><span class="s1">&#39;ZERO_TO_N&#39;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="Cardinality.ONE">
+<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.cardinality.html#phenopacket_mapper.data_standards.Cardinality.ONE">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ONE</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Cardinality&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;OPTIONAL&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_instances</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_instances</span><span class="p">[</span><span class="s1">&#39;ONE&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_instances</span><span class="p">[</span><span class="s1">&#39;ONE&#39;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="Cardinality.ONE_TO_N">
+<a class="viewcode-back" href="../../../apidocs/phenopacket_mapper.data_standards.cardinality.html#phenopacket_mapper.data_standards.Cardinality.ONE_TO_N">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ONE_TO_N</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Cardinality&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;ONE_TO_N&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_instances</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_instances</span><span class="p">[</span><span class="s1">&#39;ONE_TO_N&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_instances</span><span class="p">[</span><span class="s1">&#39;ONE_TO_N&#39;</span><span class="p">]</span></div>
+</div>
+
 
 </pre></div>
 
