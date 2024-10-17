@@ -7,11 +7,6 @@ class Cardinality:
     min: int = field(default=0)
     max: Union[int, Literal['n']] = field(default='n')
 
-    ZERO_TO_ONE: 'Cardinality' = None
-    ZERO_TO_N: 'Cardinality' = None
-    ONE: 'Cardinality' = None
-    ONE_TO_N: 'Cardinality' = None
-
     def __post_init__(self):
         if not isinstance(self.min, int):
             raise ValueError(f"Parameter min must be of type integer. (Not: {type(self.min)})")
@@ -26,8 +21,34 @@ class Cardinality:
     def __str__(self):
         return f"{self.min}..{self.max}"
 
+    # Singleton instances
+    _instances = {}
 
-Cardinality.ZERO_TO_ONE = Cardinality(0, 1)
-Cardinality.ZERO_TO_ONE = Cardinality(0, 'n')
-Cardinality.ONE = Cardinality(1, 1)
-Cardinality.ONE_TO_N = Cardinality(1, 'n')
+    @classmethod
+    @property
+    def ZERO_TO_ONE(cls) -> 'Cardinality':
+        if 'ZERO_TO_ONE' not in cls._instances:
+            cls._instances['ZERO_TO_ONE'] = cls(0, 1)
+        return cls._instances['ZERO_TO_ONE']
+
+    @classmethod
+    @property
+    def ZERO_TO_N(cls) -> 'Cardinality':
+        if 'ZERO_TO_N' not in cls._instances:
+            cls._instances['ZERO_TO_N'] = cls(0, 'n')
+        return cls._instances['ZERO_TO_N']
+
+    @classmethod
+    @property
+    def ONE(cls) -> 'Cardinality':
+        if 'OPTIONAL' not in cls._instances:
+            cls._instances['ONE'] = cls(1, 1)
+        return cls._instances['ONE']
+
+    @classmethod
+    @property
+    def ONE_TO_N(cls) -> 'Cardinality':
+        if 'ONE_TO_N' not in cls._instances:
+            cls._instances['ONE_TO_N'] = cls(1, 'n')
+        return cls._instances['ONE_TO_N']
+
