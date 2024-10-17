@@ -10,7 +10,7 @@ The `DataFieldValue` class is used to define the value of a `DataField` in a `Da
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Union, List, Literal, Dict, Optional, Any, Callable, Tuple
+from typing import Union, List, Literal, Dict, Optional, Any, Callable, Tuple, Iterable
 import warnings
 
 import pandas as pd
@@ -522,3 +522,28 @@ class OrGroup(DataNode):
             if f.id == var_name:
                 return f
         raise AttributeError(f"'OrGroup' object has no attribute '{var_name}'")
+
+
+def recursive_collect_all_members_data_model(
+        data_model: Union[DataModel, DataSection, OrGroup, DataField]
+) -> Iterable[Union[DataSection, OrGroup, DataField]]:
+    """Recursively collect all members of a DataModel, DataSection, OrGroup, or DataField
+
+    :param data_model: DataModel, DataSection, OrGroup, or DataField to collect all members from
+    :return: Iterable of DataSection, OrGroup, and DataField members
+    """
+    if isinstance(data_model, DataModel):
+        for f in data_model.fields:
+            yield from recursive_collect_all_members_data_model(f)
+    elif isinstance(data_model, DataSection):
+        yield data_model
+        for f in data_model.fields:
+            yield from recursive_collect_all_members_data_model(f)
+    elif isinstance(data_model, OrGroup):
+        yield data_model
+        for f in data_model.fields:
+            yield from recursive_collect_all_members_data_model(f)
+    elif isinstance(data_model, DataField):
+        yield data_model
+    else:
+        raise ValueError(f"Unsupported data_model type: {type(data_model)}")
