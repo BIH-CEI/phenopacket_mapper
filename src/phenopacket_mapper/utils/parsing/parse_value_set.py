@@ -1,4 +1,4 @@
-from typing import List, Literal, Any
+from typing import Literal, Any, Tuple
 
 from phenopacket_mapper.data_standards import CodeSystem
 from phenopacket_mapper.utils.parsing import parse_single_data_type, parse_value
@@ -9,7 +9,7 @@ def parse_value_set(
         value_set_str: str,
         value_set_name: str = "",
         value_set_description: str = "",
-        resources: List[CodeSystem] = None,
+        resources: Tuple[CodeSystem, ...] = None,
         compliance: Literal['strict', 'lenient'] = 'lenient',
 ) -> ValueSet:
     """Parses a value set from a string representation
@@ -28,7 +28,7 @@ def parse_value_set(
         if compliance == 'strict':
             raise ValueError(f"value_set_str must be a string, not {type(value_set_str)} ({value_set_str})")
         else:
-            return ValueSet(elements=[Any], description=value_set_description)
+            return ValueSet(elements=(Any,), description=value_set_description)
 
     value_set_str = value_set_str.strip()
 
