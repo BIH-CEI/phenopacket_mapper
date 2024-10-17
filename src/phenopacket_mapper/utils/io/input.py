@@ -282,8 +282,8 @@ def load_hierarchical_data_recursive(
         ])
 
         return DataSectionInstance(
-            identifier=str(loaded_data_instance_identifier) + ":" + data_section.id,  # TODO: get identifiers of parents
-            data_section=data_section,
+            id=str(loaded_data_instance_identifier) + ":" + data_section.id,  # TODO: get identifiers of parents
+            section=data_section,
             values=values,
         )
     elif isinstance(data_model, OrGroup):
@@ -345,14 +345,14 @@ def load_hierarchical_dataset(
             DataModelInstance(
                 id=instance_identifier,
                 data_model=data_model,
-                values=load_hierarchical_data_recursive(
+                values=tuple(filter(lambda x: x is not None, list(load_hierarchical_data_recursive(
                     loaded_data_instance_identifier=instance_identifier,
                     loaded_data_instance=data_instance,
                     data_model=data_model,
                     resources=data_model.resources,
                     compliance=compliance,
                     mapping=mapping
-                ),
+                )))),
                 compliance=compliance,
             )
         )
@@ -397,13 +397,13 @@ def load_hierarchical_data(
     return DataModelInstance(
         id=instance_identifier,  # TODO: give instances identifiers based on file names if available
         data_model=data_model,
-        values=load_hierarchical_data_recursive(
+        values=tuple(filter(lambda x: x is not None, list(load_hierarchical_data_recursive(
             loaded_data_instance_identifier=instance_identifier,
             loaded_data_instance=data_instance,
             data_model=data_model,
             resources=data_model.resources,
             compliance=compliance,
             mapping=mapping
-        ),
+        )))),
         compliance=compliance,
     )

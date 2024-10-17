@@ -301,16 +301,17 @@ class DataFieldValue:
 @dataclass(slots=True, frozen=True)
 class DataSectionInstance:
     """
-    :ivar identifier: The id of the instance, i.e. the row number
-    :ivar data_section: The `DataSection` object that defines the data model for this instance
+    :ivar id: The id of the instance, i.e. the row number
+    :ivar section: The `DataSection` object that defines the data model for this instance
     :ivar values: A list of `DataFieldValue` objects, each adhering to the `DataField` definition in the `DataModel`
     """
-    identifier: Union[str, int] = field()
-    data_section: DataSection = field()
+    id: Union[str, int] = field()
+    section: DataSection = field()
     values: Tuple[Union[DataFieldValue, 'DataSectionInstance'], ...] = field()
 
     def validate(self) -> bool:
-        tmp = self.identifier
+        # TODO: implement this method
+        tmp = self.id
         warnings.warn("The DataSectionInstance validate method has not been implemented yet.")
         return True
 
@@ -355,19 +356,22 @@ class DataModelInstance:
                 else:
                     raise ValueError(f"Compliance level {self.compliance} is not valid")
 
-        is_required = set(f.id for f in self.data_model.fields if f.required)
-        fields_present = set(v.field.id for v in self.values)
+        if not self.data_model.is_hierarchical:
+            is_required = set(f.id for f in self.data_model.fields if f.required)
+            fields_present = set(v.field.id for v in self.values)
 
-        if len(missing_fields := (is_required - fields_present)) > 0:
-            error_msg = (f"Required fields are missing in the instance. (row {self.id}) "
-                         f"\n(missing_fields={', '.join(missing_fields)})")
-            if self.compliance == 'strict':
-                raise ValueError(error_msg)
-            elif self.compliance == 'lenient':
-                warnings.warn(error_msg)
-                return False
-            else:
-                raise ValueError(f"Compliance level {self.compliance} is not valid")
+            if len(missing_fields := (is_required - fields_present)) > 0:
+                error_msg = (f"Required fields are missing in the instance. (row {self.id}) "
+                             f"\n(missing_fields={', '.join(missing_fields)})")
+                if self.compliance == 'strict':
+                    raise ValueError(error_msg)
+                elif self.compliance == 'lenient':
+                    warnings.warn(error_msg)
+                    return False
+                else:
+                    raise ValueError(f"Compliance level {self.compliance} is not valid")
+        else:
+            pass  # TODO: implement validation of hierarchical data
         return True
 
     def __iter__(self):
