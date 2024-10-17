@@ -80,7 +80,6 @@ class DataField(DataNode):
         ret += "\t)"
         return ret
 
-
     def __eq__(self, other):
         if not isinstance(other, DataField):
             return False
@@ -140,15 +139,19 @@ class DataModel:
     be accessed using the `id` as an attribute of the `DataModel` object. E.g.: `data_model.date_of_birth`. This is
     useful in the data reading and mapping processes.
 
-    :ivar data_model_name: Name of the data model
+    :ivar name: Name of the data model
     :ivar fields: List of `DataField` objects
     :ivar resources: List of `CodeSystem` objects
     """
-    data_model_name: str = field()
-    fields: Tuple[Union[DataField, DataSection, 'OrGroup'], ...] = field()
+    name: str = field()
+    fields: Tuple[Union[DataField, DataModelSection, 'OrGroup'], ...] = field()
+    id: str = field(default=None)
     resources: Tuple[CodeSystem, ...] = field(default_factory=tuple)
 
     def __post_init__(self):
+        if not self.id:
+            from phenopacket_mapper.utils import str_to_valid_id
+            object.__setattr__(self, 'id', str_to_valid_id(self.name))
         if len(self.fields) != len(set([f.id for f in self.fields])):
             raise ValueError("All fields in a DataModel must have unique identifiers")
 
@@ -160,7 +163,7 @@ class DataModel:
 
     def __str__(self):
         ret = f"DataModel(\n"
-        ret += f"\tname: {self.data_model_name}\n"
+        ret += f"\tname: {self.name}\n"
         for _field in self.fields:
             ret += f"\t{str(_field)}\n"
         ret += "---\n"
@@ -498,7 +501,6 @@ class OrGroup(DataNode):
 
         if self.required:
             object.__setattr__(self, 'cardinality', Cardinality(min=1, max=self.cardinality.max))
-
 
     def __str__(self):
         ret = "OrGroup(\n"
